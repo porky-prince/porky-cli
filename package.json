@@ -1,0 +1,40 @@
+{
+	"name": "porky-cli",
+	"version": "1.0.0",
+	"description": "This is a scaffold.",
+	"author": "Porky Kay",
+	"license": "MIT",
+	"private": true,
+	"homepage": "https://gitee.com/porky-prince/porky-cli#readme",
+	"repository": "https://gitee.com/porky-prince/porky-cli",
+	"bugs": "https://gitee.com/porky-prince/porky-cli/issues",
+	"workspaces": [
+		"./packages/*"
+	],
+	"scripts": {
+		"commitlint": "commitlint --from=master",
+		"lint:prettier": "prettier \"{**/*,*}.{js,json,md}\" -l",
+		"lint:js": "eslint --cache .",
+		"lint": "npm-run-all -l -p \"lint:**\"",
+		"pretest": "npm run lint && del-cli test/output",
+		"test": "jest",
+		"debug": "node --inspect-brk src/main.js",
+		"release": ""
+	},
+	"devDependencies": {
+		"@commitlint/cli": "^8.3.5",
+		"@commitlint/config-conventional": "^8.3.4",
+		"del": "^5.1.0",
+		"del-cli": "^3.0.0",
+		"eslint": "^6.8.0",
+		"eslint-config-prettier": "^6.10.0",
+		"eslint-config-xo": "^0.29.1",
+		"eslint-plugin-prettier": "^3.1.2",
+		"husky": "^4.2.3",
+		"jest": "^25.1.0",
+		"lerna": "^3.20.2",
+		"lint-staged": "^10.0.7",
+		"npm-run-all": "^4.1.5",
+		"prettier": "^1.19.1"
+	}
+}

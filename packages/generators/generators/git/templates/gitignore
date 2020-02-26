@@ -4,10 +4,6 @@
 *.sublime-project
 *.sublime-workspace
 
-# Vim swap files
-.s[a-z][a-z]
-.*.s[a-z][a-z]
-
 # OS
 .DS_Store
 Thumbs.db
@@ -27,12 +23,3 @@ coverage
 
 # eslint
 .eslintcache
-
-# lerna log
-lerna-debug.log
-
-# Yeoman file
-.yo-rc.json
-
-# package-lock file
-package-lock.json
