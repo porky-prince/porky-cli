@@ -1,21 +1,14 @@
-const Generator = require('yeoman-generator');
+const { EDITOR_CONFIG } = require('../../src/const');
+const Generator = require('../../src/abstractGenerator');
 
 module.exports = class extends Generator {
 	constructor(args, options) {
 		super(args, options);
-
-		this.option('generateInto', {
-			type: String,
-			required: false,
-			defaults: '',
-			desc: 'Relocate the location of the generated files.',
-		});
+		this._name = EDITOR_CONFIG;
+		this._buildDestOpt();
 	}
 
 	initializing() {
-		this.fs.copy(
-			this.templatePath('editorconfig'),
-			this.destinationPath(this.options.generateInto, '.editorconfig')
-		);
+		this._copyConfigTemp2Dest(this._name);
 	}
 };

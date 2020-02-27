@@ -21,7 +21,7 @@
 		"url": "https://gitee.com/porky-prince/porky-cli.git"
 	},
 	"scripts": {
-		"test": "echo \"Error: run tests from root\" && exit 1"
+		"test": "echo todo"
 	},
 	"dependencies": {
 		"yo": "^3.1.1"

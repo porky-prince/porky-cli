@@ -16,8 +16,8 @@
 		"lint:prettier": "prettier \"{**/*,*}.{js,json,md}\" -l",
 		"lint:js": "eslint --cache .",
 		"lint": "npm-run-all -l -p \"lint:**\"",
-		"pretest": "npm run lint && del-cli test/output",
-		"test": "jest",
+		"pretest": "echo pretest",
+		"test": "lerna run test",
 		"debug": "node --inspect-brk src/main.js",
 		"release": ""
 	},
