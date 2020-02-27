@@ -6,7 +6,7 @@
 		"yeoman"
 	],
 	"author": "Porky Kay",
-	"homepage": "https://gitee.com/porky-prince/porky-cli/packages/generate-npm#readme",
+	"homepage": "https://github.com/porky-prince/porky-cli/packages/generate-npm#readme",
 	"license": "MIT",
 	"directories": {
 		"lib": "lib",
@@ -20,7 +20,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://gitee.com/porky-prince/porky-cli.git"
+		"url": "https://github.com/porky-prince/porky-cli.git"
 	},
 	"scripts": {
 		"test": "echo todo"

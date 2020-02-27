@@ -5,9 +5,9 @@
 	"author": "Porky Kay",
 	"license": "MIT",
 	"private": true,
-	"homepage": "https://gitee.com/porky-prince/porky-cli#readme",
-	"repository": "https://gitee.com/porky-prince/porky-cli",
-	"bugs": "https://gitee.com/porky-prince/porky-cli/issues",
+	"homepage": "https://github.com/porky-prince/porky-cli#readme",
+	"repository": "https://github.com/porky-prince/porky-cli",
+	"bugs": "https://github.com/porky-prince/porky-cli/issues",
 	"workspaces": [
 		"./packages/*"
 	],
