@@ -1,4 +1,5 @@
 const Generator = require('yeoman-generator');
+const { PKG } = require('./const');
 const { getTempPath, getConfigName } = require('./helper');
 
 module.exports = class extends Generator {
@@ -16,10 +17,24 @@ module.exports = class extends Generator {
 		});
 	}
 
+	_destPath() {
+		const args = Array.prototype.slice.call(arguments);
+		args.unshift(this.options.generateInto);
+		return this.destinationPath.apply(this, args);
+	}
+
 	_copyConfigTemp2Dest(tempName) {
 		this.fs.copy(
 			this.templatePath(getTempPath(this._name, tempName)),
-			this.destinationPath(this.options.generateInto, getConfigName(tempName))
+			this._destPath(getConfigName(tempName))
 		);
+	}
+
+	_readPkg() {
+		return this.fs.readJSON(this._destPath(PKG), {});
+	}
+
+	_writePkg(pkg) {
+		return this.fs.writeJSON(this._destPath(PKG), pkg);
 	}
 };

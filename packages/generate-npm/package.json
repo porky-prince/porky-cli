@@ -1,5 +1,5 @@
 {
-	"name": "@porky-cli/generate-npm",
+	"name": "porky-generate-npm",
 	"version": "0.0.0",
 	"description": "This is yeoman generator for npm.",
 	"keywords": [

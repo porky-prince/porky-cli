@@ -1,89 +1,94 @@
-const { GIT } = require('../../src/const');
+const { GIT_ATTR, GIT_IGNORE } = require('../../src/const');
 const Generator = require('../../src/abstractGenerator');
 const originUrl = require('git-remote-origin-url');
 
 module.exports = class extends Generator {
 	constructor(args, opts) {
 		super(args, opts);
-		this._name = GIT;
-		this.option('generateInto', {
-			type: String,
-			required: false,
-			defaults: '',
-			desc: 'Relocate the location of the generated files.',
-		});
+		this._name = 'git';
+		this._buildDestOpt();
 
-		this.option('githubAccount', {
+		this.option('gitAccount', {
 			type: String,
 			required: true,
-			desc: 'GitHub username or organization',
+			desc: 'Git username or organization',
 		});
 
-		this.option('repositoryName', {
+		this.option('repoName', {
 			type: String,
 			required: true,
-			desc: 'Name of the GitHub repository',
+			desc: 'Name of the Git repository',
 		});
 	}
 
 	initializing() {
-		this.fs.copy(
-			this.templatePath('gitattributes'),
-			this.destinationPath(this.options.generateInto, '.gitattributes')
-		);
+		this._copyConfigTemp2Dest(GIT_ATTR);
 
-		this.fs.copy(
-			this.templatePath('gitignore'),
-			this.destinationPath(this.options.generateInto, '.gitignore')
-		);
+		this._copyConfigTemp2Dest(GIT_IGNORE);
 
-		return originUrl(this.destinationPath(this.options.generateInto)).then(
-			function(url) {
+		return originUrl(this._destPath()).then(
+			url => {
 				this.originUrl = url;
-			}.bind(this),
-			function() {
+			},
+			() => {
 				this.originUrl = '';
-			}.bind(this)
-		);
-	}
-
-	_readPkg() {
-		return this.fs.readJSON(
-			this.destinationPath(this.options.generateInto, 'package.json'),
-			{}
+			}
 		);
 	}
 
 	writing() {
 		const pkg = this._readPkg();
+		let repo = pkg.repository;
+		if (!repo) {
+			let originUrl = (repo = this.originUrl);
+			if (originUrl) {
+				const result = /git@([\w\.]+)\:([\w\/-]+\.git)/.exec(originUrl);
+				if (result) {
+					// 'git@github.com:porky-prince/porky-cli.git' => 'https://github.com/porky-prince/porky-cli.git'
+					originUrl = `https://${result[1]}/${result[2]}`;
+				}
+			} else if (this.options.gitAccount && this.options.repoName) {
+				// default github
+				originUrl = repo = `https://github.com/${this.options.gitAccount}/${this.options.repoName}.git`;
+			}
 
-		let repository;
-		if (this.originUrl) {
-			repository = this.originUrl;
-		} else if (this.options.githubAccount && this.options.repositoryName) {
-			repository = this.options.githubAccount + '/' + this.options.repositoryName;
+			if (repo) {
+				pkg.repository = repo;
+				pkg.homepage = pkg.homepage || originUrl.replace('.git', '#readme');
+				pkg.bugs = pkg.bugs || originUrl.replace('.git', '/issues');
+			}
 		}
-
-		pkg.repository = pkg.repository || repository;
-
-		this.fs.writeJSON(this.destinationPath(this.options.generateInto, 'package.json'), pkg);
+		this._writePkg(pkg);
 	}
 
 	end() {
 		const pkg = this._readPkg();
+		let repo = pkg.repository;
 
+		// It is safe to run the git init command in an existing repository
 		this.spawnCommandSync('git', ['init', '--quiet'], {
-			cwd: this.destinationPath(this.options.generateInto),
+			cwd: this._destPath(),
 		});
 
-		if (pkg.repository && !this.originUrl) {
-			let repoSSH = pkg.repository;
-			if (pkg.repository && pkg.repository.indexOf('.git') === -1) {
-				repoSSH = 'git@github.com:' + pkg.repository + '.git';
+		if (repo && !this.originUrl) {
+			// {type, url}
+			if (typeof repo !== 'string') {
+				if (repo.type !== 'git') return;
+				repo = repo.url;
 			}
-
-			this.spawnCommandSync('git', ['remote', 'add', 'origin', repoSSH], {
-				cwd: this.destinationPath(this.options.generateInto),
+			// 'git@github.com:porky-prince/porky-cli.git'
+			// 'https://github.com/porky-prince/porky-cli.git'
+			// 'https://github.com/porky-prince/porky-cli'
+			// 'porky-prince/porky-cli' // default github
+			if (repo.indexOf('.git') === -1) {
+				if (/https?\:/.test(repo)) {
+					repo += '.git';
+				} else {
+					repo = 'git@github.com:' + pkg.repository + '.git';
+				}
+			}
+			this.spawnCommandSync('git', ['remote', 'add', 'origin', repo], {
+				cwd: this._destPath(),
 			});
 		}
 	}

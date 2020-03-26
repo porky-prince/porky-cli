@@ -2,8 +2,8 @@ const { EDITOR_CONFIG } = require('../../src/const');
 const Generator = require('../../src/abstractGenerator');
 
 module.exports = class extends Generator {
-	constructor(args, options) {
-		super(args, options);
+	constructor(args, opts) {
+		super(args, opts);
 		this._name = EDITOR_CONFIG;
 		this._buildDestOpt();
 	}

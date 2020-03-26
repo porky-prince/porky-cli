@@ -17,7 +17,7 @@
 		"lint:js": "eslint --cache .",
 		"lint": "npm-run-all -l -p \"lint:**\"",
 		"pretest": "echo pretest",
-		"test": "lerna run test",
+		"test": "lerna run test -- --verbose=true",
 		"debug": "node --inspect-brk src/main.js",
 		"release": ""
 	},

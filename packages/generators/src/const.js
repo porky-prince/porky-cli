@@ -5,10 +5,12 @@ const GENERATORS = path.join(BASE, 'generators');
 module.exports = {
 	BASE,
 	GENERATORS,
+	PKG: 'package.json',
 
 	EDITOR_CONFIG: 'editorconfig',
 
-	GIT: 'git',
 	GIT_ATTR: 'gitattributes',
 	GIT_IGNORE: 'gitignore',
+
+	README: 'README',
 };

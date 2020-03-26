@@ -1,9 +1,11 @@
 # <%= projectName %> [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]<%
+
 if (includeCoveralls) { %> [![Coverage percentage][coveralls-image]][coveralls-url]<% } -%>
 
 > <%= description %>
 
 <% if (!content) { -%>
+
 ## Installation
 
 ```sh
@@ -17,13 +19,14 @@ const <%= safeProjectName %> = require('<%= projectName %>');
 
 <%= safeProjectName %>('Rainbow');
 ```
+
 <% } else { -%>
 <%= content %>
 <% } -%>
+
 ## License
 
 <%= license %> © [<%= author.name %>](<%= author.url %>)
-
 
 [npm-image]: https://badge.fury.io/js/<%= escapedProjectName %>.svg
 [npm-url]: https://npmjs.org/package/<%= projectName %>
