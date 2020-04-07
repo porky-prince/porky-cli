@@ -1,18 +1,14 @@
-'use strict';
 const _ = require('lodash');
-const Generator = require('yeoman-generator');
 const querystring = require('querystring');
+const Generator = require('../../src/abstractGenerator');
+const { README } = require('../../src/const');
+const { getTempPath } = require('../../src/helper');
 
 module.exports = class extends Generator {
-	constructor(args, options) {
-		super(args, options);
-
-		this.option('generateInto', {
-			type: String,
-			required: false,
-			defaults: '',
-			desc: 'Relocate the location of the generated files.',
-		});
+	constructor(args, opts) {
+		super(args, opts);
+		this._name = README;
+		this._buildDestOpt();
 
 		this.option('name', {
 			type: String,
@@ -26,16 +22,16 @@ module.exports = class extends Generator {
 			desc: 'Project description',
 		});
 
-		this.option('githubAccount', {
+		this.option('gitAccount', {
 			type: String,
 			required: true,
-			desc: 'GitHub username or organization',
+			desc: 'Git username or organization',
 		});
 
-		this.option('repositoryName', {
+		this.option('repoName', {
 			type: String,
 			required: true,
-			desc: 'Name of the GitHub repository',
+			desc: 'Name of the Git repository',
 		});
 
 		this.option('authorName', {
@@ -64,13 +60,10 @@ module.exports = class extends Generator {
 	}
 
 	writing() {
-		const pkg = this.fs.readJSON(
-			this.destinationPath(this.options.generateInto, 'package.json'),
-			{}
-		);
+		const pkg = this._readPkg();
 		this.fs.copyTpl(
-			this.templatePath('README.md'),
-			this.destinationPath(this.options.generateInto, 'README.md'),
+			this.templatePath(getTempPath(this._name, this._name)),
+			this._destPath(this._name.toUpperCase() + '.md'),
 			{
 				projectName: this.options.name,
 				safeProjectName: _.camelCase(this.options.name),

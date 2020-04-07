@@ -12,5 +12,5 @@ module.exports = {
 	GIT_ATTR: 'gitattributes',
 	GIT_IGNORE: 'gitignore',
 
-	README: 'README',
+	README: 'readme',
 };
