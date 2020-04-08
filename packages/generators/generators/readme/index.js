@@ -2,7 +2,7 @@ const _ = require('lodash');
 const querystring = require('querystring');
 const Generator = require('../../src/abstractGenerator');
 const { README } = require('../../src/const');
-const { getTempPath } = require('../../src/helper');
+const { getTempPath, getMarkdownName } = require('../../src/helper');
 
 module.exports = class extends Generator {
 	constructor(args, opts) {
@@ -10,74 +10,50 @@ module.exports = class extends Generator {
 		this._name = README;
 		this._buildDestOpt();
 
-		this.option('name', {
+		this.option('content', {
 			type: String,
-			required: true,
-			desc: 'Project name',
+			desc: 'Readme content',
 		});
 
 		this.option('description', {
 			type: String,
-			required: true,
 			desc: 'Project description',
 		});
 
-		this.option('gitAccount', {
-			type: String,
-			required: true,
-			desc: 'Git username or organization',
-		});
-
-		this.option('repoName', {
-			type: String,
-			required: true,
-			desc: 'Name of the Git repository',
-		});
-
-		this.option('authorName', {
-			type: String,
-			required: true,
-			desc: 'Author name',
-		});
-
-		this.option('authorUrl', {
-			type: String,
-			required: true,
-			desc: 'Author url',
-		});
-
-		this.option('coveralls', {
+		this.option('inNodejs', {
 			type: Boolean,
-			required: true,
-			desc: 'Include coveralls badge',
+			default: true,
+			desc: 'Using in nodejs',
 		});
 
-		this.option('content', {
-			type: String,
-			required: false,
-			desc: 'Readme content',
+		this.option('inBrowser', {
+			type: Boolean,
+			desc: 'Using in browser',
+		});
+
+		this.option('inCmd', {
+			type: Boolean,
+			desc: 'Using in command line',
 		});
 	}
 
 	writing() {
+		const opt = this.options;
 		const pkg = this._readPkg();
 		this.fs.copyTpl(
 			this.templatePath(getTempPath(this._name, this._name)),
-			this._destPath(this._name.toUpperCase() + '.md'),
+			this._destPath(getMarkdownName(this._name)),
 			{
-				projectName: this.options.name,
-				safeProjectName: _.camelCase(this.options.name),
-				escapedProjectName: querystring.escape(this.options.name),
-				repositoryName: this.options.repositoryName || this.options.name,
-				description: this.options.description,
-				githubAccount: this.options.githubAccount,
-				author: {
-					name: this.options.authorName,
-					url: this.options.authorUrl,
-				},
+				projectName: pkg.name,
+				safeProjectName: _.camelCase(pkg.name),
+				escapedProjectName: querystring.escape(pkg.name),
+				description: opt.description || pkg.description,
+				author: pkg.author,
 				license: pkg.license,
-				includeCoveralls: this.options.coveralls,
-				content: this.options.content,
+				content: opt.content,
+				inNodejs: opt.inNodejs,
+				inBrowser: opt.inBrowser,
+				inCmd: opt.inCmd,
 			}
 		);
 	}

@@ -1,24 +1,120 @@
-# <%= projectName %> [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]<%
+[![npm][npm]][npm-url]
+[![node][node]][node-url]
+[![size][size]][size-url]
 
-if (includeCoveralls) { %> [![Coverage percentage][coveralls-image]][coveralls-url]<% } -%>
+# <%= projectName %>
 
 > <%= description %>
 
 <% if (!content) { -%>
 
-## Installation
+## Install
+
+<% if (inNodejs) { -%>
+
+### Local
+
+npm:
 
 ```sh
 $ npm install --save <%= projectName %>
 ```
 
+yarn:
+
+```sh
+$ yarn add <%= projectName %>
+```
+
+### Global
+
+npm:
+
+```sh
+$ npm install -g <%= projectName %>
+```
+
+yarn:
+
+```sh
+$ yarn add global <%= projectName %>
+```
+
+<% } -%>
+
+<% if (inBrowser) { -%>
+
+### Browser
+
+```html
+<script src="<%= safeProjectName %>.js"></script>
+```
+
+<% } -%>
+
 ## Usage
+
+### Using in code
+
+<% if (inNodejs) { -%>
+
+#### Using es5 in node
 
 ```js
 const <%= safeProjectName %> = require('<%= projectName %>');
 
-<%= safeProjectName %>('Rainbow');
+<%= safeProjectName %>('args');
 ```
+
+#### Using es6 or typescript in node
+
+```js
+import <%= safeProjectName %> from '<%= projectName %>';
+
+<%= safeProjectName %>('args');
+```
+
+<% } -%>
+
+<% if (inBrowser) { -%>
+
+#### Using in browser
+
+```html
+<script>
+	<%= safeProjectName %>('args');
+</script>
+```
+
+<% } -%>
+
+<% if (inCmd) { -%>
+
+### Command line usage
+
+First, you have to install the dependency package globally
+
+```sh
+$ <%= safeProjectName %> [options]
+```
+
+example:
+
+```sh
+$ <%= safeProjectName %> -i inputPath -o outputDir
+```
+
+#### Command line options
+
+```
+    --version               	Print version number.
+    -h, --help                  Print usage information.
+    -i, --input                 Input path.
+    -o, --output [options]   	Output dir.
+    -f, --filename [options]    Output filename.
+```
+
+<% } -%>
 
 <% } else { -%>
 <%= content %>
@@ -26,15 +122,11 @@ const <%= safeProjectName %> = require('<%= projectName %>');
 
 ## License
 
-<%= license %> © [<%= author.name %>](<%= author.url %>)
+[<%= license %> © <%= author %>](./LICENSE)
 
-[npm-image]: https://badge.fury.io/js/<%= escapedProjectName %>.svg
-[npm-url]: https://npmjs.org/package/<%= projectName %>
-[travis-image]: https://travis-ci.com/<%= githubAccount %>/<%= repositoryName %>.svg?branch=master
-[travis-url]: https://travis-ci.com/<%= githubAccount %>/<%= repositoryName %>
-[daviddm-image]: https://david-dm.org/<%= githubAccount %>/<%= repositoryName %>.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org/<%= githubAccount %>/<%= repositoryName %>
-<% if (includeCoveralls) { -%>
-[coveralls-image]: https://coveralls.io/repos/<%= githubAccount %>/<%= repositoryName %>/badge.svg
-[coveralls-url]: https://coveralls.io/r/<%= githubAccount %>/<%= repositoryName %>
-<% } -%>
+[npm]: https://img.shields.io/npm/v/<%= escapedProjectName %>.svg
+[npm-url]: https://npmjs.com/package/<%= projectName %>
+[node]: https://img.shields.io/node/v/<%= escapedProjectName %>.svg
+[node-url]: https://nodejs.org
+[size]: https://packagephobia.now.sh/badge?p=<%= escapedProjectName %>
+[size-url]: https://packagephobia.now.sh/result?p=<%= escapedProjectName %>

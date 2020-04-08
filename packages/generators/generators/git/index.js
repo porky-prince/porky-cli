@@ -10,13 +10,11 @@ module.exports = class extends Generator {
 
 		this.option('gitAccount', {
 			type: String,
-			required: true,
 			desc: 'Git username or organization',
 		});
 
 		this.option('repoName', {
 			type: String,
-			required: true,
 			desc: 'Name of the Git repository',
 		});
 	}

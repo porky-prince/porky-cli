@@ -3,7 +3,7 @@ const helpers = require('yeoman-test');
 const { GIT_ATTR, GIT_IGNORE, PKG } = require('../src/const');
 const { getGenerator, getConfigName } = require('../src/helper');
 
-describe('node:git', () => {
+describe('test:git', () => {
 	const gitIgnore = getConfigName(GIT_IGNORE);
 	const gitAttr = getConfigName(GIT_ATTR);
 	const github = 'https://github.com/';

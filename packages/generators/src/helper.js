@@ -13,6 +13,10 @@ const helper = {
 	getConfigName(tempName) {
 		return '.' + tempName;
 	},
+
+	getMarkdownName(tempName) {
+		return tempName.toUpperCase() + '.md';
+	},
 };
 
 module.exports = helper;

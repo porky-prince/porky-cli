@@ -8,10 +8,16 @@ module.exports = class extends Generator {
 		this._name = '';
 	}
 
+	option(name, config) {
+		if (config.required !== true) {
+			config.required = false;
+		}
+		return super.option(name, config);
+	}
+
 	_buildDestOpt() {
 		this.option('generateInto', {
 			type: String,
-			required: false,
 			defaults: '',
 			desc: 'Relocate the location of the generated files.',
 		});
