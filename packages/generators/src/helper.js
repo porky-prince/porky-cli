@@ -6,12 +6,12 @@ const helper = {
 		return require(path.join(GENERATORS, generatorName));
 	},
 
-	getTempPath(generatorName, tempName) {
-		return require.resolve(path.join(GENERATORS, generatorName, 'templates', tempName));
+	getTempPath(generatorName, tempName = '') {
+		return path.join(GENERATORS, generatorName, 'templates', tempName);
 	},
 
-	getConfigName(tempName) {
-		return '.' + tempName;
+	getConfigName(tempName, exclude = '') {
+		return '.' + tempName.replace(exclude, '');
 	},
 
 	getMarkdownName(tempName) {

@@ -13,4 +13,6 @@ module.exports = {
 	GIT_IGNORE: 'gitignore',
 
 	README: 'readme',
+
+	LINT: 'lint',
 };

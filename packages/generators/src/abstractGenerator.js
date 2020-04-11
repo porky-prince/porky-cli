@@ -29,10 +29,10 @@ module.exports = class extends Generator {
 		return this.destinationPath.apply(this, args);
 	}
 
-	_copyConfigTemp2Dest(tempName) {
+	_copyConfigTemp2Dest(tempName, exclude) {
 		this.fs.copy(
 			this.templatePath(getTempPath(this._name, tempName)),
-			this._destPath(getConfigName(tempName))
+			this._destPath(getConfigName(tempName, exclude))
 		);
 	}
 
