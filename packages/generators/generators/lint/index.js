@@ -1,7 +1,7 @@
-const fs = require('fs');
+const { exec } = require('child_process');
+const _ = require('lodash');
 const Generator = require('../../src/abstractGenerator');
 const { LINT } = require('../../src/const');
-const { getTempPath } = require('../../src/helper');
 
 module.exports = class extends Generator {
 	constructor(args, opt) {
@@ -22,18 +22,30 @@ module.exports = class extends Generator {
 		});
 	}
 
-	writing() {
-		const opt = this.options;
-		const pkg = this._readPkg();
+	async _fillPkg(opt, pkg) {
+		const done = this.async();
+		const arr = [];
 		const devDependencies = pkg.devDependencies || {};
 		const scripts = pkg.scripts || {};
-		function devDep(module) {
-			devDependencies[module] = devDependencies[module] || module;
-		}
-
-		function script(name, cmd) {
+		const devDep = module => {
+			arr.push(
+				new Promise((resolve, reject) => {
+					exec(`npm view ${module} version`, (error, stdout) => {
+						if (error) {
+							console.error(error);
+							reject(error);
+						} else {
+							devDependencies[module] =
+								devDependencies[module] || `^${_.trim(stdout)}`;
+							resolve(stdout);
+						}
+					});
+				})
+			);
+		};
+		const script = (name, cmd) => {
 			scripts[name] = scripts[name] || cmd;
-		}
+		};
 
 		devDep('eslint');
 		devDep('eslint-config-prettier');
@@ -60,17 +72,30 @@ module.exports = class extends Generator {
 		script('pretest', 'npm run lint');
 		script('commitlint', 'commitlint --from=master');
 
+		await Promise.all(arr);
+		pkg.devDependencies = devDependencies;
+		pkg.scripts = scripts;
 		this._writePkg(pkg);
+		done();
+	}
 
-		fs.readdirSync(getTempPath(this._name)).forEach(file => {
-			let exclude = '';
-			if (opt.tslint) {
-				if (file === 'eslintrc.js') return;
-				exclude = '.ts';
-			} else if (file === 'eslintrc.ts.js') {
-				return;
-			}
-			this._copyConfigTemp2Dest(file, exclude);
-		});
+	writing() {
+		const opt = this.options;
+		const pkg = this._readPkg();
+		const copyCfg = (config, files, exclude) => {
+			!pkg[config] &&
+				files.forEach(file => {
+					this._copyConfigTemp2Dest(file, exclude);
+				});
+		};
+
+		this._fillPkg(opt, pkg);
+
+		let exclude = opt.tslint ? '.ts' : '';
+		copyCfg('eslintConfig', [`eslintrc${exclude}.js`, 'eslintignore'], exclude);
+		copyCfg('commitlint', ['commitlintrc.js']);
+		copyCfg('husky', ['huskyrc.js']);
+		copyCfg('lint-staged', ['lintstagedrc']);
+		copyCfg('prettier', ['prettierrc.js', 'prettierignore']);
 	}
 };

@@ -1,0 +1,107 @@
+const assert = require('yeoman-assert');
+const helpers = require('yeoman-test');
+const { PKG, LINT } = require('../src/const');
+const { getGenerator } = require('../src/helper');
+const Generator = getGenerator(LINT);
+
+async function runByOpt(opt = {}, fn) {
+	return helpers
+		.run(Generator)
+		.withOptions(opt)
+		.on('ready', gen => {
+			fn && fn(gen);
+		});
+}
+
+describe(`test:${LINT}`, () => {
+	describe('test:eslint', () => {
+		beforeEach(() => {
+			return runByOpt();
+		});
+
+		it('create default files when there is no package.json or package.json is initialized', () => {
+			assert.fileContent(PKG, '"@commitlint/cli":');
+			assert.fileContent(PKG, '"eslint-config-xo":');
+			assert.noFileContent(PKG, '"eslint-config-xo-typescript":');
+			assert.fileContent(PKG, '"lint:code": "eslint --cache ."');
+			assert.file('.lintstagedrc');
+			assert.noFile('.eslintrc.ts.js');
+			assert.file('.eslintrc.js');
+			assert.fileContent('.eslintrc.js', 'xo');
+			assert.noFileContent('.eslintrc.js', '@typescript-eslint/parser');
+		});
+	});
+
+	describe('test:lint --eslint', () => {
+		beforeEach(() => {
+			return runByOpt({}, gen => {
+				gen.fs.writeJSON(gen.destinationPath(PKG), {
+					scripts: {
+						'lint:code': 'echo test',
+					},
+					devDependencies: {
+						'@commitlint/cli': '0.0.0',
+					},
+					eslintConfig: {
+						extends: ['custom'],
+					},
+				});
+				gen.fs.write('.lintstagedrc', 'test');
+			});
+		});
+
+		it('create default files when package.json already exists', () => {
+			assert.fileContent(PKG, '"@commitlint/cli": "0.0.0"');
+			assert.fileContent(PKG, '"eslint-config-xo":');
+			assert.noFileContent(PKG, '"eslint-config-xo-typescript":');
+			assert.fileContent(PKG, '"lint:code": "echo test"');
+			assert.fileContent(PKG, 'eslintConfig');
+			assert.noFile('.eslintignore');
+			assert.noFile('.eslintrc.ts.js');
+			assert.noFile('.eslintrc.js');
+			assert.file('.lintstagedrc');
+			assert.fileContent('.lintstagedrc', 'test');
+		});
+	});
+
+	describe('test:lint --eslint --generate-into', () => {
+		const generateInto = 'other/';
+		beforeEach(() => {
+			return runByOpt({
+				generateInto,
+			});
+		});
+
+		it('create default files in directory "other/"', () => {
+			assert.fileContent(generateInto + PKG, '"@commitlint/cli":');
+			assert.fileContent(generateInto + PKG, '"eslint-config-xo":');
+			assert.noFileContent(generateInto + PKG, '"eslint-config-xo-typescript":');
+			assert.fileContent(generateInto + PKG, '"lint:code": "eslint --cache ."');
+			assert.file(generateInto + '.lintstagedrc');
+			assert.noFile(generateInto + '.eslintrc.ts.js');
+			assert.file(generateInto + '.eslintrc.js');
+			assert.fileContent(generateInto + '.eslintrc.js', 'xo');
+			assert.noFileContent(generateInto + '.eslintrc.js', '@typescript-eslint/parser');
+		});
+	});
+
+	describe('test:lint --tslint', () => {
+		beforeEach(() => {
+			return runByOpt({
+				tslint: true,
+			});
+		});
+
+		it('create default files in ts project', () => {
+			assert.fileContent(PKG, '"@commitlint/cli":');
+			assert.noFileContent(PKG, '"eslint-config-xo":');
+			assert.fileContent(PKG, '"eslint-config-xo-typescript":');
+			assert.fileContent(PKG, '"lint:code": "eslint --cache ."');
+			assert.file('.lintstagedrc');
+			assert.noFile('.eslintrc.ts.js');
+			assert.file('.eslintrc.js');
+			assert.fileContent('.eslintrc.js', 'xo');
+			assert.fileContent('.eslintrc.js', '@typescript-eslint/parser');
+		});
+	});
+});
