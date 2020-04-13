@@ -15,4 +15,6 @@ module.exports = {
 	README: 'readme',
 
 	LINT: 'lint',
+
+	UNIT_TEST: 'unittest',
 };

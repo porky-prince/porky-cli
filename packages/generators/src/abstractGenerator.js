@@ -3,8 +3,8 @@ const { PKG } = require('./const');
 const { getTempPath, getConfigName } = require('./helper');
 
 module.exports = class extends Generator {
-	constructor(args, options) {
-		super(args, options);
+	constructor(args, opts) {
+		super(args, opts);
 		this._name = '';
 	}
 
@@ -33,6 +33,12 @@ module.exports = class extends Generator {
 		const destPath = this._destPath(getConfigName(tempName, exclude));
 		!this.fs.exists(destPath) &&
 			this.fs.copy(this.templatePath(getTempPath(this._name, tempName)), destPath);
+	}
+
+	_copyConfigTemps2Dest(tempNames, exclude) {
+		tempNames.forEach(tempName => {
+			this._copyConfigTemp2Dest(tempName, exclude);
+		});
 	}
 
 	_readPkg() {

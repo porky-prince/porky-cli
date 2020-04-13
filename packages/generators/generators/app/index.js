@@ -21,11 +21,11 @@ module.exports = class extends Generator {
 			desc: 'Include travis config',
 		});
 
-		this.option('boilerplate', {
+		this.option('test', {
 			type: Boolean,
 			required: false,
 			default: true,
-			desc: 'Include boilerplate files',
+			desc: 'Include test files',
 		});
 
 		this.option('cli', {
@@ -350,7 +350,7 @@ module.exports = class extends Generator {
 		});
 
 		if (this.options.boilerplate) {
-			this.composeWith(require.resolve('../boilerplate'), {
+			this.composeWith(require.resolve('../test'), {
 				name: this.props.name,
 			});
 		}

@@ -1,11 +1,10 @@
-const { exec } = require('child_process');
-const _ = require('lodash');
 const Generator = require('../../src/abstractGenerator');
 const { LINT } = require('../../src/const');
+const { getLatestVersion } = require('../../src/helper');
 
 module.exports = class extends Generator {
-	constructor(args, opt) {
-		super(args, opt);
+	constructor(args, opts) {
+		super(args, opts);
 		this._name = LINT;
 
 		this._buildDestOpt();
@@ -29,17 +28,8 @@ module.exports = class extends Generator {
 		const scripts = pkg.scripts || {};
 		const devDep = module => {
 			arr.push(
-				new Promise((resolve, reject) => {
-					exec(`npm view ${module} version`, (error, stdout) => {
-						if (error) {
-							console.error(error);
-							reject(error);
-						} else {
-							devDependencies[module] =
-								devDependencies[module] || `^${_.trim(stdout)}`;
-							resolve(stdout);
-						}
-					});
+				getLatestVersion(module).then(version => {
+					devDependencies[module] = devDependencies[module] || `^${version}`;
 				})
 			);
 		};
@@ -82,11 +72,8 @@ module.exports = class extends Generator {
 	writing() {
 		const opt = this.options;
 		const pkg = this._readPkg();
-		const copyCfg = (config, files, exclude) => {
-			!pkg[config] &&
-				files.forEach(file => {
-					this._copyConfigTemp2Dest(file, exclude);
-				});
+		const copyCfg = (config, tempNames, exclude) => {
+			!pkg[config] && this._copyConfigTemps2Dest(tempNames, exclude);
 		};
 
 		this._fillPkg(opt, pkg);
