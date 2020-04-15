@@ -3,10 +3,10 @@ module.exports = {
 		let arr = null;
 		switch (scriptType) {
 			case 'ts':
-				arr = ['ts-jest', '@types/jest'];
+				arr = ['ts-node', '@types/mocha'];
 				break;
 			case 'es':
-				arr = ['babel-jest'];
+				arr = ['@babel/register'];
 				break;
 		}
 		return arr;

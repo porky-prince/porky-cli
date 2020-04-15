@@ -1,0 +1,6 @@
+const assert = require('assert');
+describe('test', () => {
+	it('1 + 1 to equal 2', () => {
+		assert.equal(1 + 1, 2);
+	});
+});

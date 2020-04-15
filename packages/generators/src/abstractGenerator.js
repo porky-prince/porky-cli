@@ -1,6 +1,6 @@
 const Generator = require('yeoman-generator');
 const { PKG } = require('./const');
-const { getTempPath, getConfigName } = require('./helper');
+const { getTempPath, getConfigName, getLatestVersion } = require('./helper');
 
 module.exports = class extends Generator {
 	constructor(args, opts) {
@@ -48,4 +48,43 @@ module.exports = class extends Generator {
 	_writePkg(pkg) {
 		return this.fs.writeJSON(this._destPath(PKG), pkg);
 	}
+
+	_writingByPkg() {
+		const opt = this.options;
+		const pkg = this._readPkg();
+		const copyCfg = (config, tempNames, exclude) => {
+			!pkg[config] && this._copyConfigTemps2Dest(tempNames, exclude);
+		};
+
+		this._fillPkg(opt, pkg);
+
+		this._copyCfgByPkg(opt, copyCfg);
+	}
+
+	_copyCfgByPkg(opt, copyCfg) {}
+
+	async _fillPkg(opt, pkg) {
+		const done = this.async();
+		const arr = [];
+		const devDependencies = pkg.devDependencies || {};
+		const scripts = pkg.scripts || {};
+		const devDep = module => {
+			arr.push(
+				getLatestVersion(module).then(version => {
+					devDependencies[module] = devDependencies[module] || `^${version}`;
+				})
+			);
+		};
+		const script = (name, cmd) => {
+			scripts[name] = scripts[name] || cmd;
+		};
+		this._fillPkgDevDepAndScript(opt, devDep, script);
+		await Promise.all(arr);
+		pkg.devDependencies = devDependencies;
+		pkg.scripts = scripts;
+		this._writePkg(pkg);
+		done();
+	}
+
+	_fillPkgDevDepAndScript(opt, devDep, script) {}
 };
