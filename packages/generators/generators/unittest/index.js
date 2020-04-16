@@ -1,12 +1,12 @@
 const Generator = require('../../src/abstractGenerator');
 const Modules = require('./modules');
 const { UNIT_TEST, UNIT_TEST_MODULES_JSON, SCRIPT_TYPES_JSON } = require('../../src/const');
-const { getTempPath } = require('../../src/helper');
+const { getTempPath, getTestFilename } = require('../../src/helper');
 
 module.exports = class extends Generator {
 	constructor(args, opts) {
 		super(args, opts);
-		this.name = UNIT_TEST;
+		this._name = UNIT_TEST;
 
 		this._buildDestOpt();
 
@@ -26,16 +26,12 @@ module.exports = class extends Generator {
 	_copyTestFile2Dest(moduleName) {
 		this.fs.copy(
 			this.templatePath(getTempPath(this._name, moduleName)),
-			this._destPath(`test/${moduleName}.test.js`)
+			this._destPath(getTestFilename(moduleName))
 		);
 	}
 
-	_fillPkgDevDepAndScript(opt, devDep, script) {
-		const moduleName = opt.unitTest;
-		const devDepModules = Modules[moduleName].getDevDepModules(opt.scriptType);
-		devDep(moduleName);
-		Array.isArray(devDepModules) && devDepModules.forEach(devDep);
-		script('test', moduleName);
+	_fillPkg(opt, pkg, devDep, script) {
+		Modules[opt.unitTest](opt, pkg, devDep, script);
 	}
 
 	writing() {
@@ -44,7 +40,7 @@ module.exports = class extends Generator {
 			this._writingByPkg();
 			this._copyTestFile2Dest(moduleName);
 		} else {
-			console.error(`Unknown:${moduleName}`);
+			console.error(`Unknown: ${moduleName}`);
 		}
 	}
 };

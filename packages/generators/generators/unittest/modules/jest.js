@@ -1,14 +1,15 @@
-module.exports = {
-	getDevDepModules(scriptType) {
-		let arr = null;
-		switch (scriptType) {
-			case 'ts':
-				arr = ['ts-jest', '@types/jest'];
-				break;
-			case 'es':
-				arr = ['babel-jest'];
-				break;
-		}
-		return arr;
-	},
+module.exports = function(opt, pkg, devDep, script) {
+	let args = null;
+	devDep('jest');
+	switch (opt.scriptType) {
+		case 'ts':
+			devDep('ts-jest', '@types/jest');
+			args = '{\\"^.+\\\\.tsx?$\\":\\"ts-jest\\"}';
+			break;
+		case 'es':
+			devDep('babel-jest');
+			args = '{\\"^.+\\\\.jsx?$\\":\\"babel-jest\\"}';
+			break;
+	}
+	script('test', `jest${args ? ' --transform ' + args : ''}`);
 };

@@ -3,6 +3,7 @@ const helpers = require('yeoman-test');
 const { PKG, LINT } = require('../src/const');
 const { getGenerator } = require('../src/helper');
 const Generator = getGenerator(LINT);
+const timeout = 1e4;
 
 async function runByOpt(opt = {}, fn) {
 	return helpers
@@ -17,7 +18,7 @@ describe(`test:${LINT}`, () => {
 	describe('test:eslint', () => {
 		beforeEach(() => {
 			return runByOpt();
-		});
+		}, timeout);
 
 		it('create default files when there is no package.json or package.json is initialized', () => {
 			assert.fileContent(PKG, '"@commitlint/cli":');
@@ -48,7 +49,7 @@ describe(`test:${LINT}`, () => {
 				});
 				gen.fs.write('.lintstagedrc', 'test');
 			});
-		});
+		}, timeout);
 
 		it('create default files when package.json already exists', () => {
 			assert.fileContent(PKG, '"@commitlint/cli": "0.0.0"');
@@ -70,7 +71,7 @@ describe(`test:${LINT}`, () => {
 			return runByOpt({
 				generateInto,
 			});
-		});
+		}, timeout);
 
 		it('create default files in directory "other/"', () => {
 			assert.fileContent(generateInto + PKG, '"@commitlint/cli":');
@@ -90,7 +91,7 @@ describe(`test:${LINT}`, () => {
 			return runByOpt({
 				tslint: true,
 			});
-		});
+		}, timeout);
 
 		it('create default files in ts project', () => {
 			assert.fileContent(PKG, '"@commitlint/cli":');

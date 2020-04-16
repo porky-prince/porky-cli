@@ -20,6 +20,10 @@ const helper = {
 		return tempName.toUpperCase() + '.md';
 	},
 
+	getTestFilename(moduleName) {
+		return `test/${moduleName}.test.js`;
+	},
+
 	async getLatestVersion(module) {
 		return new Promise((resolve, reject) => {
 			exec(`npm view ${module} version`, (error, stdout) => {

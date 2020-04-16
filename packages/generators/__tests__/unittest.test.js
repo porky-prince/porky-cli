@@ -1,0 +1,185 @@
+const assert = require('yeoman-assert');
+const helpers = require('yeoman-test');
+const { PKG, UNIT_TEST } = require('../src/const');
+const { getGenerator, getTestFilename } = require('../src/helper');
+const Generator = getGenerator(UNIT_TEST);
+const timeout = 1e4;
+
+async function runByOpt(opt = {}) {
+	return helpers.run(Generator).withOptions(opt);
+}
+
+describe(`test:${UNIT_TEST}`, () => {
+	describe(`test:${UNIT_TEST} --unitTest jest`, () => {
+		it(
+			'create default files',
+			() => {
+				return runByOpt().then(() => {
+					assert.fileContent(PKG, '"jest":');
+					assert.fileContent(PKG, '"test": "jest"');
+					assert.file(getTestFilename('jest'));
+				});
+			},
+			timeout
+		);
+	});
+
+	describe(`test:${UNIT_TEST} --unitTest jest --scriptType ts`, () => {
+		it(
+			'create files in ts project',
+			() => {
+				return runByOpt({
+					scriptType: 'ts',
+				}).then(() => {
+					assert.fileContent(PKG, '"jest":');
+					assert.fileContent(PKG, '"ts-jest":');
+					assert.fileContent(PKG, '"@types/jest":');
+					assert.fileContent(
+						PKG,
+						'"test": "jest --transform {\\\\\\"^.+\\\\\\\\.tsx?$\\\\\\":\\\\\\"ts-jest\\\\\\"}"'
+					);
+					assert.file(getTestFilename('jest'));
+				});
+			},
+			timeout
+		);
+	});
+
+	describe(`test:${UNIT_TEST} --unitTest jest --scriptType es`, () => {
+		it(
+			'create files in es project',
+			() => {
+				return runByOpt({
+					scriptType: 'es',
+				}).then(() => {
+					assert.fileContent(PKG, '"jest":');
+					assert.fileContent(PKG, '"babel-jest":');
+					assert.fileContent(
+						PKG,
+						'"test": "jest --transform {\\\\\\"^.+\\\\\\\\.jsx?$\\\\\\":\\\\\\"babel-jest\\\\\\"}"'
+					);
+					assert.file(getTestFilename('jest'));
+				});
+			},
+			timeout
+		);
+	});
+
+	describe(`test:${UNIT_TEST} --unitTest mocha`, () => {
+		it(
+			'create default files',
+			() => {
+				return runByOpt({
+					unitTest: 'mocha',
+				}).then(() => {
+					assert.fileContent(PKG, '"mocha":');
+					assert.fileContent(PKG, '"test": "mocha"');
+					assert.file(getTestFilename('mocha'));
+				});
+			},
+			timeout
+		);
+	});
+
+	describe(`test:${UNIT_TEST} --unitTest mocha --scriptType ts`, () => {
+		it(
+			'create files in ts project',
+			() => {
+				return runByOpt({
+					unitTest: 'mocha',
+					scriptType: 'ts',
+				}).then(() => {
+					assert.fileContent(PKG, '"mocha":');
+					assert.fileContent(PKG, '"ts-node":');
+					assert.fileContent(PKG, '"@types/mocha":');
+					assert.fileContent(
+						PKG,
+						'"test": "mocha --require=ts-node/register **/*.@(test|spec).ts?(x)"'
+					);
+					assert.file(getTestFilename('mocha'));
+				});
+			},
+			timeout
+		);
+	});
+
+	describe(`test:${UNIT_TEST} --unitTest mocha --scriptType es`, () => {
+		it(
+			'create files in es project',
+			() => {
+				return runByOpt({
+					unitTest: 'mocha',
+					scriptType: 'es',
+				}).then(() => {
+					assert.fileContent(PKG, '"mocha":');
+					assert.fileContent(PKG, '"@babel/register":');
+					assert.fileContent(
+						PKG,
+						'"test": "mocha --require=@babel/register **/*.@(test|spec).js?(x)"'
+					);
+					assert.file(getTestFilename('mocha'));
+				});
+			},
+			timeout
+		);
+	});
+
+	describe(`test:${UNIT_TEST} --unitTest jasmine`, () => {
+		it(
+			'create default files',
+			() => {
+				return runByOpt({
+					unitTest: 'jasmine',
+				}).then(() => {
+					assert.fileContent(PKG, '"jasmine":');
+					assert.fileContent(PKG, '"test": "jasmine"');
+					assert.file(getTestFilename('jasmine'));
+				});
+			},
+			timeout
+		);
+	});
+
+	describe(`test:${UNIT_TEST} --unitTest jasmine --scriptType ts`, () => {
+		it(
+			'create files in ts project',
+			() => {
+				return runByOpt({
+					unitTest: 'jasmine',
+					scriptType: 'ts',
+				}).then(() => {
+					assert.fileContent(PKG, '"jasmine":');
+					assert.fileContent(PKG, '"ts-node":');
+					assert.fileContent(PKG, '"@types/jasmine":');
+					assert.fileContent(
+						PKG,
+						'"test": "jasmine --require=ts-node/register **/*.@(test|spec).ts?(x)"'
+					);
+					assert.file(getTestFilename('jasmine'));
+				});
+			},
+			timeout
+		);
+	});
+
+	describe(`test:${UNIT_TEST} --unitTest jasmine --scriptType es`, () => {
+		it(
+			'create files in es project',
+			() => {
+				return runByOpt({
+					unitTest: 'jasmine',
+					scriptType: 'es',
+				}).then(() => {
+					assert.fileContent(PKG, '"jasmine":');
+					assert.fileContent(PKG, '"@babel/register":');
+					assert.fileContent(
+						PKG,
+						'"test": "jasmine --require=@babel/register **/*.@(test|spec).js?(x)"'
+					);
+					assert.file(getTestFilename('jasmine'));
+				});
+			},
+			timeout
+		);
+	});
+});

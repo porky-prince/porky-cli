@@ -20,22 +20,26 @@ module.exports = class extends Generator {
 		});
 	}
 
-	_fillPkgDevDepAndScript(opt, devDep, script) {
-		devDep('eslint');
-		devDep('eslint-config-prettier');
-		devDep('eslint-plugin-prettier');
-		devDep('eslint-plugin-import');
-		devDep('prettier');
-		devDep('husky');
-		devDep('lint-staged');
-		devDep('@commitlint/cli');
-		devDep('@commitlint/config-conventional');
-		devDep('npm-run-all');
+	_fillPkg(opt, pkg, devDep, script) {
+		devDep(
+			'eslint',
+			'eslint-config-prettier',
+			'eslint-plugin-prettier',
+			'eslint-plugin-import',
+			'prettier',
+			'husky',
+			'lint-staged',
+			'@commitlint/cli',
+			'@commitlint/config-conventional',
+			'npm-run-all'
+		);
 
 		if (opt.tslint) {
-			devDep('@typescript-eslint/eslint-plugin');
-			devDep('@typescript-eslint/parser');
-			devDep('eslint-config-xo-typescript');
+			devDep(
+				'@typescript-eslint/eslint-plugin',
+				'@typescript-eslint/parser',
+				'eslint-config-xo-typescript'
+			);
 		} else {
 			devDep('eslint-config-xo');
 		}
@@ -47,7 +51,7 @@ module.exports = class extends Generator {
 		script('commitlint', 'commitlint --from=master');
 	}
 
-	_copyCfgByPkg(opt, copyCfg) {
+	_copyCfgByPkg(opt, pkg, copyCfg) {
 		const exclude = opt.tslint ? '.ts' : '';
 		copyCfg('eslintConfig', [`eslintrc${exclude}.js`, 'eslintignore'], exclude);
 		copyCfg('commitlint', ['commitlintrc.js']);

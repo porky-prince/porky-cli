@@ -56,29 +56,31 @@ module.exports = class extends Generator {
 			!pkg[config] && this._copyConfigTemps2Dest(tempNames, exclude);
 		};
 
-		this._fillPkg(opt, pkg);
+		this.__fillPkg(opt, pkg);
 
-		this._copyCfgByPkg(opt, copyCfg);
+		this._copyCfgByPkg(opt, pkg, copyCfg);
 	}
 
-	_copyCfgByPkg(opt, copyCfg) {}
+	_copyCfgByPkg(opt, pkg, copyCfg) {}
 
-	async _fillPkg(opt, pkg) {
+	async __fillPkg(opt, pkg) {
 		const done = this.async();
 		const arr = [];
 		const devDependencies = pkg.devDependencies || {};
 		const scripts = pkg.scripts || {};
-		const devDep = module => {
-			arr.push(
-				getLatestVersion(module).then(version => {
-					devDependencies[module] = devDependencies[module] || `^${version}`;
-				})
-			);
+		const devDep = (...moduleNames) => {
+			moduleNames.forEach(moduleName => {
+				arr.push(
+					getLatestVersion(moduleName).then(version => {
+						devDependencies[moduleName] = devDependencies[moduleName] || `^${version}`;
+					})
+				);
+			});
 		};
 		const script = (name, cmd) => {
 			scripts[name] = scripts[name] || cmd;
 		};
-		this._fillPkgDevDepAndScript(opt, devDep, script);
+		this._fillPkg(opt, pkg, devDep, script);
 		await Promise.all(arr);
 		pkg.devDependencies = devDependencies;
 		pkg.scripts = scripts;
@@ -86,5 +88,5 @@ module.exports = class extends Generator {
 		done();
 	}
 
-	_fillPkgDevDepAndScript(opt, devDep, script) {}
+	_fillPkg(opt, pkg, devDep, script) {}
 };
