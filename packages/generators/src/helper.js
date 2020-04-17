@@ -13,7 +13,7 @@ const helper = {
 	},
 
 	getConfigName(tempName, exclude = '') {
-		return '.' + tempName.replace(exclude, '');
+		return ('.' + tempName).replace(exclude, '');
 	},
 
 	getMarkdownName(tempName) {

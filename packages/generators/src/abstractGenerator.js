@@ -63,30 +63,37 @@ module.exports = class extends Generator {
 
 	_copyCfgByPkg(opt, pkg, copyCfg) {}
 
-	async __fillPkg(opt, pkg) {
-		const done = this.async();
-		const arr = [];
-		const scripts = pkg.scripts || {};
-		const devDependencies = pkg.devDependencies || {};
-		const devDep = (...moduleNames) => {
+	__fillDepVersion(arr, dep) {
+		return (...moduleNames) => {
 			moduleNames.forEach(moduleName => {
 				arr.push(
 					getLatestVersion(moduleName).then(version => {
-						devDependencies[moduleName] = devDependencies[moduleName] || `^${version}`;
+						dep[moduleName] = dep[moduleName] || `^${version}`;
 					})
 				);
 			});
 		};
+	}
+
+	async __fillPkg(opt, pkg) {
+		const done = this.async();
+		const arr = [];
+		const scripts = pkg.scripts || {};
+		const dependencies = pkg.dependencies || {};
+		const devDependencies = pkg.devDependencies || {};
+		const dep = this.__fillDepVersion(arr, dependencies);
+		const devDep = this.__fillDepVersion(arr, devDependencies);
 		const script = (name, cmd) => {
 			scripts[name] = scripts[name] || cmd;
 		};
-		this._fillPkg(opt, pkg, devDep, script);
+		this._fillPkg(opt, pkg, devDep, script, dep);
 		await Promise.all(arr);
 		pkg.scripts = scripts;
+		pkg.dependencies = dependencies;
 		pkg.devDependencies = devDependencies;
 		this._writePkg(pkg);
 		done();
 	}
 
-	_fillPkg(opt, pkg, devDep, script) {}
+	_fillPkg(opt, pkg, devDep, script, dep) {}
 };

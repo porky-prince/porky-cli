@@ -27,4 +27,7 @@ module.exports = {
 
 	SCRIPT_TYPES_JSON,
 	SCRIPT_TYPES,
+
+	CLI: 'cli',
+	CLI_JS: 'bin/cli.js',
 };
