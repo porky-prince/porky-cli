@@ -36,7 +36,7 @@ describe(`test:${UNIT_TEST}`, () => {
 					assert.fileContent(PKG, '"@types/jest":');
 					assert.fileContent(
 						PKG,
-						'"test": "jest --transform {\\\\\\"^.+\\\\\\\\.tsx?$\\\\\\":\\\\\\"ts-jest\\\\\\"}"'
+						'"test": "jest --transform={\\\\\\"^.+\\\\\\\\.tsx?$\\\\\\":\\\\\\"ts-jest\\\\\\"}"'
 					);
 					assert.file(getTestFilename('jest'));
 				});
@@ -56,7 +56,7 @@ describe(`test:${UNIT_TEST}`, () => {
 					assert.fileContent(PKG, '"babel-jest":');
 					assert.fileContent(
 						PKG,
-						'"test": "jest --transform {\\\\\\"^.+\\\\\\\\.jsx?$\\\\\\":\\\\\\"babel-jest\\\\\\"}"'
+						'"test": "jest --transform={\\\\\\"^.+\\\\\\\\.jsx?$\\\\\\":\\\\\\"babel-jest\\\\\\"}"'
 					);
 					assert.file(getTestFilename('jest'));
 				});
@@ -73,6 +73,7 @@ describe(`test:${UNIT_TEST}`, () => {
 					unitTest: 'mocha',
 				}).then(() => {
 					assert.fileContent(PKG, '"mocha":');
+					assert.fileContent(PKG, '"chai":');
 					assert.fileContent(PKG, '"test": "mocha"');
 					assert.file(getTestFilename('mocha'));
 				});
@@ -90,11 +91,13 @@ describe(`test:${UNIT_TEST}`, () => {
 					scriptType: 'ts',
 				}).then(() => {
 					assert.fileContent(PKG, '"mocha":');
+					assert.fileContent(PKG, '"chai":');
 					assert.fileContent(PKG, '"ts-node":');
 					assert.fileContent(PKG, '"@types/mocha":');
+					assert.fileContent(PKG, '"@types/chai":');
 					assert.fileContent(
 						PKG,
-						'"test": "mocha --require=ts-node/register **/*.@(test|spec).ts?(x)"'
+						'"test": "mocha --require ts-node/register \\"**/*.@(test|spec).ts?(x)\\""'
 					);
 					assert.file(getTestFilename('mocha'));
 				});
@@ -112,10 +115,11 @@ describe(`test:${UNIT_TEST}`, () => {
 					scriptType: 'es',
 				}).then(() => {
 					assert.fileContent(PKG, '"mocha":');
+					assert.fileContent(PKG, '"chai":');
 					assert.fileContent(PKG, '"@babel/register":');
 					assert.fileContent(
 						PKG,
-						'"test": "mocha --require=@babel/register **/*.@(test|spec).js?(x)"'
+						'"test": "mocha --require @babel/register \\"**/*.@(test|spec).js?(x)\\""'
 					);
 					assert.file(getTestFilename('mocha'));
 				});
@@ -132,7 +136,10 @@ describe(`test:${UNIT_TEST}`, () => {
 					unitTest: 'jasmine',
 				}).then(() => {
 					assert.fileContent(PKG, '"jasmine":');
-					assert.fileContent(PKG, '"test": "jasmine"');
+					assert.fileContent(
+						PKG,
+						'"test": "jasmine \\"**!(node_modules)/*.@(test|spec).js?(x)\\""'
+					);
 					assert.file(getTestFilename('jasmine'));
 				});
 			},
@@ -153,7 +160,7 @@ describe(`test:${UNIT_TEST}`, () => {
 					assert.fileContent(PKG, '"@types/jasmine":');
 					assert.fileContent(
 						PKG,
-						'"test": "jasmine --require=ts-node/register **/*.@(test|spec).ts?(x)"'
+						'"test": "jasmine --require=ts-node/register \\"**!(node_modules)/*.@(test|spec).ts?(x)\\""'
 					);
 					assert.file(getTestFilename('jasmine'));
 				});
@@ -174,7 +181,7 @@ describe(`test:${UNIT_TEST}`, () => {
 					assert.fileContent(PKG, '"@babel/register":');
 					assert.fileContent(
 						PKG,
-						'"test": "jasmine --require=@babel/register **/*.@(test|spec).js?(x)"'
+						'"test": "jasmine --require=@babel/register \\"**!(node_modules)/*.@(test|spec).js?(x)\\""'
 					);
 					assert.file(getTestFilename('jasmine'));
 				});

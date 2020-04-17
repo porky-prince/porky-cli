@@ -66,8 +66,8 @@ module.exports = class extends Generator {
 	async __fillPkg(opt, pkg) {
 		const done = this.async();
 		const arr = [];
-		const devDependencies = pkg.devDependencies || {};
 		const scripts = pkg.scripts || {};
+		const devDependencies = pkg.devDependencies || {};
 		const devDep = (...moduleNames) => {
 			moduleNames.forEach(moduleName => {
 				arr.push(
@@ -82,8 +82,8 @@ module.exports = class extends Generator {
 		};
 		this._fillPkg(opt, pkg, devDep, script);
 		await Promise.all(arr);
-		pkg.devDependencies = devDependencies;
 		pkg.scripts = scripts;
+		pkg.devDependencies = devDependencies;
 		this._writePkg(pkg);
 		done();
 	}
