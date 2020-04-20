@@ -11,6 +11,11 @@ module.exports = {
 	GENERATORS,
 	PKG: 'package.json',
 
+	APP: 'app',
+	APP_ENTRY: 'src/main',
+	TS_CONFIG: 'tsconfig.json',
+	BABEL_JS: 'babelrc.js',
+
 	EDITOR_CONFIG: 'editorconfig',
 
 	GIT_ATTR: 'gitattributes',
