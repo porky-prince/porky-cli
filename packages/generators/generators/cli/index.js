@@ -1,20 +1,17 @@
-const Generator = require('../../src/abstractGenerator');
+const AbstractGenerator = require('../../src/abstractGenerator');
 const { CLI, CLI_JS } = require('../../src/const');
 
-module.exports = class extends Generator {
+module.exports = class extends AbstractGenerator {
 	constructor(args, opts) {
-		super(args, opts);
-		this._name = CLI;
-
-		this._buildDestOpt();
+		super(args, opts, CLI);
 	}
 
-	_fillPkg(opt, pkg, devDep, script, dep) {
+	_fillPkg(opts, pkg, devDep, script, dep) {
 		dep('commander');
 	}
 
-	_copyCfgByPkg(opt, pkg, copyCfg) {
-		copyCfg('bin', [CLI_JS], /^\./);
+	_copyTempByPkg(opts, pkg, copyTemp) {
+		copyTemp('bin', [CLI_JS], /^\./);
 		pkg.bin = pkg.bin || CLI_JS;
 	}
 
@@ -22,3 +19,6 @@ module.exports = class extends Generator {
 		this._writingByPkg();
 	}
 };
+
+module.exports.path = __dirname;
+module.exports.configs = {};

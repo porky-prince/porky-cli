@@ -10,7 +10,7 @@ async function runByOpt(opt = {}) {
 }
 
 describe(`test:${UNIT_TEST}`, () => {
-	describe(`test:${UNIT_TEST} --unitTest jest`, () => {
+	describe(`test:${UNIT_TEST} --unitTestModule jest`, () => {
 		it(
 			'create default files',
 			() => {
@@ -24,7 +24,7 @@ describe(`test:${UNIT_TEST}`, () => {
 		);
 	});
 
-	describe(`test:${UNIT_TEST} --unitTest jest --scriptType ts`, () => {
+	describe(`test:${UNIT_TEST} --unitTestModule jest --scriptType ts`, () => {
 		it(
 			'create files in ts project',
 			() => {
@@ -45,7 +45,7 @@ describe(`test:${UNIT_TEST}`, () => {
 		);
 	});
 
-	describe(`test:${UNIT_TEST} --unitTest jest --scriptType es`, () => {
+	describe(`test:${UNIT_TEST} --unitTestModule jest --scriptType es`, () => {
 		it(
 			'create files in es project',
 			() => {
@@ -65,12 +65,12 @@ describe(`test:${UNIT_TEST}`, () => {
 		);
 	});
 
-	describe(`test:${UNIT_TEST} --unitTest mocha`, () => {
+	describe(`test:${UNIT_TEST} --unitTestModule mocha`, () => {
 		it(
 			'create default files',
 			() => {
 				return runByOpt({
-					unitTest: 'mocha',
+					unitTestModule: 'mocha',
 				}).then(() => {
 					assert.fileContent(PKG, '"mocha":');
 					assert.fileContent(PKG, '"chai":');
@@ -82,12 +82,12 @@ describe(`test:${UNIT_TEST}`, () => {
 		);
 	});
 
-	describe(`test:${UNIT_TEST} --unitTest mocha --scriptType ts`, () => {
+	describe(`test:${UNIT_TEST} --unitTestModule mocha --scriptType ts`, () => {
 		it(
 			'create files in ts project',
 			() => {
 				return runByOpt({
-					unitTest: 'mocha',
+					unitTestModule: 'mocha',
 					scriptType: 'ts',
 				}).then(() => {
 					assert.fileContent(PKG, '"mocha":');
@@ -106,12 +106,12 @@ describe(`test:${UNIT_TEST}`, () => {
 		);
 	});
 
-	describe(`test:${UNIT_TEST} --unitTest mocha --scriptType es`, () => {
+	describe(`test:${UNIT_TEST} --unitTestModule mocha --scriptType es`, () => {
 		it(
 			'create files in es project',
 			() => {
 				return runByOpt({
-					unitTest: 'mocha',
+					unitTestModule: 'mocha',
 					scriptType: 'es',
 				}).then(() => {
 					assert.fileContent(PKG, '"mocha":');
@@ -128,12 +128,12 @@ describe(`test:${UNIT_TEST}`, () => {
 		);
 	});
 
-	describe(`test:${UNIT_TEST} --unitTest jasmine`, () => {
+	describe(`test:${UNIT_TEST} --unitTestModule jasmine`, () => {
 		it(
 			'create default files',
 			() => {
 				return runByOpt({
-					unitTest: 'jasmine',
+					unitTestModule: 'jasmine',
 				}).then(() => {
 					assert.fileContent(PKG, '"jasmine":');
 					assert.fileContent(
@@ -147,12 +147,12 @@ describe(`test:${UNIT_TEST}`, () => {
 		);
 	});
 
-	describe(`test:${UNIT_TEST} --unitTest jasmine --scriptType ts`, () => {
+	describe(`test:${UNIT_TEST} --unitTestModule jasmine --scriptType ts`, () => {
 		it(
 			'create files in ts project',
 			() => {
 				return runByOpt({
-					unitTest: 'jasmine',
+					unitTestModule: 'jasmine',
 					scriptType: 'ts',
 				}).then(() => {
 					assert.fileContent(PKG, '"jasmine":');
@@ -169,12 +169,12 @@ describe(`test:${UNIT_TEST}`, () => {
 		);
 	});
 
-	describe(`test:${UNIT_TEST} --unitTest jasmine --scriptType es`, () => {
+	describe(`test:${UNIT_TEST} --unitTestModule jasmine --scriptType es`, () => {
 		it(
 			'create files in es project',
 			() => {
 				return runByOpt({
-					unitTest: 'jasmine',
+					unitTestModule: 'jasmine',
 					scriptType: 'es',
 				}).then(() => {
 					assert.fileContent(PKG, '"jasmine":');

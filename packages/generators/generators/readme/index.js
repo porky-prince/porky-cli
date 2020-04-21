@@ -1,40 +1,35 @@
 const _ = require('lodash');
 const querystring = require('querystring');
-const Generator = require('../../src/abstractGenerator');
+const AbstractGenerator = require('../../src/abstractGenerator');
 const { README } = require('../../src/const');
 const { getTempPath, getMarkdownName } = require('../../src/helper');
+const configs = {
+	content: {
+		type: String,
+		desc: 'Readme content',
+	},
+	description: {
+		type: String,
+		desc: 'Project description',
+	},
+	inNodejs: {
+		type: Boolean,
+		default: true,
+		desc: 'Using in nodejs',
+	},
+	inBrowser: {
+		type: Boolean,
+		desc: 'Using in browser',
+	},
+	inCmd: {
+		type: Boolean,
+		desc: 'Using in command line',
+	},
+};
 
-module.exports = class extends Generator {
+module.exports = class extends AbstractGenerator {
 	constructor(args, opts) {
-		super(args, opts);
-		this._name = README;
-		this._buildDestOpt();
-
-		this.option('content', {
-			type: String,
-			desc: 'Readme content',
-		});
-
-		this.option('description', {
-			type: String,
-			desc: 'Project description',
-		});
-
-		this.option('inNodejs', {
-			type: Boolean,
-			default: true,
-			desc: 'Using in nodejs',
-		});
-
-		this.option('inBrowser', {
-			type: Boolean,
-			desc: 'Using in browser',
-		});
-
-		this.option('inCmd', {
-			type: Boolean,
-			desc: 'Using in command line',
-		});
+		super(args, opts, README);
 	}
 
 	writing() {
@@ -58,3 +53,6 @@ module.exports = class extends Generator {
 		);
 	}
 };
+
+module.exports.path = __dirname;
+module.exports.configs = configs;

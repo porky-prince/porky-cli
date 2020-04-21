@@ -1,11 +1,17 @@
 const Generator = require('yeoman-generator');
+const _ = require('lodash');
 const { PKG } = require('./const');
 const { getTempPath, getConfigName, getLatestVersion } = require('./helper');
 
 module.exports = class extends Generator {
-	constructor(args, opts) {
+	constructor(args, opts, name) {
 		super(args, opts);
-		this._name = '';
+		this._name = name;
+		this._buildDestOpt();
+		const configs = this.constructor.configs;
+		_.each(configs, (config, opt) => {
+			this.option(opt, config);
+		});
 	}
 
 	option(name, config) {
@@ -41,6 +47,10 @@ module.exports = class extends Generator {
 		});
 	}
 
+	_existPkg() {
+		return this.fs.exists(this._destPath(PKG));
+	}
+
 	_readPkg() {
 		return this.fs.readJSON(this._destPath(PKG), {});
 	}
@@ -50,18 +60,18 @@ module.exports = class extends Generator {
 	}
 
 	_writingByPkg() {
-		const opt = this.options;
+		const opts = this.options;
 		const pkg = this._readPkg();
-		const copyCfg = (config, tempNames, exclude) => {
+		const copyTemp = (config, tempNames, exclude) => {
 			!pkg[config] && this._copyConfigTemps2Dest(tempNames, exclude);
 		};
 
-		this.__fillPkg(opt, pkg);
+		this.__fillPkg(opts, pkg);
 
-		this._copyCfgByPkg(opt, pkg, copyCfg);
+		this._copyTempByPkg(opts, pkg, copyTemp);
 	}
 
-	_copyCfgByPkg(opt, pkg, copyCfg) {}
+	_copyTempByPkg(opts, pkg, copyTemp) {}
 
 	__fillDepVersion(arr, dep) {
 		return (...moduleNames) => {
@@ -75,7 +85,7 @@ module.exports = class extends Generator {
 		};
 	}
 
-	async __fillPkg(opt, pkg) {
+	async __fillPkg(opts, pkg) {
 		const done = this.async();
 		const arr = [];
 		const scripts = pkg.scripts || {};
@@ -86,7 +96,7 @@ module.exports = class extends Generator {
 		const script = (name, cmd) => {
 			scripts[name] = scripts[name] || cmd;
 		};
-		this._fillPkg(opt, pkg, devDep, script, dep);
+		this._fillPkg(opts, pkg, devDep, script, dep);
 		await Promise.all(arr);
 		pkg.scripts = scripts;
 		pkg.dependencies = dependencies;
@@ -95,5 +105,5 @@ module.exports = class extends Generator {
 		done();
 	}
 
-	_fillPkg(opt, pkg, devDep, script, dep) {}
+	_fillPkg(opts, pkg, devDep, script, dep) {}
 };

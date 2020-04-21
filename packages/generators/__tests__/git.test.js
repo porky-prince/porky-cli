@@ -1,6 +1,6 @@
 const assert = require('yeoman-assert');
 const helpers = require('yeoman-test');
-const { GIT_ATTR, GIT_IGNORE, PKG } = require('../src/const');
+const { GIT, GIT_ATTR, GIT_IGNORE, PKG } = require('../src/const');
 const { getGenerator, getConfigName } = require('../src/helper');
 
 describe('test:git', () => {
@@ -8,7 +8,7 @@ describe('test:git', () => {
 	const gitAttr = getConfigName(GIT_ATTR);
 	const github = 'https://github.com/';
 	const dotGit = '.git';
-	const Generator = getGenerator('git');
+	const Generator = getGenerator(GIT);
 
 	it('creates the git config files and init the repository', () => {
 		const gitAccount = 'porky-prince';

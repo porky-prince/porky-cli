@@ -1,22 +1,20 @@
-const { GIT_ATTR, GIT_IGNORE } = require('../../src/const');
-const Generator = require('../../src/abstractGenerator');
+const { GIT, GIT_ATTR, GIT_IGNORE } = require('../../src/const');
+const AbstractGenerator = require('../../src/abstractGenerator');
 const originUrl = require('git-remote-origin-url');
+const configs = {
+	gitAccount: {
+		type: String,
+		desc: 'Git username or organization',
+	},
+	repoName: {
+		type: String,
+		desc: 'Name of the Git repository',
+	},
+};
 
-module.exports = class extends Generator {
+module.exports = class extends AbstractGenerator {
 	constructor(args, opts) {
-		super(args, opts);
-		this._name = 'git';
-		this._buildDestOpt();
-
-		this.option('gitAccount', {
-			type: String,
-			desc: 'Git username or organization',
-		});
-
-		this.option('repoName', {
-			type: String,
-			desc: 'Name of the Git repository',
-		});
+		super(args, opts, GIT);
 	}
 
 	initializing() {
@@ -91,3 +89,6 @@ module.exports = class extends Generator {
 		}
 	}
 };
+
+module.exports.path = __dirname;
+module.exports.configs = configs;

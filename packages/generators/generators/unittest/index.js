@@ -1,26 +1,23 @@
-const Generator = require('../../src/abstractGenerator');
+const AbstractGenerator = require('../../src/abstractGenerator');
 const Modules = require('./modules');
 const { UNIT_TEST, UNIT_TEST_MODULES_JSON, SCRIPT_TYPES_JSON } = require('../../src/const');
 const { getTempPath, getTestFilename } = require('../../src/helper');
+const configs = {
+	unitTestModule: {
+		type: String,
+		default: 'jest',
+		desc: 'Select a unit test module, now only jest, options:' + UNIT_TEST_MODULES_JSON,
+	},
+	scriptType: {
+		type: String,
+		default: 'js',
+		desc: 'Script type, options:' + SCRIPT_TYPES_JSON,
+	},
+};
 
-module.exports = class extends Generator {
+module.exports = class extends AbstractGenerator {
 	constructor(args, opts) {
-		super(args, opts);
-		this._name = UNIT_TEST;
-
-		this._buildDestOpt();
-
-		this.option('unitTest', {
-			type: String,
-			default: 'jest',
-			desc: 'Select a unit test module, now only jest, options:' + UNIT_TEST_MODULES_JSON,
-		});
-
-		this.option('scriptType', {
-			type: String,
-			default: 'js',
-			desc: 'Script type, options:' + SCRIPT_TYPES_JSON,
-		});
+		super(args, opts, UNIT_TEST);
 	}
 
 	_copyTestFile2Dest(moduleName) {
@@ -30,12 +27,12 @@ module.exports = class extends Generator {
 		);
 	}
 
-	_fillPkg(opt, pkg, devDep, script) {
-		Modules[opt.unitTest](opt, pkg, devDep, script);
+	_fillPkg(opts, pkg, devDep, script) {
+		Modules[opts.unitTestModule](opts, pkg, devDep, script);
 	}
 
 	writing() {
-		const moduleName = this.options.unitTest;
+		const moduleName = this.options.unitTestModule;
 		if (Modules.hasOwnProperty(moduleName)) {
 			this._writingByPkg();
 			this._copyTestFile2Dest(moduleName);
@@ -44,3 +41,6 @@ module.exports = class extends Generator {
 		}
 	}
 };
+
+module.exports.path = __dirname;
+module.exports.configs = configs;

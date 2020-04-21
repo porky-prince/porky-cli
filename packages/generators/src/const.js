@@ -10,6 +10,7 @@ module.exports = {
 	BASE,
 	GENERATORS,
 	PKG: 'package.json',
+	MAIN: 'main',
 
 	APP: 'app',
 	APP_ENTRY: 'src/main',
@@ -18,6 +19,7 @@ module.exports = {
 
 	EDITOR_CONFIG: 'editorconfig',
 
+	GIT: 'git',
 	GIT_ATTR: 'gitattributes',
 	GIT_IGNORE: 'gitignore',
 

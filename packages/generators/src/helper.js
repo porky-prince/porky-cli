@@ -3,7 +3,7 @@ const { exec } = require('child_process');
 const _ = require('lodash');
 const { GENERATORS } = require('./const');
 
-const helper = {
+module.exports = {
 	getGenerator(generatorName) {
 		return require(path.join(GENERATORS, generatorName));
 	},
@@ -37,5 +37,3 @@ const helper = {
 		});
 	},
 };
-
-module.exports = helper;

@@ -1,14 +1,19 @@
 const { EDITOR_CONFIG } = require('../../src/const');
-const Generator = require('../../src/abstractGenerator');
+const AbstractGenerator = require('../../src/abstractGenerator');
 
-module.exports = class extends Generator {
+module.exports = class extends AbstractGenerator {
 	constructor(args, opts) {
-		super(args, opts);
-		this._name = EDITOR_CONFIG;
-		this._buildDestOpt();
+		super(args, opts, EDITOR_CONFIG);
 	}
 
-	initializing() {
+	_copyTempByPkg() {
 		this._copyConfigTemp2Dest(this._name);
 	}
+
+	writing() {
+		this._writingByPkg();
+	}
 };
+
+module.exports.path = __dirname;
+module.exports.configs = {};

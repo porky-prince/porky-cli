@@ -1,23 +1,21 @@
-const Generator = require('../../src/abstractGenerator');
+const AbstractGenerator = require('../../src/abstractGenerator');
 const { APP, APP_ENTRY, TS_CONFIG, BABEL_JS, SCRIPT_TYPES_JSON } = require('../../src/const');
 const { getTempPath } = require('../../src/helper');
+const configs = {
+	scriptType: {
+		type: String,
+		default: 'js',
+		desc: 'Script type, options:' + SCRIPT_TYPES_JSON,
+	},
+};
 
-module.exports = class extends Generator {
+module.exports = class extends AbstractGenerator {
 	constructor(args, opts) {
-		super(args, opts);
-		this._name = APP;
-
-		this._buildDestOpt();
-
-		this.option('scriptType', {
-			type: String,
-			default: 'js',
-			desc: 'Script type, options:' + SCRIPT_TYPES_JSON,
-		});
+		super(args, opts, APP);
 	}
 
-	_getScriptCfg(opt) {
-		const scriptType = opt.scriptType;
+	_getScriptCfg(opts) {
+		const scriptType = opts.scriptType;
 		const deps = [];
 		let ext = '.js';
 		let exclude = '';
@@ -51,8 +49,8 @@ module.exports = class extends Generator {
 		};
 	}
 
-	_fillPkg(opt, pkg, devDep, script) {
-		const cfg = this._getScriptCfg(opt);
+	_fillPkg(opts, pkg, devDep, script) {
+		const cfg = this._getScriptCfg(opts);
 		cfg.deps.length > 0 && devDep.apply(this, cfg.deps);
 		if (cfg.cmd) {
 			script('start', 'npm run build -- -w');
@@ -60,16 +58,19 @@ module.exports = class extends Generator {
 		}
 	}
 
-	_copyCfgByPkg(opt, pkg, copyCfg) {
-		const cfg = this._getScriptCfg(opt);
+	_copyTempByPkg(opts, pkg, copyTemp) {
+		const cfg = this._getScriptCfg(opts);
 		this.fs.copy(
 			this.templatePath(getTempPath(this._name, APP_ENTRY)),
 			this._destPath(APP_ENTRY + cfg.ext)
 		);
-		cfg.cfgFile && copyCfg(cfg.cfgName, [cfg.cfgFile], cfg.exclude);
+		cfg.cfgFile && copyTemp(cfg.cfgName, [cfg.cfgFile], cfg.exclude);
 	}
 
 	writing() {
 		this._writingByPkg();
 	}
 };
+
+module.exports.path = __dirname;
+module.exports.configs = configs;
