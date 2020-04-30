@@ -8,13 +8,25 @@ module.exports = class extends Generator {
 		super(args, opts);
 		this._name = name;
 		this._buildDestOpt();
-		const configs = this.constructor.configs;
-		_.each(configs, (config, opt) => {
+		_.each(this.constructor.configs, (config, opt) => {
 			this.option(opt, config);
 		});
 	}
 
 	option(name, config) {
+		if (!config.default) {
+			switch (config.type) {
+				case String:
+					config.default = '';
+					break;
+				case Boolean:
+					config.default = false;
+					break;
+				case Number:
+					config.default = 0;
+					break;
+			}
+		}
 		if (config.required !== true) {
 			config.required = false;
 		}

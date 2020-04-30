@@ -14,7 +14,6 @@ const PKG_PROPS = ['name', 'version', 'description', 'keywords', 'author', 'lice
 PKG_PROPS.forEach(prop => {
 	configs[prop] = {
 		type: String,
-		default: '',
 		desc: 'The package ' + prop,
 	};
 });
@@ -24,7 +23,6 @@ _.each(generatorPaths, (generatorPath, name) => {
 	if (name !== MAIN) {
 		configs[name] = {
 			type: Boolean,
-			default: false,
 			desc: 'Is add ' + name,
 		};
 		_.each(getGenerator(name).configs, (config, opt) => {
@@ -79,13 +77,18 @@ module.exports = class extends AbstractGenerator {
 
 	_createPrompt(opt) {
 		const opts = this.options;
-		const config = configs[opt];
+		const config = this._options[opt];
+		const desc = config.desc;
+		//todo desc
+		// Defaults: input - Possible values: input, number, confirm, list, rawlist, expand, checkbox, password, editor
 		const prompt = {
+			type: '',
 			name: opt,
-			//message: "Author's Name",
+			message: desc,
 			when: !opts[opt],
-			default: '',
+			default: config.default,
 		};
+		return prompt;
 	}
 
 	async _askForInit() {
@@ -115,7 +118,7 @@ module.exports = class extends AbstractGenerator {
 
 		return this.prompt(prompts).then(props => {
 			this._validateName(props.name);
-			this._validateName(props.version);
+			this._validateVersion(props.version);
 			_.merge(opts, props);
 		});
 	}
