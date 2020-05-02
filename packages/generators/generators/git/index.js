@@ -2,38 +2,59 @@ const { GIT, GIT_ATTR, GIT_IGNORE } = require('../../src/const');
 const AbstractGenerator = require('../../src/abstractGenerator');
 const originUrl = require('git-remote-origin-url');
 const configs = {
+	repoName: {
+		type: String,
+		desc: 'Name of the Git repository',
+	},
 	gitAccount: {
 		type: String,
 		desc: 'Git username or organization',
 	},
-	repoName: {
+	gitPwd: {
 		type: String,
-		desc: 'Name of the Git repository',
+		desc:
+			"Git password for create repository at the github by default if you haven't created the repository yet, notice:use token better",
+	},
+	gitToken: {
+		type: String,
+		desc:
+			"Git token for create repository at the github by default if you haven't created the repository yet, notice:yon also can input 'echo %TOKEN%' or 'echo $token'",
 	},
 };
 
 module.exports = class extends AbstractGenerator {
 	constructor(args, opts) {
 		super(args, opts, GIT);
+		this._hasOriginUrl = false;
 	}
 
 	initializing() {
 		this._copyConfigTemp2Dest(GIT_ATTR);
 
 		this._copyConfigTemp2Dest(GIT_IGNORE);
+	}
 
-		return originUrl(this._destPath()).then(
+	async writing() {
+		await originUrl(this._destPath()).then(
 			url => {
 				this.originUrl = url;
 			},
 			() => {
-				this.originUrl = '';
+				// this.originUrl = '';
+				const opts = this.options;
+				if (opts.repoName) {
+					if (opts.gitAccount && opts.gitPwd) {
+					} else if (opts.gitToken) {
+						if (/\w+ .+/.test(opts.gitToken)) {
+						} else {
+						}
+					}
+				}
 			}
 		);
-	}
 
-	writing() {
 		const pkg = this._readPkg();
+		const opts = this.options;
 		let repo = pkg.repository;
 		if (!repo) {
 			let originUrl = (repo = this.originUrl);
@@ -43,9 +64,9 @@ module.exports = class extends AbstractGenerator {
 					// 'git@github.com:porky-prince/porky-cli.git' => 'https://github.com/porky-prince/porky-cli.git'
 					originUrl = `https://${result[1]}/${result[2]}`;
 				}
-			} else if (this.options.gitAccount && this.options.repoName) {
+			} else if (opts.gitAccount && opts.repoName) {
 				// default github
-				originUrl = repo = `https://github.com/${this.options.gitAccount}/${this.options.repoName}.git`;
+				originUrl = repo = `https://github.com/${opts.gitAccount}/${opts.repoName}.git`;
 			}
 
 			if (repo) {

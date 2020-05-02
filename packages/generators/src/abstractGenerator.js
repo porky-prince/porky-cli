@@ -71,16 +71,16 @@ module.exports = class extends Generator {
 		return this.fs.writeJSON(this._destPath(PKG), pkg);
 	}
 
-	_writingByPkg() {
+	async _writingByPkg() {
 		const opts = this.options;
 		const pkg = this._readPkg();
 		const copyTemp = (config, tempNames, exclude) => {
 			!pkg[config] && this._copyConfigTemps2Dest(tempNames, exclude);
 		};
 
-		this.__fillPkg(opts, pkg);
-
 		this._copyTempByPkg(opts, pkg, copyTemp);
+
+		await this.__fillPkg(opts, pkg);
 	}
 
 	_copyTempByPkg(opts, pkg, copyTemp) {}
@@ -98,7 +98,6 @@ module.exports = class extends Generator {
 	}
 
 	async __fillPkg(opts, pkg) {
-		const done = this.async();
 		const arr = [];
 		const scripts = pkg.scripts || {};
 		const dependencies = pkg.dependencies || {};
@@ -114,7 +113,6 @@ module.exports = class extends Generator {
 		pkg.dependencies = dependencies;
 		pkg.devDependencies = devDependencies;
 		this._writePkg(pkg);
-		done();
 	}
 
 	_fillPkg(opts, pkg, devDep, script, dep) {}

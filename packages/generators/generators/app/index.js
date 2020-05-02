@@ -68,7 +68,7 @@ module.exports = class extends AbstractGenerator {
 	}
 
 	writing() {
-		this._writingByPkg();
+		return this._writingByPkg();
 	}
 };
 

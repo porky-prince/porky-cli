@@ -31,10 +31,10 @@ module.exports = class extends AbstractGenerator {
 		Modules[opts.unitTestModule](opts, pkg, devDep, script);
 	}
 
-	writing() {
+	async writing() {
 		const moduleName = this.options.unitTestModule;
 		if (Modules.hasOwnProperty(moduleName)) {
-			this._writingByPkg();
+			await this._writingByPkg();
 			this._copyTestFile2Dest(moduleName);
 		} else {
 			console.error(`Unknown: ${moduleName}`);
