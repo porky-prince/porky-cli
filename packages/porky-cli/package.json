@@ -6,9 +6,9 @@
 	"homepage": "https://github.com/porky-prince/porky-cli/packages/porky-cli#readme",
 	"bugs": "https://github.com/porky-prince/porky-cli/issues",
 	"license": "MIT",
-	"main": "bin/porky-cli.js",
+	"main": "bin/cli.js",
 	"bin": {
-		"porky": "bin/porky-cli.js"
+		"porky": "bin/cli.js"
 	},
 	"files": [
 		"bin"
@@ -22,7 +22,7 @@
 		"directory": "packages/porky-cli"
 	},
 	"scripts": {
-		"test": "echo todo"
+		"test": "echo test"
 	},
 	"dependencies": {
 		"commander": "^5.1.0",
