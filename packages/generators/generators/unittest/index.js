@@ -42,5 +42,4 @@ module.exports = class extends AbstractGenerator {
 	}
 };
 
-module.exports.path = __dirname;
 module.exports.configs = configs;

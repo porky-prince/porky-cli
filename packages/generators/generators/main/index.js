@@ -36,7 +36,7 @@ module.exports = class extends AbstractGenerator {
 	constructor(args, opts) {
 		super(args, opts, MAIN);
 		this._pkg = EMPTY_PKG;
-		this._repeatOpts = [];
+		this._repeatAnswers = {};
 	}
 
 	initializing() {
@@ -78,30 +78,33 @@ module.exports = class extends AbstractGenerator {
 	_createPrompt(opt) {
 		const opts = this.options;
 		const config = this._options[opt];
-		const desc = config.desc;
-		//todo desc
 		// Defaults: input - Possible values: input, number, confirm, list, rawlist, expand, checkbox, password, editor
 		const prompt = {
-			type: '',
+			type: 'input',
 			name: opt,
-			message: desc,
-			when: !opts[opt],
+			message: config.desc,
+			when: !this._repeatAnswers[opt],
 			default: config.default,
 		};
+		const result = /options:(\[[\w,"' ]*\])/.exec(config.desc);
+		if (result) {
+			prompt.type = 'list';
+			prompt.choices = JSON.parse(result[1]);
+		} else if (config.type === Boolean) {
+			prompt.type = 'confirm';
+		} else if (config.type === Number) {
+			prompt.type = 'number';
+		}
+		this._repeatAnswers[opt] = true;
 		return prompt;
 	}
 
 	async _askForInit() {
 		// Do not ask when package.json exist
-		if (this._pkg !== EMPTY_PKG) return Promise.resolve();
 		const opts = this.options;
+		if (this._pkg !== EMPTY_PKG) return Promise.resolve(opts);
 		const prompts = PKG_PROPS.map(prop => {
-			const prompt = {
-				name: prop,
-				//message: "Author's Name",
-				when: !opts[prop],
-				default: '',
-			};
+			const prompt = this._createPrompt(prop);
 			switch (prop) {
 				case 'name':
 					prompt.default = path.basename(this._destPath());
@@ -119,62 +122,44 @@ module.exports = class extends AbstractGenerator {
 		return this.prompt(prompts).then(props => {
 			this._validateName(props.name);
 			this._validateVersion(props.version);
-			_.merge(opts, props);
+			return _.merge(opts, props);
 		});
 	}
 
-	async _askForNext(next) {}
-
 	async prompting() {
-		return this._askForInit();
+		let i = 0;
+		return this._askForInit().then(async opts => {
+			while (i < generatorNames.length) {
+				const generatorName = generatorNames[i];
+				await this.prompt([this._createPrompt(generatorName)]).then(async props => {
+					_.merge(opts, props);
+					if (opts[generatorName]) {
+						await this.prompt(
+							_.map(getGenerator(generatorName).configs, (config, opt) => {
+								return this._createPrompt(opt);
+							})
+						).then(props => {
+							_.merge(opts, props);
+						});
+					}
+				});
+				i++;
+			}
+		});
 	}
 
 	default() {
-		if (this.options.editorconfig) {
-			this.composeWith(require.resolve('../editorconfig'));
-		}
-
-		this.composeWith(require.resolve('../eslint'));
-
-		this.composeWith(require.resolve('../git'), {
-			name: this.props.name,
-			githubAccount: this.props.githubAccount,
-			repositoryName: this.props.repositoryName,
+		const opts = this.options;
+		generatorNames.forEach(name => {
+			if (opts[name]) {
+				this.composeWith(generatorPaths[name], opts);
+			}
 		});
 
-		this.composeWith(require.resolve('generator-jest/generators/app'), {
-			testEnvironment: 'node',
-			coveralls: false,
-		});
-
-		if (this.options.boilerplate) {
-			this.composeWith(require.resolve('../boilerplate'), {
-				name: this.props.name,
-			});
-		}
-
-		if (this.options.cli) {
-			this.composeWith(require.resolve('../cli'));
-		}
-
-		if (this.options.license && !this.pkg.license) {
+		if (opts.license && !this.fs.exists(this._destPath('LICENSE'))) {
 			this.composeWith(require.resolve('generator-license/app'), {
-				name: this.props.authorName,
-				email: this.props.authorEmail,
-				website: this.props.authorUrl,
-			});
-		}
-
-		if (!this.fs.exists(this.destinationPath('README.md'))) {
-			this.composeWith(require.resolve('../readme'), {
-				name: this.props.name,
-				description: this.props.description,
-				githubAccount: this.props.githubAccount,
-				repositoryName: this.props.repositoryName,
-				authorName: this.props.authorName,
-				authorUrl: this.props.authorUrl,
-				coveralls: this.props.includeCoveralls,
-				content: this.options.readme,
+				name: opts.author,
+				license: opts.license,
 			});
 		}
 	}
@@ -204,12 +189,11 @@ module.exports = class extends AbstractGenerator {
 	end() {
 		this.log('Thanks for using Yeoman.');
 
-		if (this.props.includeCoveralls) {
+		/*if (this.props.includeCoveralls) {
 			let coverallsUrl = chalk.cyan('https://coveralls.io/repos/new');
 			this.log(`- Enable Coveralls integration at ${coverallsUrl}`);
-		}
+		}*/
 	}
 };
 
-module.exports.path = __dirname;
 module.exports.configs = configs;

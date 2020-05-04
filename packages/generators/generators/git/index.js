@@ -1,6 +1,9 @@
 const { GIT, GIT_ATTR, GIT_IGNORE } = require('../../src/const');
 const AbstractGenerator = require('../../src/abstractGenerator');
 const originUrl = require('git-remote-origin-url');
+const { execSync } = require('child_process');
+const { Octokit } = require('@octokit/rest');
+const _ = require('lodash');
 const configs = {
 	repoName: {
 		type: String,
@@ -10,15 +13,10 @@ const configs = {
 		type: String,
 		desc: 'Git username or organization',
 	},
-	gitPwd: {
-		type: String,
-		desc:
-			"Git password for create repository at the github by default if you haven't created the repository yet, notice:use token better",
-	},
 	gitToken: {
 		type: String,
 		desc:
-			"Git token for create repository at the github by default if you haven't created the repository yet, notice:yon also can input 'echo %TOKEN%' or 'echo $token'",
+			"Git token for create repository at the github by default if you haven't created the repository yet, notice:yon can also input 'echo %TOKEN%' or 'echo $token'",
 	},
 };
 
@@ -34,30 +32,51 @@ module.exports = class extends AbstractGenerator {
 		this._copyConfigTemp2Dest(GIT_IGNORE);
 	}
 
-	async writing() {
-		await originUrl(this._destPath()).then(
+	async _getOriginUrl(repoName, gitToken, description) {
+		return originUrl(this._destPath()).then(
 			url => {
-				this.originUrl = url;
+				this._hasOriginUrl = true;
+				return url;
 			},
 			() => {
-				// this.originUrl = '';
-				const opts = this.options;
-				if (opts.repoName) {
-					if (opts.gitAccount && opts.gitPwd) {
-					} else if (opts.gitToken) {
-						if (/\w+ .+/.test(opts.gitToken)) {
-						} else {
-						}
+				if (repoName && gitToken) {
+					if (/\w+ .+/.test(gitToken)) {
+						gitToken = execSync(gitToken).toString();
 					}
+					const octokit = new Octokit({
+						auth: _.trim(gitToken),
+					});
+					return octokit.search
+						.repos({
+							q: `${repoName} in:name`,
+						})
+						.then(rsp => {
+							if (rsp.data.total_count === 0) {
+								return octokit.repos
+									.createForAuthenticatedUser({
+										name: repoName,
+										description,
+									})
+									.then(rsp => {
+										return rsp.data.clone_url;
+									})
+									.catch(_.noop);
+							} else {
+								return rsp.data.items[0].clone_url;
+							}
+						})
+						.catch(_.noop);
 				}
 			}
 		);
+	}
 
+	async writing() {
 		const pkg = this._readPkg();
 		const opts = this.options;
+		let originUrl = await this._getOriginUrl(opts.repoName, opts.gitToken, pkg.description);
 		let repo = pkg.repository;
 		if (!repo) {
-			let originUrl = (repo = this.originUrl);
 			if (originUrl) {
 				const result = /git@([\w\.]+)\:([\w\/-]+\.git)/.exec(originUrl);
 				if (result) {
@@ -87,7 +106,7 @@ module.exports = class extends AbstractGenerator {
 			cwd: this._destPath(),
 		});
 
-		if (repo && !this.originUrl) {
+		if (repo && !this._hasOriginUrl) {
 			// {type, url}
 			if (typeof repo !== 'string') {
 				if (repo.type !== 'git') return;
@@ -111,5 +130,4 @@ module.exports = class extends AbstractGenerator {
 	}
 };
 
-module.exports.path = __dirname;
 module.exports.configs = configs;

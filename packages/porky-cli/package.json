@@ -2,29 +2,38 @@
 	"name": "porky-cli",
 	"version": "0.0.0",
 	"description": "This is a scaffold.",
-	"keywords": [
-		"scaffold"
-	],
 	"author": "Porky Kay",
 	"homepage": "https://github.com/porky-prince/porky-cli/packages/porky-cli#readme",
+	"bugs": "https://github.com/porky-prince/porky-cli/issues",
 	"license": "MIT",
-	"main": "lib/porky-cli.js",
-	"directories": {
-		"lib": "lib",
-		"test": "__tests__"
+	"main": "bin/porky-cli.js",
+	"bin": {
+		"porky": "bin/porky-cli.js"
 	},
 	"files": [
-		"lib"
+		"bin"
 	],
+	"publishConfig": {
+		"access": "public"
+	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/porky-prince/porky-cli.git"
+		"url": "https://github.com/porky-prince/porky-cli.git",
+		"directory": "packages/porky-cli"
 	},
 	"scripts": {
 		"test": "echo todo"
 	},
 	"dependencies": {
+		"commander": "^5.1.0",
+		"porky-generators": "^0.0.0",
 		"yo": "^3.1.1"
 	},
-	"devDependencies": {}
+	"keywords": [
+		"porky",
+		"cli",
+		"yo",
+		"yeoman",
+		"scaffold"
+	]
 }
