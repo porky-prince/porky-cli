@@ -1,5 +1,13 @@
 const { execSync } = require('child_process');
 
+function runYO(...args) {
+	return execSync('npx yo ' + args.join(' '));
+}
+
+function showYOLog(arg) {
+	console.log(runYO(arg).toString());
+}
+
 module.exports = program => {
 	program
 		.command('yo')
@@ -8,13 +16,16 @@ module.exports = program => {
 		.allowUnknownOption()
 		.option('--yoh', 'the yo help')
 		.option('--yov', 'the yo version')
+		.option('--myo', 'some custom generators')
 		.action(options => {
 			if (options.yoh) {
-				console.log(execSync('npx yo --help').toString());
+				showYOLog('--help');
 			} else if (options.yov) {
-				console.log(execSync('npx yo --version').toString());
+				showYOLog('--version');
+			} else if (options.myo) {
+				runYO('@porky-prince/generators');
 			} else {
-				console.log(options.args);
+				runYO.apply(null, options.args);
 			}
 		});
 };

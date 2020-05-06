@@ -1,5 +1,5 @@
 {
-	"name": "porky-generators",
+	"name": "@porky-prince/generator-generators",
 	"version": "0.0.0",
 	"description": "Common yeoman generators",
 	"author": "Porky Kay",

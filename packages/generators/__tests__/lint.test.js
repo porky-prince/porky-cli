@@ -47,7 +47,6 @@ describe(`test:${LINT}`, () => {
 						extends: ['custom'],
 					},
 				});
-				gen.fs.write('.lintstagedrc', 'test');
 			});
 		}, timeout);
 
@@ -61,7 +60,6 @@ describe(`test:${LINT}`, () => {
 			assert.noFile('.eslintrc.ts.js');
 			assert.noFile('.eslintrc.js');
 			assert.file('.lintstagedrc');
-			assert.fileContent('.lintstagedrc', 'test');
 		});
 	});
 

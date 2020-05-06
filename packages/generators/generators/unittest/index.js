@@ -20,10 +20,10 @@ module.exports = class extends AbstractGenerator {
 		super(args, opts, UNIT_TEST);
 	}
 
-	_copyTestFile2Dest(moduleName) {
+	_copyTestFile2Dest(moduleName, ext) {
 		this.fs.copy(
 			this.templatePath(getTempPath(this._name, moduleName)),
-			this._destPath(getTestFilename(moduleName))
+			this._destPath(getTestFilename(moduleName, ext))
 		);
 	}
 
@@ -35,7 +35,7 @@ module.exports = class extends AbstractGenerator {
 		const moduleName = this.options.unitTestModule;
 		if (Modules.hasOwnProperty(moduleName)) {
 			await this._writingByPkg();
-			this._copyTestFile2Dest(moduleName);
+			this._copyTestFile2Dest(moduleName, this.options.scriptType === 'ts' ? 'ts' : 'js');
 		} else {
 			console.error(`Unknown: ${moduleName}`);
 		}

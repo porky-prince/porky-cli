@@ -9,11 +9,14 @@ describe(`test:${CLI}`, () => {
 	it(
 		`creates ${CLI_JS}`,
 		() => {
-			return helpers.run(Generator).then(() => {
-				assert.file(CLI_JS);
-				assert.fileContent(PKG, `"bin": "${CLI_JS}"`);
-				assert.fileContent(PKG, '"commander":');
-			});
+			return helpers
+				.run(Generator)
+				.withOptions({ cliName: 'porky' })
+				.then(() => {
+					assert.file(CLI_JS);
+					assert.fileContent(PKG, `"porky": "${CLI_JS}"`);
+					assert.fileContent(PKG, '"commander":');
+				});
 		},
 		timeout
 	);
@@ -24,10 +27,10 @@ describe(`test:${CLI}`, () => {
 			const OTHER = 'other/';
 			return helpers
 				.run(Generator)
-				.withOptions({ generateInto: OTHER })
+				.withOptions({ cliName: 'porky', generateInto: OTHER })
 				.then(() => {
 					assert.file(OTHER + CLI_JS);
-					assert.fileContent(OTHER + PKG, `"bin": "${CLI_JS}"`);
+					assert.fileContent(OTHER + PKG, `"porky": "${CLI_JS}"`);
 					assert.fileContent(OTHER + PKG, '"commander":');
 				});
 		},

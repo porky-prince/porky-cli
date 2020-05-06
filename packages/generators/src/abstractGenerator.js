@@ -48,9 +48,10 @@ module.exports = class extends Generator {
 	}
 
 	_copyConfigTemp2Dest(tempName, exclude) {
-		const destPath = this._destPath(getConfigName(tempName, exclude));
-		!this.fs.exists(destPath) &&
-			this.fs.copy(this.templatePath(getTempPath(this._name, tempName)), destPath);
+		this.fs.copy(
+			this.templatePath(getTempPath(this._name, tempName)),
+			this._destPath(getConfigName(tempName, exclude))
+		);
 	}
 
 	_copyConfigTemps2Dest(tempNames, exclude) {
@@ -74,6 +75,7 @@ module.exports = class extends Generator {
 	async _writingByPkg() {
 		const opts = this.options;
 		const pkg = this._readPkg();
+
 		const copyTemp = (config, tempNames, exclude) => {
 			!pkg[config] && this._copyConfigTemps2Dest(tempNames, exclude);
 		};

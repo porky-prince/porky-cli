@@ -1,5 +1,13 @@
 const AbstractGenerator = require('../../src/abstractGenerator');
 const { CLI, CLI_JS } = require('../../src/const');
+const path = require('path');
+const configs = {
+	cliName: {
+		type: String,
+		default: path.basename(process.cwd()),
+		desc: 'Name of the cli',
+	},
+};
 
 module.exports = class extends AbstractGenerator {
 	constructor(args, opts) {
@@ -12,7 +20,10 @@ module.exports = class extends AbstractGenerator {
 
 	_copyTempByPkg(opts, pkg, copyTemp) {
 		copyTemp('bin', [CLI_JS], /^\./);
-		pkg.bin = pkg.bin || CLI_JS;
+		if (!pkg.bin) {
+			pkg.bin = {};
+			pkg.bin[opts.cliName] = CLI_JS;
+		}
 	}
 
 	writing() {
@@ -20,4 +31,4 @@ module.exports = class extends AbstractGenerator {
 	}
 };
 
-module.exports.configs = {};
+module.exports.configs = configs;

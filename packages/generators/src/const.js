@@ -10,10 +10,10 @@ module.exports = {
 	BASE,
 	GENERATORS,
 	PKG: 'package.json',
-	MAIN: 'main',
-
 	APP: 'app',
-	APP_ENTRY: 'src/main',
+
+	MAIN: 'main',
+	MAIN_ENTRY: 'src/main',
 	TS_CONFIG: 'tsconfig.json',
 	BABEL_JS: 'babelrc.js',
 

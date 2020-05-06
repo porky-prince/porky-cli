@@ -89,6 +89,7 @@ describe('test:git', () => {
 		return helpers
 			.run(Generator)
 			.withOptions({
+				repoName: '',
 				gitAccount: 'other-account',
 			})
 			.then(() => {

@@ -20,8 +20,8 @@ module.exports = {
 		return tempName.toUpperCase() + '.md';
 	},
 
-	getTestFilename(moduleName) {
-		return `test/${moduleName}.test.js`;
+	getTestFilename(moduleName, ext = 'js') {
+		return `test/${moduleName}.test.${ext}`;
 	},
 
 	async getLatestVersion(module) {

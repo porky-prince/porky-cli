@@ -2,11 +2,13 @@ const { GIT, GIT_ATTR, GIT_IGNORE } = require('../../src/const');
 const AbstractGenerator = require('../../src/abstractGenerator');
 const originUrl = require('git-remote-origin-url');
 const { execSync } = require('child_process');
+const path = require('path');
 const { Octokit } = require('@octokit/rest');
 const _ = require('lodash');
 const configs = {
 	repoName: {
 		type: String,
+		default: path.basename(process.cwd()),
 		desc: 'Name of the Git repository',
 	},
 	gitAccount: {
@@ -16,7 +18,7 @@ const configs = {
 	gitToken: {
 		type: String,
 		desc:
-			"Git token for create repository at the github by default if you haven't created the repository yet, notice:yon can also input 'echo %TOKEN%' or 'echo $token'",
+			"Git token for create repository at the github by default if you haven't created the repository yet\n  Notice:yon can also input 'echo %TOKEN%' or 'echo $token'",
 	},
 };
 

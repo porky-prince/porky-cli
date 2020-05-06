@@ -38,7 +38,7 @@ describe(`test:${UNIT_TEST}`, () => {
 						PKG,
 						'"test": "jest --transform={\\\\\\"^.+\\\\\\\\.tsx?$\\\\\\":\\\\\\"ts-jest\\\\\\"}"'
 					);
-					assert.file(getTestFilename('jest'));
+					assert.file(getTestFilename('jest', 'ts'));
 				});
 			},
 			timeout
@@ -99,7 +99,7 @@ describe(`test:${UNIT_TEST}`, () => {
 						PKG,
 						'"test": "mocha --require ts-node/register \\"**/*.@(test|spec).ts?(x)\\""'
 					);
-					assert.file(getTestFilename('mocha'));
+					assert.file(getTestFilename('mocha', 'ts'));
 				});
 			},
 			timeout
@@ -162,7 +162,7 @@ describe(`test:${UNIT_TEST}`, () => {
 						PKG,
 						'"test": "jasmine --require=ts-node/register \\"**!(node_modules)/*.@(test|spec).ts?(x)\\""'
 					);
-					assert.file(getTestFilename('jasmine'));
+					assert.file(getTestFilename('jasmine', 'ts'));
 				});
 			},
 			timeout

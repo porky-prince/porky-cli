@@ -1,18 +1,18 @@
 const assert = require('yeoman-assert');
 const helpers = require('yeoman-test');
-const { PKG, APP, APP_ENTRY, TS_CONFIG, BABEL_JS } = require('../src/const');
+const { PKG, MAIN, MAIN_ENTRY, TS_CONFIG, BABEL_JS } = require('../src/const');
 const { getGenerator, getConfigName } = require('../src/helper');
-const Generator = getGenerator(APP);
+const Generator = getGenerator(MAIN);
 const timeout = 1e4;
 
-describe(`test:${APP}`, () => {
+describe(`test:${MAIN}`, () => {
 	let ext = '.js';
 
 	it('create default files', () => {
-		return helpers.run(Generator).then(() => assert.file(APP_ENTRY + ext));
+		return helpers.run(Generator).then(() => assert.file(MAIN_ENTRY + ext));
 	});
 
-	describe(`test:${APP} --scriptType`, () => {
+	describe(`test:${MAIN} --scriptType`, () => {
 		it(
 			'create files in es project',
 			() => {
@@ -22,7 +22,7 @@ describe(`test:${APP}`, () => {
 						scriptType: 'es',
 					})
 					.then(() => {
-						assert.file(APP_ENTRY + ext);
+						assert.file(MAIN_ENTRY + ext);
 						assert.file(getConfigName(BABEL_JS));
 						assert.fileContent(PKG, '"@babel/core":');
 						assert.fileContent(PKG, '"build": "babel src -d dist --copy-files"');
@@ -41,7 +41,7 @@ describe(`test:${APP}`, () => {
 						scriptType: 'ts',
 					})
 					.then(() => {
-						assert.file(APP_ENTRY + ext);
+						assert.file(MAIN_ENTRY + ext);
 						assert.file(TS_CONFIG);
 						assert.fileContent(PKG, '"typescript":');
 						assert.fileContent(PKG, '"build": "tsc -p . --outDir dist"');

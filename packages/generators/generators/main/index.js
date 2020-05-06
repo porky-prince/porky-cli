@@ -1,198 +1,74 @@
-const path = require('path');
-//const chalk = require('chalk');
-const semver = require('semver');
-const validatePackageName = require('validate-npm-package-name');
-const _ = require('lodash');
 const AbstractGenerator = require('../../src/abstractGenerator');
-const generatorPaths = require('../../src');
-const { MAIN } = require('../../src/const');
-const { getGenerator } = require('../../src/helper');
-
-const EMPTY_PKG = {};
-const configs = {};
-const PKG_PROPS = ['name', 'version', 'description', 'keywords', 'author', 'license'];
-PKG_PROPS.forEach(prop => {
-	configs[prop] = {
+const { getTempPath } = require('../../src/helper');
+const { MAIN, MAIN_ENTRY, TS_CONFIG, BABEL_JS, SCRIPT_TYPES_JSON } = require('../../src/const');
+const configs = {
+	scriptType: {
 		type: String,
-		desc: 'The package ' + prop,
-	};
-});
-
-const generatorNames = [];
-_.each(generatorPaths, (generatorPath, name) => {
-	if (name !== MAIN) {
-		configs[name] = {
-			type: Boolean,
-			desc: 'Is add ' + name,
-		};
-		_.each(getGenerator(name).configs, (config, opt) => {
-			configs[opt] = config;
-		});
-		generatorNames.push(name);
-	}
-});
+		default: 'js',
+		desc: 'Script type, options:' + SCRIPT_TYPES_JSON,
+	},
+};
 
 module.exports = class extends AbstractGenerator {
 	constructor(args, opts) {
 		super(args, opts, MAIN);
-		this._pkg = EMPTY_PKG;
-		this._repeatAnswers = {};
 	}
 
-	initializing() {
-		if (this._existPkg()) {
-			this._pkg = this._readPkg();
+	_getScriptCfg(opts) {
+		const scriptType = opts.scriptType;
+		const deps = [];
+		let ext = '.js';
+		let exclude = '';
+		let cfgFile = '';
+		let cfgName = '';
+		let cmd = '';
+		switch (scriptType) {
+			case 'ts':
+				deps.push('typescript');
+				ext = '.ts';
+				exclude = /^\./;
+				cfgFile = TS_CONFIG;
+				cfgName = 'typescript';
+				cmd = 'tsc -p . --outDir dist';
+				break;
+			case 'es':
+				deps.push('@babel/cli', '@babel/core', '@babel/preset-env');
+				cfgFile = BABEL_JS;
+				cfgName = 'babel';
+				cmd = 'babel src -d dist --copy-files';
+				break;
 		}
-		const opts = this.options;
-		// The parameters passed in shall prevail
-		PKG_PROPS.forEach(prop => {
-			opts[prop] = opts[prop] || this._pkg[prop];
-		});
-		this._validateName(opts.name);
-		this._validateVersion(opts.version);
-	}
 
-	_validateName(name) {
-		if (!name) return;
-		const packageNameValidity = validatePackageName(name);
-		if (!packageNameValidity.validForNewPackages) {
-			this.emit(
-				'error',
-				new Error(
-					_.get(packageNameValidity, 'errors.0') ||
-						'The name option is not a valid npm package name.'
-				)
-			);
-		}
-	}
-
-	_validateVersion(version) {
-		if (version && !semver.valid(version)) {
-			this.emit(
-				'error',
-				new Error(`The "${version}" option is not a valid npm package version.`)
-			);
-		}
-	}
-
-	_createPrompt(opt) {
-		const opts = this.options;
-		const config = this._options[opt];
-		// Defaults: input - Possible values: input, number, confirm, list, rawlist, expand, checkbox, password, editor
-		const prompt = {
-			type: 'input',
-			name: opt,
-			message: config.desc,
-			when: !this._repeatAnswers[opt],
-			default: config.default,
+		return {
+			deps,
+			ext,
+			exclude,
+			cfgFile,
+			cfgName,
+			cmd,
 		};
-		const result = /options:(\[[\w,"' ]*\])/.exec(config.desc);
-		if (result) {
-			prompt.type = 'list';
-			prompt.choices = JSON.parse(result[1]);
-		} else if (config.type === Boolean) {
-			prompt.type = 'confirm';
-		} else if (config.type === Number) {
-			prompt.type = 'number';
+	}
+
+	_fillPkg(opts, pkg, devDep, script) {
+		const cfg = this._getScriptCfg(opts);
+		cfg.deps.length > 0 && devDep.apply(this, cfg.deps);
+		if (cfg.cmd) {
+			script('start', 'npm run build -- -w');
+			script('build', cfg.cmd);
 		}
-		this._repeatAnswers[opt] = true;
-		return prompt;
 	}
 
-	async _askForInit() {
-		// Do not ask when package.json exist
-		const opts = this.options;
-		if (this._pkg !== EMPTY_PKG) return Promise.resolve(opts);
-		const prompts = PKG_PROPS.map(prop => {
-			const prompt = this._createPrompt(prop);
-			switch (prop) {
-				case 'name':
-					prompt.default = path.basename(this._destPath());
-					break;
-				case 'version':
-					prompt.default = '1.0.0';
-					break;
-				case 'license':
-					prompt.default = 'MIT';
-					break;
-			}
-			return prompt;
-		});
-
-		return this.prompt(prompts).then(props => {
-			this._validateName(props.name);
-			this._validateVersion(props.version);
-			return _.merge(opts, props);
-		});
-	}
-
-	async prompting() {
-		let i = 0;
-		return this._askForInit().then(async opts => {
-			while (i < generatorNames.length) {
-				const generatorName = generatorNames[i];
-				await this.prompt([this._createPrompt(generatorName)]).then(async props => {
-					_.merge(opts, props);
-					if (opts[generatorName]) {
-						await this.prompt(
-							_.map(getGenerator(generatorName).configs, (config, opt) => {
-								return this._createPrompt(opt);
-							})
-						).then(props => {
-							_.merge(opts, props);
-						});
-					}
-				});
-				i++;
-			}
-		});
-	}
-
-	default() {
-		const opts = this.options;
-		generatorNames.forEach(name => {
-			if (opts[name]) {
-				this.composeWith(generatorPaths[name], opts);
-			}
-		});
-
-		if (opts.license && !this.fs.exists(this._destPath('LICENSE'))) {
-			this.composeWith(require.resolve('generator-license/app'), {
-				name: opts.author,
-				license: opts.license,
-			});
-		}
+	_copyTempByPkg(opts, pkg, copyTemp) {
+		const cfg = this._getScriptCfg(opts);
+		this.fs.copy(
+			this.templatePath(getTempPath(this._name, MAIN_ENTRY)),
+			this._destPath(MAIN_ENTRY + cfg.ext)
+		);
+		cfg.cfgFile && copyTemp(cfg.cfgName, [cfg.cfgFile], cfg.exclude);
 	}
 
 	writing() {
-		// Re-read the content at this point because a composed generator might modify it.
-		const pkg = this._readPkg();
-		const opts = this.options;
-
-		PKG_PROPS.forEach(prop => {
-			// Combine the keywords
-			if (prop === 'keywords') {
-				pkg[prop] = _.uniq(opts[prop].split(' ').concat(pkg[prop] || []));
-			} else {
-				pkg[prop] = opts[prop];
-			}
-		});
-
-		// Let's extend package.json so we're not overwriting user previous fields
-		this._writePkg();
-	}
-
-	installing() {
-		//this.npmInstall();
-	}
-
-	end() {
-		this.log('Thanks for using Yeoman.');
-
-		/*if (this.props.includeCoveralls) {
-			let coverallsUrl = chalk.cyan('https://coveralls.io/repos/new');
-			this.log(`- Enable Coveralls integration at ${coverallsUrl}`);
-		}*/
+		return this._writingByPkg();
 	}
 };
 

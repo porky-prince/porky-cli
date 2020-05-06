@@ -25,8 +25,8 @@
 		"test": "echo test"
 	},
 	"dependencies": {
+		"@porky-prince/generator-generators": "^0.0.0",
 		"commander": "^5.1.0",
-		"porky-generators": "^0.0.0",
 		"yo": "^3.1.1"
 	},
 	"keywords": [

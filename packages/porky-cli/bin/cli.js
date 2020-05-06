@@ -20,7 +20,6 @@ program
 	});
 
 fs.readdirSync(CMDS).forEach(filename => {
-	// program.addCommand(require(path.join(CMDS, filename))());
 	require(path.join(CMDS, filename))(program);
 });
 
