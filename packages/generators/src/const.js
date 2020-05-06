@@ -9,6 +9,7 @@ const SCRIPT_TYPES = JSON.parse(SCRIPT_TYPES_JSON);
 module.exports = {
 	BASE,
 	GENERATORS,
+	TIMEOUT: 12e3,
 	PKG: 'package.json',
 	APP: 'app',
 

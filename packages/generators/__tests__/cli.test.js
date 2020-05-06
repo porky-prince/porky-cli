@@ -1,9 +1,8 @@
 const assert = require('yeoman-assert');
 const helpers = require('yeoman-test');
-const { PKG, CLI, CLI_JS } = require('../src/const');
+const { TIMEOUT, PKG, CLI, CLI_JS } = require('../src/const');
 const { getGenerator } = require('../src/helper');
 const Generator = getGenerator(CLI);
-const timeout = 1e4;
 
 describe(`test:${CLI}`, () => {
 	it(
@@ -18,7 +17,7 @@ describe(`test:${CLI}`, () => {
 					assert.fileContent(PKG, '"commander":');
 				});
 		},
-		timeout
+		TIMEOUT
 	);
 
 	it(
@@ -34,6 +33,6 @@ describe(`test:${CLI}`, () => {
 					assert.fileContent(OTHER + PKG, '"commander":');
 				});
 		},
-		timeout
+		TIMEOUT
 	);
 });

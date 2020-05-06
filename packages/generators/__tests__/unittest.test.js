@@ -1,9 +1,8 @@
 const assert = require('yeoman-assert');
 const helpers = require('yeoman-test');
-const { PKG, UNIT_TEST } = require('../src/const');
+const { TIMEOUT, PKG, UNIT_TEST } = require('../src/const');
 const { getGenerator, getTestFilename } = require('../src/helper');
 const Generator = getGenerator(UNIT_TEST);
-const timeout = 1e4;
 
 async function runByOpt(opt = {}) {
 	return helpers.run(Generator).withOptions(opt);
@@ -20,7 +19,7 @@ describe(`test:${UNIT_TEST}`, () => {
 					assert.file(getTestFilename('jest'));
 				});
 			},
-			timeout
+			TIMEOUT
 		);
 	});
 
@@ -41,7 +40,7 @@ describe(`test:${UNIT_TEST}`, () => {
 					assert.file(getTestFilename('jest', 'ts'));
 				});
 			},
-			timeout
+			TIMEOUT
 		);
 	});
 
@@ -61,7 +60,7 @@ describe(`test:${UNIT_TEST}`, () => {
 					assert.file(getTestFilename('jest'));
 				});
 			},
-			timeout
+			TIMEOUT
 		);
 	});
 
@@ -78,7 +77,7 @@ describe(`test:${UNIT_TEST}`, () => {
 					assert.file(getTestFilename('mocha'));
 				});
 			},
-			timeout
+			TIMEOUT
 		);
 	});
 
@@ -102,7 +101,7 @@ describe(`test:${UNIT_TEST}`, () => {
 					assert.file(getTestFilename('mocha', 'ts'));
 				});
 			},
-			timeout
+			TIMEOUT
 		);
 	});
 
@@ -124,7 +123,7 @@ describe(`test:${UNIT_TEST}`, () => {
 					assert.file(getTestFilename('mocha'));
 				});
 			},
-			timeout
+			TIMEOUT
 		);
 	});
 
@@ -143,7 +142,7 @@ describe(`test:${UNIT_TEST}`, () => {
 					assert.file(getTestFilename('jasmine'));
 				});
 			},
-			timeout
+			TIMEOUT
 		);
 	});
 
@@ -165,7 +164,7 @@ describe(`test:${UNIT_TEST}`, () => {
 					assert.file(getTestFilename('jasmine', 'ts'));
 				});
 			},
-			timeout
+			TIMEOUT
 		);
 	});
 
@@ -186,7 +185,7 @@ describe(`test:${UNIT_TEST}`, () => {
 					assert.file(getTestFilename('jasmine'));
 				});
 			},
-			timeout
+			TIMEOUT
 		);
 	});
 });

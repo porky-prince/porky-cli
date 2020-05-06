@@ -1,9 +1,8 @@
 const assert = require('yeoman-assert');
 const helpers = require('yeoman-test');
-const { PKG, MAIN, MAIN_ENTRY, TS_CONFIG, BABEL_JS } = require('../src/const');
+const { TIMEOUT, PKG, MAIN, MAIN_ENTRY, TS_CONFIG, BABEL_JS } = require('../src/const');
 const { getGenerator, getConfigName } = require('../src/helper');
 const Generator = getGenerator(MAIN);
-const timeout = 1e4;
 
 describe(`test:${MAIN}`, () => {
 	let ext = '.js';
@@ -28,7 +27,7 @@ describe(`test:${MAIN}`, () => {
 						assert.fileContent(PKG, '"build": "babel src -d dist --copy-files"');
 					});
 			},
-			timeout
+			TIMEOUT
 		);
 
 		it(
@@ -47,7 +46,7 @@ describe(`test:${MAIN}`, () => {
 						assert.fileContent(PKG, '"build": "tsc -p . --outDir dist"');
 					});
 			},
-			timeout
+			TIMEOUT
 		);
 	});
 });

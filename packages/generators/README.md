@@ -1,3 +1,3 @@
-# `@porky-cli/generators`
+# `@porky-prince/generator-generators`
 
 TODO
