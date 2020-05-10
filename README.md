@@ -8,3 +8,7 @@
 -   [`porky-cli`](./packages/porky-cli/README.md) - This is a scaffold.
 
 TODO
+
+## License
+
+[MIT © Porky Kay](./LICENSE)

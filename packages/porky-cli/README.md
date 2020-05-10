@@ -64,10 +64,6 @@ Commands:
   help [command]  display help for command
 ```
 
-## License
-
-[MIT © Porky Kay](./LICENSE)
-
 [npm]: https://img.shields.io/npm/v/porky-cli.svg
 [npm-url]: https://npmjs.com/package/porky-cli
 [node]: https://img.shields.io/node/v/porky-cli.svg
