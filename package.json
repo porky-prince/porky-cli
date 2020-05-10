@@ -1,6 +1,5 @@
 {
 	"name": "porky-cli",
-	"version": "1.0.0",
 	"description": "This is a scaffold",
 	"author": "Porky Kay",
 	"license": "MIT",
@@ -20,7 +19,8 @@
 		"test:log": "lerna run test -- --verbose=true",
 		"test": "lerna run test",
 		"debug": "node --inspect-brk src/main.js",
-		"release": ""
+		"version": "lerna version",
+		"publish": "lerna publish"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^8.3.5",
