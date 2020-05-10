@@ -37,6 +37,8 @@ module.exports = class extends AbstractGenerator {
 				cfgName = 'babel';
 				cmd = 'babel src -d dist --copy-files';
 				break;
+			default:
+				break;
 		}
 
 		return {

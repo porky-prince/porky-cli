@@ -1,7 +1,7 @@
 {
 	"name": "porky-cli",
 	"version": "1.0.0",
-	"description": "This is a scaffold.",
+	"description": "This is a scaffold",
 	"author": "Porky Kay",
 	"license": "MIT",
 	"private": true,
@@ -16,8 +16,9 @@
 		"lint:prettier": "prettier \"{**/*,*}.{js,json,md}\" -l",
 		"lint:js": "eslint --cache .",
 		"lint": "npm-run-all -l -p \"lint:**\"",
-		"pretest": "echo pretest",
-		"test": "lerna run test -- --verbose=true",
+		"pretest": "npm run lint",
+		"test:log": "lerna run test -- --verbose=true",
+		"test": "lerna run test",
 		"debug": "node --inspect-brk src/main.js",
 		"release": ""
 	},

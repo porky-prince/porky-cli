@@ -45,6 +45,7 @@ module.exports = class extends AbstractGenerator {
 					if (/\w+ .+/.test(gitToken)) {
 						gitToken = execSync(gitToken).toString();
 					}
+
 					const octokit = new Octokit({
 						auth: _.trim(gitToken),
 					});
@@ -63,9 +64,9 @@ module.exports = class extends AbstractGenerator {
 										return rsp.data.clone_url;
 									})
 									.catch(_.noop);
-							} else {
-								return rsp.data.items[0].clone_url;
 							}
+
+							return rsp.data.items[0].clone_url;
 						})
 						.catch(_.noop);
 				}
@@ -80,13 +81,13 @@ module.exports = class extends AbstractGenerator {
 		let repo = pkg.repository;
 		if (!repo) {
 			if (originUrl) {
-				const result = /git@([\w\.]+)\:([\w\/-]+\.git)/.exec(originUrl);
+				const result = /git@([\w.]+):([\w/-]+\.git)/.exec(originUrl);
 				if (result) {
 					// 'git@github.com:porky-prince/porky-cli.git' => 'https://github.com/porky-prince/porky-cli.git'
 					originUrl = `https://${result[1]}/${result[2]}`;
 				}
 			} else if (opts.gitAccount && opts.repoName) {
-				// default github
+				// Default github
 				originUrl = repo = `https://github.com/${opts.gitAccount}/${opts.repoName}.git`;
 			}
 
@@ -96,6 +97,7 @@ module.exports = class extends AbstractGenerator {
 				pkg.bugs = pkg.bugs || originUrl.replace('.git', '/issues');
 			}
 		}
+
 		this._writePkg(pkg);
 	}
 
@@ -114,17 +116,19 @@ module.exports = class extends AbstractGenerator {
 				if (repo.type !== 'git') return;
 				repo = repo.url;
 			}
+
 			// 'git@github.com:porky-prince/porky-cli.git'
 			// 'https://github.com/porky-prince/porky-cli.git'
 			// 'https://github.com/porky-prince/porky-cli'
 			// 'porky-prince/porky-cli' // default github
 			if (repo.indexOf('.git') === -1) {
-				if (/https?\:/.test(repo)) {
+				if (/https?:/.test(repo)) {
 					repo += '.git';
 				} else {
 					repo = 'git@github.com:' + pkg.repository + '.git';
 				}
 			}
+
 			this.spawnCommandSync('git', ['remote', 'add', 'origin', repo], {
 				cwd: this._destPath(),
 			});

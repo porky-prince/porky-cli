@@ -33,7 +33,7 @@ module.exports = class extends AbstractGenerator {
 
 	async writing() {
 		const moduleName = this.options.unitTestModule;
-		if (Modules.hasOwnProperty(moduleName)) {
+		if (Modules[moduleName]) {
 			await this._writingByPkg();
 			this._copyTestFile2Dest(moduleName, this.options.scriptType === 'ts' ? 'ts' : 'js');
 		} else {

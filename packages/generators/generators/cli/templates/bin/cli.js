@@ -30,8 +30,9 @@ function isNumber(str) {
 	return function(value) {
 		value = Number(value);
 		if (isNaN(value)) {
-			throw `error: options "${str}" must be a number`;
+			throw new Error(`error: options "${str}" must be a number`);
 		}
+
 		return value;
 	};
 }

@@ -4,7 +4,7 @@ const { TIMEOUT, PKG, LINT } = require('../src/const');
 const { getGenerator } = require('../src/helper');
 const Generator = getGenerator(LINT);
 
-async function runByOpt(opt = {}, fn) {
+async function runByOpt(opt = {}, fn = null) {
 	return helpers
 		.run(Generator)
 		.withOptions(opt)

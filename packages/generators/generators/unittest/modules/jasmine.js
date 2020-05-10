@@ -10,6 +10,9 @@ module.exports = function(opt, pkg, devDep, script) {
 			devDep('@babel/register');
 			args = '--require=@babel/register ' + args;
 			break;
+		default:
+			break;
 	}
+
 	script('test', `jasmine ${args}`);
 };

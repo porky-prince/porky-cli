@@ -25,11 +25,15 @@ module.exports = class extends Generator {
 				case Number:
 					config.default = 0;
 					break;
+				default:
+					break;
 			}
 		}
+
 		if (config.required !== true) {
 			config.required = false;
 		}
+
 		return super.option(name, config);
 	}
 
@@ -85,7 +89,7 @@ module.exports = class extends Generator {
 		await this.__fillPkg(opts, pkg);
 	}
 
-	_copyTempByPkg(opts, pkg, copyTemp) {}
+	_copyTempByPkg() {}
 
 	__fillDepVersion(arr, dep) {
 		return (...moduleNames) => {
@@ -109,6 +113,7 @@ module.exports = class extends Generator {
 		const script = (name, cmd) => {
 			scripts[name] = scripts[name] || cmd;
 		};
+
 		this._fillPkg(opts, pkg, devDep, script, dep);
 		await Promise.all(arr);
 		pkg.scripts = scripts;
@@ -117,5 +122,5 @@ module.exports = class extends Generator {
 		this._writePkg(pkg);
 	}
 
-	_fillPkg(opts, pkg, devDep, script, dep) {}
+	_fillPkg() {}
 };

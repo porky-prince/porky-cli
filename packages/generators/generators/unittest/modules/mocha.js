@@ -10,6 +10,9 @@ module.exports = function(opt, pkg, devDep, script) {
 			devDep('@babel/register');
 			args = '@babel/register "**/*.@(test|spec).js?(x)"';
 			break;
+		default:
+			break;
 	}
+
 	script('test', `mocha${args ? ' --require ' + args : ''}`);
 };

@@ -10,6 +10,9 @@ module.exports = function(opt, pkg, devDep, script) {
 			devDep('babel-jest');
 			args = '{\\"^.+\\\\.jsx?$\\":\\"babel-jest\\"}';
 			break;
+		default:
+			break;
 	}
+
 	script('test', `jest${args ? ' --transform=' + args : ''}`);
 };

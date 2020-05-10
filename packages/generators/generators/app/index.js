@@ -1,5 +1,4 @@
 const path = require('path');
-//const chalk = require('chalk');
 const semver = require('semver');
 const validatePackageName = require('validate-npm-package-name');
 const _ = require('lodash');
@@ -44,6 +43,7 @@ module.exports = class extends AbstractGenerator {
 		if (this._existPkg()) {
 			this._pkg = this._readPkg();
 		}
+
 		const opts = this.options;
 		// The parameters passed in shall prevail
 		PKG_PROPS.forEach(prop => {
@@ -78,7 +78,6 @@ module.exports = class extends AbstractGenerator {
 
 	_createPrompt(opt) {
 		const config = this._options[opt];
-		// Defaults: input - Possible values: input, number, confirm, list, rawlist, expand, checkbox, password, editor
 		const prompt = {
 			type: 'input',
 			name: opt,
@@ -95,6 +94,7 @@ module.exports = class extends AbstractGenerator {
 		} else if (config.type === Number) {
 			prompt.type = 'number';
 		}
+
 		this._repeatAnswers[opt] = true;
 		return prompt;
 	}
@@ -116,7 +116,10 @@ module.exports = class extends AbstractGenerator {
 				case 'license':
 					prompt.default = 'MIT';
 					break;
+				default:
+					break;
 			}
+
 			return prompt;
 		});
 
@@ -185,7 +188,7 @@ module.exports = class extends AbstractGenerator {
 	}
 
 	installing() {
-		// this.npmInstall();
+		// This.npmInstall();
 	}
 
 	end() {
