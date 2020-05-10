@@ -8,6 +8,11 @@
 			"message": "chore(release): publish %s",
 			"conventionalCommits": true,
 			"yes": true
+		},
+		"publish": {
+			"message": "chore(release): porky-cli version update",
+			"registry": "https://registry.npmjs.org",
+			"yes": true
 		}
 	}
 }
