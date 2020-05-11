@@ -28,6 +28,8 @@
 	"dependencies": {
 		"@porky-prince/generator-generators": "^0.1.0",
 		"commander": "^5.1.0",
+		"fs-extra": "^9.0.0",
+		"lodash": "^4.17.15",
 		"yo": "^3.1.1"
 	},
 	"keywords": [
