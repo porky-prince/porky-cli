@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.1.3](https://github.com/porky-prince/porky-cli/compare/v0.1.2...v0.1.3) (2020-05-11)
+
+
+### Bug Fixes
+
+* fix 'porky yo --myo' dosen't work ([f61f9d1](https://github.com/porky-prince/porky-cli/commit/f61f9d19a0cc822fa88c061def4f289f3787a885))
+
+
+
+
+
 ## [0.1.2](https://github.com/porky-prince/porky-cli/compare/v0.1.1...v0.1.2) (2020-05-11)
 
 
