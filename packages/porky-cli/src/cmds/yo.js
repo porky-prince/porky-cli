@@ -1,7 +1,8 @@
 const { PKG } = require('../const');
 const fs = require('fs-extra');
 const _ = require('lodash');
-const { exec, runYO } = require('../helper');
+const { BASE } = require('../const');
+const { exec, yoCliFile, runYO } = require('../helper');
 const { app } = require('@porky-prince/generator-generators');
 
 function runLink(pkgMgr) {
@@ -11,12 +12,13 @@ function runLink(pkgMgr) {
 		})
 		.catch(async () => {
 			const pkg = await fs.readJson(PKG);
-			pkg.bin.yo = 'bin/yo.js';
-			pkg.bin['yo-complete'] = 'bin/yo-complete.js';
+			['yo', 'yo-complete'].forEach(cliName => {
+				pkg.bin[cliName] = yoCliFile(cliName);
+			});
 			await fs.writeJson(PKG, pkg, {
 				spaces: 4,
 			});
-			await exec(pkgMgr + ' link');
+			await exec(pkgMgr + ' link', { cwd: BASE });
 		});
 }
 
@@ -39,10 +41,9 @@ module.exports = program => {
 		.option('--yov', 'the yo version')
 		.option('--myo', 'some custom generators')
 		.option(
-			'--link [PkgMgr]',
+			'--link <PkgMgr>',
 			'add yo to global, like `npm link yo`, options [yarn | npm]',
-			filterPkgMgr,
-			'npm'
+			filterPkgMgr
 		)
 		.action(options => {
 			if (options.yoh) {

@@ -8,22 +8,6 @@
 
 ## Install
 
-### Local
-
-npm:
-
-```sh
-$ npm install --save porky-cli
-```
-
-yarn:
-
-```sh
-$ yarn add porky-cli
-```
-
-### Global
-
 npm:
 
 ```sh

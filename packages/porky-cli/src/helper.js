@@ -1,6 +1,24 @@
 const childProcess = require('child_process');
+const path = require('path');
 const _ = require('lodash');
-const { BASE } = require('./const');
+const yoCliFiles = {};
+
+function yoCliFile(cliName) {
+	let cliFile = yoCliFiles[cliName];
+	if (!cliFile) {
+		let yo = null;
+		try {
+			yo = require.resolve('yo');
+		} catch (err) {
+			const yoPkg = require(err.path);
+			yoCliFiles[cliName] = cliFile = path.join(path.dirname(err.path), yoPkg.bin[cliName]);
+		}
+
+		if (yo !== null) throw new Error('yo changed yo\'s package.json "main" entry:' + yo);
+	}
+
+	return cliFile;
+}
 
 function spawn(cmd, args, opts) {
 	return childProcess.spawn(
@@ -8,7 +26,6 @@ function spawn(cmd, args, opts) {
 		args,
 		_.merge(
 			{
-				cwd: BASE,
 				stdio: 'inherit',
 				shell: true,
 			},
@@ -19,22 +36,13 @@ function spawn(cmd, args, opts) {
 
 async function exec(cmd, opts) {
 	return new Promise((resolve, reject) => {
-		childProcess.exec(
-			cmd,
-			_.merge(
-				{
-					cwd: BASE,
-				},
-				opts
-			),
-			(error, stdout, stderr) => {
-				if (error) {
-					reject(error);
-				} else {
-					resolve(stdout, stderr);
-				}
+		childProcess.exec(cmd, opts, (error, stdout, stderr) => {
+			if (error) {
+				reject(error);
+			} else {
+				resolve(stdout, stderr);
 			}
-		);
+		});
 	});
 }
 
@@ -43,11 +51,13 @@ module.exports = {
 
 	spawn,
 
+	yoCliFile,
+
 	runYO: function(...args) {
-		return spawn('npx yo', args);
+		return spawn('node ' + yoCliFile('yo'), args);
 	},
 
 	runYOComplete: function(...args) {
-		return spawn('npx yo-complete', args);
+		return spawn('node ' + yoCliFile('yo-complete'), args);
 	},
 };
