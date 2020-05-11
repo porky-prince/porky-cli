@@ -34,7 +34,7 @@ module.exports = class extends AbstractGenerator {
 		this._copyConfigTemp2Dest(GIT_IGNORE);
 	}
 
-	async _getOriginUrl(repoName, gitToken, description) {
+	async _getOriginUrl(repoName, gitAccount, gitToken, description) {
 		return originUrl(this._destPath()).then(
 			url => {
 				this._hasOriginUrl = true;
@@ -42,6 +42,10 @@ module.exports = class extends AbstractGenerator {
 			},
 			() => {
 				if (repoName && gitToken) {
+					if (gitAccount) {
+						gitAccount = `in:user ${gitAccount}`;
+					}
+
 					if (/\w+ .+/.test(gitToken)) {
 						gitToken = execSync(gitToken).toString();
 					}
@@ -51,7 +55,7 @@ module.exports = class extends AbstractGenerator {
 					});
 					return octokit.search
 						.repos({
-							q: `${repoName} in:name`,
+							q: `in:name ${repoName} ${gitAccount}`,
 						})
 						.then(rsp => {
 							if (rsp.data.total_count === 0) {
@@ -77,15 +81,22 @@ module.exports = class extends AbstractGenerator {
 	async writing() {
 		const pkg = this._readPkg();
 		const opts = this.options;
-		let originUrl = await this._getOriginUrl(opts.repoName, opts.gitToken, pkg.description);
 		let repo = pkg.repository;
 		if (!repo) {
+			let originUrl = await this._getOriginUrl(
+				opts.repoName,
+				opts.gitAccount,
+				opts.gitToken,
+				pkg.description
+			);
 			if (originUrl) {
 				const result = /git@([\w.]+):([\w/-]+\.git)/.exec(originUrl);
 				if (result) {
 					// 'git@github.com:porky-prince/porky-cli.git' => 'https://github.com/porky-prince/porky-cli.git'
 					originUrl = `https://${result[1]}/${result[2]}`;
 				}
+
+				repo = originUrl;
 			} else if (opts.gitAccount && opts.repoName) {
 				// Default github
 				originUrl = repo = `https://github.com/${opts.gitAccount}/${opts.repoName}.git`;
