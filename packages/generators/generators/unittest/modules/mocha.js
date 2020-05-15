@@ -3,7 +3,7 @@ module.exports = function(opt, pkg, devDep, script) {
 	devDep('mocha', 'chai');
 	switch (opt.scriptType) {
 		case 'ts':
-			devDep('ts-node', '@types/mocha', '@types/chai');
+			devDep('@types/mocha', '@types/chai', 'ts-node');
 			args = 'ts-node/register "**/*.@(test|spec).ts?(x)"';
 			break;
 		case 'es':

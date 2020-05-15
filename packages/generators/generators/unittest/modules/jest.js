@@ -3,7 +3,7 @@ module.exports = function(opt, pkg, devDep, script) {
 	devDep('jest');
 	switch (opt.scriptType) {
 		case 'ts':
-			devDep('ts-jest', '@types/jest');
+			devDep('@types/jest', 'ts-jest');
 			args = '{\\"^.+\\\\.tsx?$\\":\\"ts-jest\\"}';
 			break;
 		case 'es':

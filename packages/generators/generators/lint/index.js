@@ -18,6 +18,16 @@ module.exports = class extends AbstractGenerator {
 	}
 
 	_fillPkg(opts, pkg, devDep, script) {
+		if (opts.tslint) {
+			devDep(
+				'@typescript-eslint/eslint-plugin',
+				'@typescript-eslint/parser',
+				'eslint-config-xo-typescript'
+			);
+		} else {
+			devDep('eslint-config-xo');
+		}
+
 		devDep(
 			'eslint',
 			'eslint-config-prettier',
@@ -30,16 +40,6 @@ module.exports = class extends AbstractGenerator {
 			'@commitlint/config-conventional',
 			'npm-run-all'
 		);
-
-		if (opts.tslint) {
-			devDep(
-				'@typescript-eslint/eslint-plugin',
-				'@typescript-eslint/parser',
-				'eslint-config-xo-typescript'
-			);
-		} else {
-			devDep('eslint-config-xo');
-		}
 
 		script('lint:prettier', 'prettier "{**/*,*}.{js,ts,json,md}" -l');
 		script('lint:code', 'eslint --cache .');

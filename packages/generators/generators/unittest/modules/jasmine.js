@@ -3,7 +3,7 @@ module.exports = function(opt, pkg, devDep, script) {
 	devDep('jasmine');
 	switch (opt.scriptType) {
 		case 'ts':
-			devDep('ts-node', '@types/jasmine');
+			devDep('@types/jasmine', 'ts-node');
 			args = '--require=ts-node/register "**!(node_modules)/*.@(test|spec).ts?(x)"';
 			break;
 		case 'es':
