@@ -1,0 +1,48 @@
+{
+	"name": "dependency-version-sync",
+	"version": "0.0.0",
+	"description": "Synchronize and update the dependencies of the package.json to the installed version",
+	"author": "Porky Kay",
+	"homepage": "https://github.com/porky-prince/porky-cli/packages/dependency-version-sync#readme",
+	"bugs": "https://github.com/porky-prince/porky-cli/issues",
+	"license": "MIT",
+	"main": "src/index.js",
+	"bin": {
+		"dvs": "bin/cli.js"
+	},
+	"files": [
+		"bin",
+		"src"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/porky-prince/porky-cli.git",
+		"directory": "packages/dependency-version-sync"
+	},
+	"scripts": {
+		"test": "jest"
+	},
+	"dependencies": {
+		"commander": "^5.1.0",
+		"fs-extra": "^9.0.0",
+		"porky-helper": "^0.0.0"
+	},
+	"devDependencies": {
+		"yeoman-generator": "^4.5.0",
+		"yeoman-assert": "^3.1.1",
+		"yeoman-test": "^2.1.0",
+		"semver": "^7.3.2"
+	},
+	"keywords": [
+		"npm",
+		"yarn",
+		"package",
+		"dependency",
+		"version",
+		"sync",
+		"update"
+	]
+}

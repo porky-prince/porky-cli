@@ -1,6 +1,5 @@
-const childProcess = require('child_process');
+const { helper } = require('porky-helper');
 const path = require('path');
-const _ = require('lodash');
 const yoCliFiles = {};
 
 function yoCliFile(cliName) {
@@ -20,44 +19,14 @@ function yoCliFile(cliName) {
 	return cliFile;
 }
 
-function spawn(cmd, args, opts) {
-	return childProcess.spawn(
-		cmd,
-		args,
-		_.merge(
-			{
-				stdio: 'inherit',
-				shell: true,
-			},
-			opts
-		)
-	);
-}
-
-async function exec(cmd, opts) {
-	return new Promise((resolve, reject) => {
-		childProcess.exec(cmd, opts, (error, stdout, stderr) => {
-			if (error) {
-				reject(error);
-			} else {
-				resolve(stdout, stderr);
-			}
-		});
-	});
-}
-
 module.exports = {
-	exec,
-
-	spawn,
-
 	yoCliFile,
 
-	runYO: function(...args) {
-		return spawn('node ' + yoCliFile('yo'), args);
+	runYo(...args) {
+		return helper.spawn('node ' + yoCliFile('yo'), args);
 	},
 
-	runYOComplete: function(...args) {
-		return spawn('node ' + yoCliFile('yo-complete'), args);
+	runYoComplete(...args) {
+		return helper.spawn('node ' + yoCliFile('yo-complete'), args);
 	},
 };

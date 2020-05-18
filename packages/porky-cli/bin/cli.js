@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 'use strict';
-const commander = require('commander');
-const program = new commander.Command();
+const { Command } = require('commander');
+const program = new Command('porky');
 const fs = require('fs');
 const path = require('path');
 const { CMDS } = require('../src/const');
 const pkg = require('../package.json');
 
 program
-	.version(pkg.version, '-v, --version')
+	.version(pkg.version, '-V, --Version')
 	.description(pkg.description)
-	.usage('porky [options]')
+	.usage('[options]')
 	.on('--help', () => {
 		console.log('');
 		console.log('Examples:');
@@ -20,7 +20,7 @@ program
 	});
 
 fs.readdirSync(CMDS).forEach(filename => {
-	require(path.join(CMDS, filename))(program);
+	program.addCommand(require(path.join(CMDS, filename))(pkg));
 });
 
 program.parse(process.argv);

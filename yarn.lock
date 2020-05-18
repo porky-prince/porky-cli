@@ -9378,6 +9378,13 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
+version-selector-type@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npm.taobao.org/version-selector-type/download/version-selector-type-3.0.0.tgz#47c365fb4d9ca4a54e6dabcad6fb7a46265f7955"
+  integrity sha1-R8Nl+02cpKVObavK1vt6RiZfeVU=
+  dependencies:
+    semver "^7.3.2"
+
 vinyl-file@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/vinyl-file/-/vinyl-file-2.0.0.tgz#a7ebf5ffbefda1b7d18d140fcb07b223efb6751a"

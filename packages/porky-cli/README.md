@@ -40,10 +40,11 @@ $ porky yo --myo
 
 ```
 Options:
-  -v, --version   output the version number
+  -V, --Version   output the version number
   -h, --help      display help for command
 
 Commands:
+  dvs [options]   Synchronize and update the dependencies of the package.json to the installed version
   yo [options]    CLI tool for running Yeoman generators http://yeoman.io
   help [command]  display help for command
 ```

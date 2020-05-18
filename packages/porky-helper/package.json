@@ -1,0 +1,34 @@
+{
+	"name": "porky-helper",
+	"version": "0.0.0",
+	"description": "Helper for porky-cli",
+	"author": "Porky Kay",
+	"homepage": "https://github.com/porky-prince/porky-cli/packages/porky-helper#readme",
+	"bugs": "https://github.com/porky-prince/porky-cli/issues",
+	"license": "MIT",
+	"main": "src/index.js",
+	"files": [
+		"src"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/porky-prince/porky-cli.git",
+		"directory": "packages/porky-helper"
+	},
+	"scripts": {
+		"test": "echo todo"
+	},
+	"dependencies": {
+		"lodash": "^4.17.15",
+		"version-selector-type": "^3.0.0"
+	},
+	"keywords": [
+		"porky-cli",
+		"commander",
+		"version",
+		"dist-tag"
+	]
+}

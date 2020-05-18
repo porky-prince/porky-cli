@@ -33,6 +33,7 @@ lerna-debug.log
 
 # Yeoman file
 .yo-rc.json
+.yo-repository
 
 # package-lock file
 package-lock.json

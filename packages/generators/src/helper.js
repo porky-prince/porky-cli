@@ -1,6 +1,4 @@
 const path = require('path');
-const { exec } = require('child_process');
-const _ = require('lodash');
 const { GENERATORS } = require('./const');
 
 module.exports = {
@@ -22,18 +20,5 @@ module.exports = {
 
 	getTestFilename(moduleName, ext = 'js') {
 		return `test/${moduleName}.test.${ext}`;
-	},
-
-	async getLatestVersion(module) {
-		return new Promise((resolve, reject) => {
-			exec(`npm view ${module} version`, (error, stdout) => {
-				if (error) {
-					console.error(error);
-					reject(error);
-				} else {
-					resolve(_.trim(stdout));
-				}
-			});
-		});
 	},
 };
