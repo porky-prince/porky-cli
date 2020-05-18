@@ -1,6 +1,6 @@
 {
 	"name": "dependency-version-sync",
-	"version": "0.0.0",
+	"version": "0.2.0",
 	"description": "Synchronize and update the dependencies of the package.json to the installed version",
 	"author": "Porky Kay",
 	"homepage": "https://github.com/porky-prince/porky-cli/packages/dependency-version-sync#readme",
@@ -28,13 +28,13 @@
 	"dependencies": {
 		"commander": "^5.1.0",
 		"fs-extra": "^9.0.0",
-		"porky-helper": "^0.0.0"
+		"porky-helper": "^0.2.0"
 	},
 	"devDependencies": {
-		"yeoman-generator": "^4.5.0",
+		"semver": "^7.3.2",
 		"yeoman-assert": "^3.1.1",
-		"yeoman-test": "^2.1.0",
-		"semver": "^7.3.2"
+		"yeoman-generator": "^4.5.0",
+		"yeoman-test": "^2.1.0"
 	},
 	"keywords": [
 		"npm",
