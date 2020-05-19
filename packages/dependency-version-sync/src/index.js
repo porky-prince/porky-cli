@@ -6,7 +6,8 @@ let depsCache = null;
 
 async function getInstalledDeps(opts) {
 	if (depsCache === null) {
-		const result = await exec(
+		let result = null;
+		await exec(
 			'npm ls -j --depth 0',
 			{
 				cwd: opts.cwd,
@@ -14,7 +15,14 @@ async function getInstalledDeps(opts) {
 				timeout: 3e4,
 			},
 			true
-		);
+		)
+			.then(stdout => {
+				result = stdout;
+			})
+			.catch(error => {
+				result = error.stdout;
+			});
+
 		const { dependencies } = JSON.parse(result);
 		if (dependencies) {
 			depsCache = dependencies;

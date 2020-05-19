@@ -24,6 +24,7 @@ async function exec(cmd, opts, hideLog) {
 	return new Promise((resolve, reject) => {
 		const p = childProcess.exec(cmd, opts, (error, stdout) => {
 			if (error) {
+				error.stdout = stdout;
 				reject(error);
 			} else {
 				resolve(stdout);
