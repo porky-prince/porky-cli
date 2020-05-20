@@ -1,11 +1,6 @@
 const AbstractGenerator = require('../../src/abstractGenerator');
 const { LINT } = require('../../src/const');
 const configs = {
-	eslint: {
-		type: Boolean,
-		default: true,
-		desc: 'Using eslint in javascript project',
-	},
 	tslint: {
 		type: Boolean,
 		desc: 'Using eslint in typescript project',
@@ -18,21 +13,22 @@ module.exports = class extends AbstractGenerator {
 	}
 
 	_fillPkg(opts, pkg, devDep, script) {
-		if (opts.tslint) {
-			devDep(
-				'@typescript-eslint/eslint-plugin',
-				'@typescript-eslint/parser',
-				'eslint-config-xo-typescript'
-			);
-		} else {
-			devDep('eslint-config-xo');
-		}
-
 		devDep(
 			'eslint',
 			'eslint-config-prettier',
 			'eslint-plugin-prettier',
 			'eslint-plugin-import',
+			'eslint-config-xo'
+		);
+
+		opts.tslint &&
+			devDep(
+				'eslint-config-xo-typescript',
+				'@typescript-eslint/eslint-plugin',
+				'@typescript-eslint/parser'
+			);
+
+		devDep(
 			'prettier',
 			'husky',
 			'lint-staged',
@@ -42,14 +38,19 @@ module.exports = class extends AbstractGenerator {
 		);
 
 		script('lint:prettier', 'prettier "{**/*,*}.{js,ts,json,md}" -l');
-		script('lint:code', 'eslint --cache .');
+		script('lint:code', 'eslint --cache "{**/*,*}.{js,ts}"');
 		script('lint', 'npm-run-all -l -p "lint:**"');
 		script('pretest', 'npm run lint');
 		script('commitlint', 'commitlint --from=master');
 	}
 
 	_copyTempByPkg(opts, pkg, copyTemp) {
-		const exclude = opts.tslint ? '.ts' : '';
+		let exclude = '';
+		if (opts.tslint) {
+			exclude = '.ts';
+			copyTemp('typescript', ['tsconfig.eslint.json'], /^\./);
+		}
+
 		copyTemp('eslintConfig', [`eslintrc${exclude}.js`, 'eslintignore'], exclude);
 		copyTemp('commitlint', ['commitlintrc.js']);
 		copyTemp('husky', ['huskyrc.js']);

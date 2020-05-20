@@ -5,7 +5,9 @@ module.exports = {
 	},
 	parser: '@typescript-eslint/parser',
 	plugins: ['@typescript-eslint', 'prettier'],
-	parserOptions: {},
+	parserOptions: {
+		project: './tsconfig.eslint.json',
+	},
 	rules: {
 		'prettier/prettier': 'error',
 	},
