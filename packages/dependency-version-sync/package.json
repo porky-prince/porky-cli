@@ -1,6 +1,6 @@
 {
 	"name": "dependency-version-sync",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "Synchronize and update the dependencies of the package.json to the installed version",
 	"author": "Porky Kay",
 	"homepage": "https://github.com/porky-prince/porky-cli/packages/dependency-version-sync#readme",

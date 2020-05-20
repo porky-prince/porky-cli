@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.2](https://github.com/porky-prince/porky-cli/compare/v0.2.1...v0.2.2) (2020-05-20)
+
+
+### Performance Improvements
+
+* add more log for dependency-version-sync ([2e0488a](https://github.com/porky-prince/porky-cli/commit/2e0488af8614da227eac5d352465b398b96cb11a))
+
+
+
+
+
 ## [0.2.1](https://github.com/porky-prince/porky-cli/compare/v0.2.0...v0.2.1) (2020-05-19)
 
 
