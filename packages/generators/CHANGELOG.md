@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.3](https://github.com/porky-prince/porky-cli/compare/v0.2.2...v0.2.3) (2020-05-20)
+
+
+### Bug Fixes
+
+* generators bug fix ([b293cdd](https://github.com/porky-prince/porky-cli/commit/b293cdd1f3cc7f9e9c514ffadf8b15b8616754d8))
+
+
+
+
+
 ## [0.2.1](https://github.com/porky-prince/porky-cli/compare/v0.2.0...v0.2.1) (2020-05-19)
 
 **Note:** Version bump only for package @porky-prince/generator-generators
