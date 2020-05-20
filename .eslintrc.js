@@ -15,5 +15,12 @@ module.exports = {
 		'no-unused-expressions': ['error', { allowShortCircuit: true, allowTernary: true }],
 		'max-params': 'off',
 		'no-await-in-loop': 'off',
+		'prefer-const': [
+			'error',
+			{
+				destructuring: 'all',
+				ignoreReadBeforeAssign: true,
+			},
+		],
 	},
 };

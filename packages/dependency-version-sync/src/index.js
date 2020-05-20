@@ -20,6 +20,7 @@ async function getInstalledDeps(opts) {
 				result = stdout;
 			})
 			.catch(error => {
+				console.error(error.message);
 				result = error.stdout;
 			});
 
@@ -63,11 +64,18 @@ async function dealPkg(opts, pkg) {
 				}
 
 				const depCache = (await getInstalledDeps(opts))[dep];
-				if (depCache) {
+				if (!depCache) {
+					console.log(`Package "${dep}" has not been installed`);
+					continue;
+				}
+
+				if (depCache.version) {
 					deps[dep] = `^${depCache.version}`;
 					console.log(dep, ':', originVersion, '->', deps[dep]);
+				} else if (depCache.peerMissing) {
+					console.warn('Peer dep missing: ' + dep);
 				} else {
-					console.log(`Package "${dep}" has not been installed`);
+					console.warn('There is something wrong on dep: ' + dep);
 				}
 			}
 		}
