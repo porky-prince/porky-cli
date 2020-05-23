@@ -26,7 +26,6 @@ describe(`test:${LINT}`, () => {
 			assert.fileContent(PKG, '"lint:code": "eslint --cache \\"{**/*,*}.{js,ts}\\""');
 			assert.file('.lintstagedrc');
 			assert.noFile('.eslintrc.ts.js');
-			assert.noFile('tsconfig.eslint.json');
 			assert.file('.eslintrc.js');
 			assert.fileContent('.eslintrc.js', 'xo');
 			assert.noFileContent('.eslintrc.js', '@typescript-eslint/parser');
@@ -58,7 +57,6 @@ describe(`test:${LINT}`, () => {
 			assert.fileContent(PKG, 'eslintConfig');
 			assert.noFile('.eslintignore');
 			assert.noFile('.eslintrc.ts.js');
-			assert.noFile('tsconfig.eslint.json');
 			assert.noFile('.eslintrc.js');
 			assert.file('.lintstagedrc');
 		});
@@ -82,7 +80,6 @@ describe(`test:${LINT}`, () => {
 			);
 			assert.file(generateInto + '.lintstagedrc');
 			assert.noFile(generateInto + '.eslintrc.ts.js');
-			assert.noFile('tsconfig.eslint.json');
 			assert.file(generateInto + '.eslintrc.js');
 			assert.fileContent(generateInto + '.eslintrc.js', 'xo');
 			assert.noFileContent(generateInto + '.eslintrc.js', '@typescript-eslint/parser');
@@ -103,7 +100,6 @@ describe(`test:${LINT}`, () => {
 			assert.fileContent(PKG, '"lint:code": "eslint --cache \\"{**/*,*}.{js,ts}\\""');
 			assert.file('.lintstagedrc');
 			assert.noFile('.eslintrc.ts.js');
-			assert.file('tsconfig.eslint.json');
 			assert.file('.eslintrc.js');
 			assert.fileContent('.eslintrc.js', 'xo');
 			assert.fileContent('.eslintrc.js', '@typescript-eslint/parser');
