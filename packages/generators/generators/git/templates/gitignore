@@ -3,10 +3,19 @@
 .vscode
 *.sublime-project
 *.sublime-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # OS
 .DS_Store
 Thumbs.db
+
+# local env files
+.env.local
+.env.*.local
 
 # Node
 node_modules

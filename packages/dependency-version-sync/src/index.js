@@ -1,6 +1,9 @@
 const fs = require('fs-extra');
 const path = require('path');
-const { exec, pkgDepPropPre, getPkgDepProp, validDistTag } = require('porky-helper').helper;
+const {
+	logger,
+	helper: { exec, pkgDepPropPre, getPkgDepProp, validDistTag },
+} = require('porky-helper');
 
 let depsCache = null;
 
@@ -20,7 +23,7 @@ async function getInstalledDeps(opts) {
 				result = stdout;
 			})
 			.catch(error => {
-				console.error(error.message);
+				logger.error(error.message);
 				result = error.stdout;
 			});
 
@@ -59,23 +62,23 @@ async function dealPkg(opts, pkg) {
 				const originVersion = deps[dep];
 				// Ignore github:porky-prince/test, git+https://github.com/porky-prince/test.git, etc
 				if (!validDistTag(originVersion)) {
-					console.log('Ignore', dep, ':', originVersion);
+					logger.log('Ignore', dep, ':', originVersion);
 					continue;
 				}
 
 				const depCache = (await getInstalledDeps(opts))[dep];
 				if (!depCache) {
-					console.log(`Package "${dep}" has not been installed`);
+					logger.warn(`Package "${dep}" has not been installed`);
 					continue;
 				}
 
 				if (depCache.version) {
 					deps[dep] = `^${depCache.version}`;
-					console.log(dep, ':', originVersion, '->', deps[dep]);
+					logger.success(dep, ':', originVersion, '->', deps[dep]);
 				} else if (depCache.peerMissing) {
-					console.warn('Peer dep missing: ' + dep);
+					logger.warn('Peer dep missing: ' + dep);
 				} else {
-					console.warn('There is something wrong on dep: ' + dep);
+					logger.warn('There is something wrong on dep: ' + dep);
 				}
 			}
 		}
@@ -94,7 +97,7 @@ module.exports = async opts => {
 		});
 		await installedDeps(opts);
 	} else {
-		throw new Error("Can't find package.json");
+		logger.throwErr("Can't find package.json");
 	}
 };
 
