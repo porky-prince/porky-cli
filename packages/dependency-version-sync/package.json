@@ -30,12 +30,6 @@
 		"fs-extra": "^9.0.0",
 		"porky-helper": "^0.2.1"
 	},
-	"devDependencies": {
-		"semver": "^7.3.2",
-		"yeoman-assert": "^3.1.1",
-		"yeoman-generator": "^4.5.0",
-		"yeoman-test": "^2.1.0"
-	},
 	"keywords": [
 		"npm",
 		"yarn",

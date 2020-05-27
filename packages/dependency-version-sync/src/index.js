@@ -1,9 +1,7 @@
 const fs = require('fs-extra');
 const path = require('path');
-const {
-	logger,
-	helper: { exec, pkgDepPropPre, getPkgDepProp, validDistTag },
-} = require('porky-helper');
+const { logger } = require('porky-helper').logger;
+const { exec, pkgDepPropPre, getPkgDepProp, validDistTag } = require('porky-helper').helper;
 
 let depsCache = null;
 
