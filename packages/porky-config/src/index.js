@@ -1,15 +1,21 @@
 const osenv = require('osenv');
+const fs = require('fs-extra');
 const path = require('path');
-const yml = require('./yml');
 const { logger, myLogger } = require('porky-helper').logger;
+
+const test = require('e:\\test.js');
+console.log(test);
+
+function testName(name) {
+	return /^[\w-.]+$/.test(name);
+}
 
 module.exports = class Config {
 	constructor(name, configPath) {
-		if (!/[\w-$]+/.test(name))
-			logger.throwErr('The config name is required and legal(like variable name)');
+		if (!testName(name)) logger.throwErr('The config name is required and legal(^[\\w-.]+$)');
 		this._name = name;
-		this._configPath = configPath || osenv.home();
-		this._config = yml.safeParse(this.fullPath);
+		this._configPath = path.join(configPath || osenv.home(), this._name);
+		this._config = fs.readJsonSync(this.fullPath, { throws: false }) || {};
 	}
 
 	get configPath() {
@@ -21,12 +27,15 @@ module.exports = class Config {
 	}
 
 	get fullName() {
-		return `.${this._name}.${yml.ext}`;
+		return `${this._name}.json`;
 	}
 
 	save() {
-		const obj = yml.safeDump(this.fullPath, this._config);
-		yml.isDone(obj) ? logger.success('save success') : logger.throwErr(obj);
+		fs.outputJsonSync(this.fullPath, this._config, { spaces: 4 });
+	}
+
+	keys() {
+		return Object.keys(this._config);
 	}
 
 	get(key, hideLog) {
@@ -36,7 +45,7 @@ module.exports = class Config {
 	}
 
 	set(key, val) {
-		this._config[key] = val.toString();
+		this._config[key] = val;
 		this.save();
 	}
 
@@ -49,15 +58,8 @@ module.exports = class Config {
 		return JSON.stringify(this._config, null, 4);
 	}
 
-	list(json, showConfigPath) {
-		showConfigPath && myLogger.info('Config Path:', this._configPath);
-		if (json) {
-			myLogger.info(this.toString());
-		} else {
-			Object.keys(this._config).forEach((val, key) => {
-				myLogger.info(key, '=', val);
-			});
-		}
+	list() {
+		myLogger.info(this.toString());
 	}
 
 	clear() {
@@ -65,3 +67,5 @@ module.exports = class Config {
 		this.save();
 	}
 };
+
+module.exports.testName = testName;
