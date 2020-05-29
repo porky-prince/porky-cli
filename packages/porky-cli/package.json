@@ -31,6 +31,7 @@
 		"dependency-version-sync": "^0.2.2",
 		"fs-extra": "^9.0.0",
 		"lodash": "^4.17.15",
+		"porky-config": "^0.0.0",
 		"porky-helper": "^0.2.1",
 		"yo": "^3.1.1"
 	},

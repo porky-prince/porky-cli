@@ -22,8 +22,8 @@
 		"test": "jest"
 	},
 	"dependencies": {
+		"commander": "^5.1.0",
 		"fs-extra": "^9.0.0",
-		"osenv": "^0.1.5",
 		"porky-helper": "^0.2.1"
 	},
 	"keywords": [

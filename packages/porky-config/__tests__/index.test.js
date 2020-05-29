@@ -37,19 +37,20 @@ describe(require('../package.json').description, () => {
 		expect(Config.testName('%porky% $config')).toBe(false);
 	});
 
-	function common(config, destPath) {
-		expect(config.get('linuxPath', true)).toBe(configJson.linuxPath);
+	function common(config, destPath, hasDefaultConfig) {
+		expect(config.get('linuxPath')).toBe(configJson.linuxPath);
 		config.del('linuxPath');
-		expect(config.get('linuxPath', true)).not.toBe(configJson.linuxPath);
+		expect(config.get('linuxPath')).not.toBe(configJson.linuxPath);
 		const newWinPath = 'C:\\Users\\visitor';
-		expect(config.get('winPath', true)).toBe(configJson.winPath);
+		expect(config.get('winPath')).toBe(configJson.winPath);
 		config.set('winPath', newWinPath);
-		expect(config.get('winPath', true)).toBe(newWinPath);
+		expect(config.get('winPath')).toBe(newWinPath);
 		config.set('other', 'some val');
+		expect(config.get('other')).toBe(hasDefaultConfig ? '' : 'some val');
 		config = new Config(configName, destPath); // Reload
-		expect(config.get('winPath', true)).toBe(newWinPath);
-		expect(config.get('linuxPath', true)).toBe('');
-		expect(config.get('other', true)).toBe('some val');
+		expect(config.get('winPath')).toBe(newWinPath);
+		expect(config.get('linuxPath')).toBe('');
+		expect(config.get('other')).toBe(hasDefaultConfig ? '' : 'some val');
 	}
 
 	it('config dose not exist', () => {
@@ -75,6 +76,28 @@ describe(require('../package.json').description, () => {
 			const config = new Config(configName, destPath);
 			expect(config.keys().length).toBe(Object.keys(configJson).length);
 			common(config, destPath);
+		});
+	});
+
+	it('config dose not exist and has default config', () => {
+		return runByOpt().then(destPath => {
+			const configPath = path.join(destPath, configName, configFile);
+			assert.noFile(configPath);
+			const config = new Config(configName, destPath, configJson);
+			expect(config.keys().length).toBe(Object.keys(configJson).length);
+			common(config, destPath, true);
+		});
+	});
+
+	it('config already existed and has default config', () => {
+		return runByOpt({
+			createConfig: true,
+		}).then(destPath => {
+			const configPath = path.join(destPath, configName, configFile);
+			assert.jsonFileContent(configPath, configJson);
+			const config = new Config(configName, destPath, configJson);
+			expect(config.keys().length).toBe(Object.keys(configJson).length);
+			common(config, destPath, true);
 		});
 	});
 });
