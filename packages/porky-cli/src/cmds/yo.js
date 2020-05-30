@@ -1,8 +1,8 @@
 const { PKG } = require('../const');
 const fs = require('fs-extra');
 const _ = require('lodash');
-const { Command } = require('commander');
-const program = new Command('yo');
+const { createCommand } = require('commander');
+const program = createCommand('yo');
 const { BASE } = require('../const');
 const { yoCliFile, runYo } = require('../helper');
 const { app } = require('@porky-prince/generator-generators');

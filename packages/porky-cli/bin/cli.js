@@ -1,17 +1,14 @@
 #!/usr/bin/env node
 'use strict';
-const { NAME, CONFIG_NAME, CMDS } = require('../src/const');
-const { Command } = require('commander');
-const Config = require('porky-config');
+const { NAME, CMDS } = require('../src/const');
+const { createCommand } = require('commander');
 const fs = require('fs');
 const path = require('path');
 const pkg = require('../package.json');
-const program = new Command(NAME);
-const config = new Config(CONFIG_NAME, null, {
-	packageManager: 'npm',
-	registry: 'https://registry.npmjs.org',
-	logLevel: 'all',
-});
+const ctx = require('../src/context');
+const program = createCommand(NAME);
+
+ctx.version = pkg.version;
 
 program
 	.version(pkg.version, '-V, --Version')
@@ -22,10 +19,12 @@ program
 		console.log('Examples:');
 		console.log('  $ porky --help');
 		console.log('');
+		console.log('Report bugs to', pkg.bugs);
+		console.log('');
 		console.log(`${pkg.license} © ${pkg.author}`);
 	});
 
-program.addCommand(config.getCmd());
+program.addCommand(ctx.config.getCmd());
 
 fs.readdirSync(CMDS).forEach(filename => {
 	program.addCommand(require(path.join(CMDS, filename))(pkg));
