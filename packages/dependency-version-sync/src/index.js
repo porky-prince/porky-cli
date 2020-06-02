@@ -1,7 +1,10 @@
 const fs = require('fs-extra');
 const path = require('path');
-const { logger } = require('porky-helper').logger;
-const { exec, pkgDepPropPre, getPkgDepProp, validDistTag } = require('porky-helper').helper;
+const {
+	pm,
+	logger: { logger },
+	helper: { exec, pkgDepPropPre, getPkgDepProp, validDistTag },
+} = require('porky-helper');
 
 let depsCache = null;
 
@@ -40,10 +43,10 @@ async function getInstalledDeps(opts) {
 
 async function installedDeps(opts) {
 	if (opts.install) {
-		await exec(`${opts.packageManager} install`, {
+		await pm(opts.packageManager, {
 			cwd: opts.cwd,
 			encoding: 'utf8',
-		});
+		}).install();
 	}
 }
 
