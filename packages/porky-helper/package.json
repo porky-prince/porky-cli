@@ -19,7 +19,7 @@
 		"directory": "packages/porky-helper"
 	},
 	"scripts": {
-		"test": "echo todo"
+		"test": "jest"
 	},
 	"dependencies": {
 		"chalk": "^4.0.0",

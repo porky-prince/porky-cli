@@ -44,8 +44,10 @@ async function getInstalledDeps(opts) {
 async function installedDeps(opts) {
 	if (opts.install) {
 		await pm(opts.packageManager, {
-			cwd: opts.cwd,
-			encoding: 'utf8',
+			execOpts: {
+				cwd: opts.cwd,
+				encoding: 'utf8',
+			},
 		}).install();
 	}
 }
