@@ -1,7 +1,8 @@
+const path = require('path');
 const _ = require('lodash');
 const { pkgDepPropPre } = require('./helper');
 
-module.exports = {
+const checker = (module.exports = {
 	/**
 	 * Return a check number option function
 	 * @param opt
@@ -45,4 +46,13 @@ module.exports = {
 
 		return pkgDepPropPre[index >= 0 ? index : 0];
 	},
-};
+
+	isJsFile(filePath) {
+		return checker.typeOfFile(filePath, '.js');
+	},
+
+	typeOfFile(filePath, fileExt) {
+		const ext = path.parse(filePath).ext;
+		return Boolean(ext) && (fileExt ? fileExt === ext : true);
+	},
+});

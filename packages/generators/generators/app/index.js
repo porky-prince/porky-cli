@@ -111,7 +111,7 @@ module.exports = class extends AbstractGenerator {
 					prompt.required = true;
 					break;
 				case 'version':
-					prompt.default = '1.0.0';
+					prompt.default = '0.0.0';
 					break;
 				case 'license':
 					prompt.default = 'MIT';

@@ -4,7 +4,8 @@ module.exports = (cmdName, config) => {
 	const program = createCommand(cmdName || 'config');
 	program
 		.description(`Manages the ${config.fullName} configuration file.`)
-		.usage('<cmd> [options]')
+		.arguments('<command>')
+		.usage('<command> [options]')
 		.command('get <key>')
 		.description('get config item')
 		.action(key => {

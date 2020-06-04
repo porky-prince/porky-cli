@@ -45,7 +45,7 @@ describe('test:app', () => {
 
 					assert.jsonFileContent(PKG, {
 						name: 'demo',
-						version: '1.0.0',
+						version: '0.0.0',
 						description: '',
 						keywords: [''],
 						author: '',

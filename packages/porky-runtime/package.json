@@ -1,0 +1,35 @@
+{
+	"name": "generator-porky-runtime",
+	"version": "0.0.0",
+	"description": "Generate porky-cli exec command runtime directory",
+	"author": "Porky Kay",
+	"homepage": "https://github.com/porky-prince/porky-cli/packages/porky-runtime#readme",
+	"bugs": "https://github.com/porky-prince/porky-cli/issues",
+	"license": "MIT",
+	"main": "app/index.js",
+	"files": [
+		"app"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/porky-prince/porky-cli.git",
+		"directory": "packages/porky-runtime"
+	},
+	"scripts": {
+		"test": "echo todo"
+	},
+	"dependencies": {
+		"yeoman-generator": "^4.5.0"
+	},
+	"keywords": [
+		"porky",
+		"cli",
+		"yeoman",
+		"yo",
+		"generator",
+		"runtime"
+	]
+}

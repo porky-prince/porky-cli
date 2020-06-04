@@ -9,22 +9,22 @@ function testName(name) {
 }
 
 module.exports = class Config {
-	constructor(name, configPath, defaultConfig = {}) {
+	constructor(name, configDir, defaultConfig = {}) {
 		if (!testName(name)) logger.throwErr('The config name is required and legal(^[\\w-.]+$)');
 		this._name = name;
-		this._configPath = path.join(configPath || homedir, name);
+		this._configDir = configDir || path.join(homedir, name);
 		this._isLimit = Object.keys(defaultConfig).length > 0;
 		this._defaultConfig = defaultConfig;
-		this._config = fs.readJsonSync(this.fullPath, { throws: false }) || {};
+		this._config = fs.readJsonSync(this.configPath, { throws: false }) || {};
 		this.mergeDefault(defaultConfig);
 	}
 
-	get configPath() {
-		return this._configPath;
+	get configDir() {
+		return this._configDir;
 	}
 
-	get fullPath() {
-		return path.join(this.configPath, this.fullName);
+	get configPath() {
+		return path.join(this.configDir, this.fullName);
 	}
 
 	get fullName() {
@@ -36,7 +36,7 @@ module.exports = class Config {
 	}
 
 	save() {
-		fs.outputJsonSync(this.fullPath, this._config, { spaces: 4 });
+		fs.outputJsonSync(this.configPath, this._config, { spaces: 4 });
 	}
 
 	keys() {

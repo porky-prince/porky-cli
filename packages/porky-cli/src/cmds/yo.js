@@ -6,7 +6,7 @@ const program = createCommand('yo');
 const { BASE } = require('../const');
 const { yoCliFile, runYo } = require('../helper');
 const { app } = require('@porky-prince/generator-generators');
-const { helper, checker } = require('porky-helper');
+const { helper } = require('porky-helper');
 
 function runLink(packageManager) {
 	return helper
@@ -26,7 +26,7 @@ function runLink(packageManager) {
 		});
 }
 
-module.exports = () => {
+module.exports = ctx => {
 	return program
 		.usage('[options]')
 		.description('CLI tool for running Yeoman generators http://yeoman.io')
@@ -34,7 +34,6 @@ module.exports = () => {
 		.option('--yoh', 'the yo help')
 		.option('--yov', 'the yo version')
 		.option('--myo', 'some custom generators')
-		.option('-m, --packageManager <name>', 'npm or yarn', checker.checkPkgMgr, 'npm')
 		.option('--link', 'add yo to global, like `npm link yo`')
 		.action(opts => {
 			if (opts.yoh) {
@@ -44,7 +43,7 @@ module.exports = () => {
 			} else if (opts.myo) {
 				runYo(app);
 			} else if (opts.link) {
-				runLink(opts.packageManager);
+				runLink(ctx.packageManager);
 			} else {
 				runYo.apply(null, opts.args);
 			}

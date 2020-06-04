@@ -37,7 +37,7 @@ describe(require('../package.json').description, () => {
 		expect(Config.testName('%porky% $config')).toBe(false);
 	});
 
-	function common(config, destPath, hasDefaultConfig) {
+	function common(config, configDir, hasDefaultConfig) {
 		expect(config.get('linuxPath')).toBe(configJson.linuxPath);
 		config.del('linuxPath');
 		expect(config.get('linuxPath')).not.toBe(configJson.linuxPath);
@@ -47,7 +47,7 @@ describe(require('../package.json').description, () => {
 		expect(config.get('winPath')).toBe(newWinPath);
 		config.set('other', 'some val');
 		expect(config.get('other')).toBe(hasDefaultConfig ? '' : 'some val');
-		config = new Config(configName, destPath); // Reload
+		config = new Config(configName, configDir); // Reload
 		expect(config.get('winPath')).toBe(newWinPath);
 		expect(config.get('linuxPath')).toBe('');
 		expect(config.get('other')).toBe(hasDefaultConfig ? '' : 'some val');
@@ -55,15 +55,16 @@ describe(require('../package.json').description, () => {
 
 	it('config dose not exist', () => {
 		return runByOpt().then(destPath => {
-			const configPath = path.join(destPath, configName, configFile);
+			const configDir = path.join(destPath, configName);
+			const configPath = path.join(configDir, configFile);
 			assert.noFile(configPath);
-			const config = new Config(configName, destPath);
+			const config = new Config(configName, configDir);
 			expect(config.keys().length).toBe(0);
 			Object.keys(configJson).forEach(key => {
 				config.set(key, configJson[key]);
 			});
 			assert.jsonFileContent(configPath, configJson);
-			common(config, destPath);
+			common(config, configDir);
 		});
 	});
 
@@ -71,21 +72,23 @@ describe(require('../package.json').description, () => {
 		return runByOpt({
 			createConfig: true,
 		}).then(destPath => {
-			const configPath = path.join(destPath, configName, configFile);
+			const configDir = path.join(destPath, configName);
+			const configPath = path.join(configDir, configFile);
 			assert.jsonFileContent(configPath, configJson);
-			const config = new Config(configName, destPath);
+			const config = new Config(configName, configDir);
 			expect(config.keys().length).toBe(Object.keys(configJson).length);
-			common(config, destPath);
+			common(config, configDir);
 		});
 	});
 
 	it('config dose not exist and has default config', () => {
 		return runByOpt().then(destPath => {
-			const configPath = path.join(destPath, configName, configFile);
+			const configDir = path.join(destPath, configName);
+			const configPath = path.join(configDir, configFile);
 			assert.noFile(configPath);
-			const config = new Config(configName, destPath, configJson);
+			const config = new Config(configName, configDir, configJson);
 			expect(config.keys().length).toBe(Object.keys(configJson).length);
-			common(config, destPath, true);
+			common(config, configDir, true);
 		});
 	});
 
@@ -93,11 +96,12 @@ describe(require('../package.json').description, () => {
 		return runByOpt({
 			createConfig: true,
 		}).then(destPath => {
-			const configPath = path.join(destPath, configName, configFile);
+			const configDir = path.join(destPath, configName);
+			const configPath = path.join(configDir, configFile);
 			assert.jsonFileContent(configPath, configJson);
-			const config = new Config(configName, destPath, configJson);
+			const config = new Config(configName, configDir, configJson);
 			expect(config.keys().length).toBe(Object.keys(configJson).length);
-			common(config, destPath, true);
+			common(config, configDir, true);
 		});
 	});
 });

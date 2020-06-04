@@ -73,7 +73,7 @@ module.exports = {
 	 * @returns {Promise<string>}
 	 */
 	async getLatestVersion(pkg, opts) {
-		return exec(`npm view ${pkg} version`, opts).then(stdout => {
+		return exec(`npm view ${pkg} version`, opts, true).then(stdout => {
 			return _.trim(stdout);
 		});
 	},
