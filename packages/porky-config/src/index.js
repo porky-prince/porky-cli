@@ -2,7 +2,6 @@ const homedir = require('os').homedir();
 const fs = require('fs-extra');
 const path = require('path');
 const cli = require('./cli');
-const { logger, myLogger } = require('porky-helper').logger;
 
 function testName(name) {
 	return /^[\w-.]+$/.test(name);
@@ -10,7 +9,7 @@ function testName(name) {
 
 module.exports = class Config {
 	constructor(name, configDir, defaultConfig = {}) {
-		if (!testName(name)) logger.throwErr('The config name is required and legal(^[\\w-.]+$)');
+		if (!testName(name)) throw new Error('The config name is required and legal(^[\\w-.]+$)');
 		this._name = name;
 		this._configDir = configDir || path.join(homedir, name);
 		this._isLimit = Object.keys(defaultConfig).length > 0;
@@ -49,13 +48,13 @@ module.exports = class Config {
 
 	get(key, showLog) {
 		const val = this._config[key] || '';
-		showLog && myLogger.log(val);
+		showLog && console.log(val);
 		return val;
 	}
 
 	set(key, val) {
 		if (this.limit(key)) {
-			logger.error('key dose not exist:', key);
+			console.error('key dose not exist:', key);
 			return;
 		}
 
@@ -74,11 +73,11 @@ module.exports = class Config {
 	}
 
 	list(showDefaultConfig) {
-		myLogger.info('current config');
-		myLogger.log(this.toString());
+		console.info('current config');
+		console.log(this.toString());
 		if (showDefaultConfig) {
-			myLogger.info('default config');
-			myLogger.log(JSON.stringify(this._defaultConfig, null, 4));
+			console.info('default config');
+			console.log(JSON.stringify(this._defaultConfig, null, 4));
 		}
 	}
 

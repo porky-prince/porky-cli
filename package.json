@@ -18,6 +18,7 @@
 		"pretest": "npm run lint",
 		"test:dvs": "lerna run test --scope=dependency-version-sync",
 		"test:generators": "lerna run test --scope=@porky-prince/generator-generators",
+		"test:rooter": "lerna run test --scope=module-rooter",
 		"test:cli": "lerna run test --scope=porky-cli",
 		"test:config": "lerna run test --scope=porky-config",
 		"test:helper": "lerna run test --scope=porky-helper",

@@ -28,7 +28,7 @@ function runByOpt(opts = {}) {
 	return helpers.run(TestGenerator).withOptions(opts);
 }
 
-describe(require('../package.json').description, () => {
+describe('test:porky-config', () => {
 	it('test config name', () => {
 		expect(Config.testName('porkyrc')).toBe(true);
 		expect(Config.testName('porkyrc_1.0')).toBe(true);
