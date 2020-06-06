@@ -46,11 +46,11 @@ describe('test:porky-config', () => {
 		config.set('winPath', newWinPath);
 		expect(config.get('winPath')).toBe(newWinPath);
 		config.set('other', 'some val');
-		expect(config.get('other')).toBe(hasDefaultConfig ? '' : 'some val');
+		expect(config.get('other')).toBe(hasDefaultConfig ? null : 'some val');
 		config = new Config(configName, configDir); // Reload
 		expect(config.get('winPath')).toBe(newWinPath);
-		expect(config.get('linuxPath')).toBe('');
-		expect(config.get('other')).toBe(hasDefaultConfig ? '' : 'some val');
+		expect(config.get('linuxPath')).toBe(null);
+		expect(config.get('other')).toBe(hasDefaultConfig ? null : 'some val');
 	}
 
 	it('config dose not exist', () => {

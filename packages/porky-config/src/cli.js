@@ -9,7 +9,8 @@ module.exports = (cmdName, config) => {
 		.command('get <key>')
 		.description('get config item')
 		.action(key => {
-			config.get(key, true);
+			const val = config.get(key);
+			console.log(val === null ? '' : val);
 		});
 	program
 		.command('set <key> <value>')
@@ -24,7 +25,9 @@ module.exports = (cmdName, config) => {
 					value = false;
 				}
 
-				config.set(key, value);
+				if (!config.set(key, value)) {
+					console.error('key dose not exist:', key);
+				}
 			}
 		});
 	program

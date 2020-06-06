@@ -1,7 +1,7 @@
 const log4js = require('log4js');
 const chalk = require('chalk');
 const logSymbols = {
-	info: chalk.blue('i'),
+	info: chalk.blueBright('i'),
 	success: chalk.green('√'),
 	warning: chalk.yellow('!'),
 	error: chalk.red('×'),
@@ -10,6 +10,10 @@ const logSymbols = {
 log4js.configure({
 	appenders: { out: { type: 'stdout', layout: { type: 'messagePassThrough' } } },
 	categories: { default: { appenders: ['out'], level: 'all' } },
+});
+
+const logLevels = log4js.levels.levels.map(level => {
+	return level.levelStr;
 });
 
 const logger = log4js.getLogger();
@@ -27,7 +31,7 @@ class Logger {
 	}
 
 	info() {
-		this._logger.info(logSymbols.info, chalk.blue.apply(chalk, arguments));
+		this._logger.info(logSymbols.info, chalk.white.apply(chalk, arguments));
 	}
 
 	warn() {
@@ -66,6 +70,8 @@ module.exports = {
 	// Because log4js level = 'off' will close all log, whether it is logger or new logger
 	// Sometimes I want to keep a log when level = 'off'
 	myLogger: new Logger(console),
+
+	logLevels,
 
 	log4js,
 

@@ -1,25 +1,19 @@
-const { CONFIG, PLUGINS_CONFIG } = require('./const');
-const path = require('path');
+const {
+	defaultConfig,
+	defaultRuntimeConfig,
+	config,
+	runtimeConfig,
+	pluginsConfig,
+} = require('./config');
 const _ = require('lodash');
-const homedir = require('os').homedir();
-const Config = require('porky-config');
-const configDir = path.join(homedir, CONFIG);
-const defaultConfig = {
-	packageManager: 'npm',
-	registry: 'https://registry.npmjs.org',
-	logLevel: 'all',
-	runtimeDir: configDir,
-};
-const config = new Config(CONFIG, configDir, defaultConfig);
-const pluginsConfig = new Config(PLUGINS_CONFIG, configDir);
 
 class Context {
 	constructor() {
 		this.version = '';
 	}
 
-	get config() {
-		return config;
+	get isInit() {
+		return config.isSaved;
 	}
 
 	get pluginsConfig() {
@@ -27,12 +21,18 @@ class Context {
 	}
 }
 
-_.each(defaultConfig, (val, key) => {
-	Object.defineProperty(Context.prototype, key, {
-		get() {
-			return config.get(key);
-		},
-	});
-});
+function bindProp(config) {
+	return (val, key) => {
+		Object.defineProperty(Context.prototype, key, {
+			get() {
+				return config.get(key);
+			},
+		});
+	};
+}
+
+_.each(defaultConfig, bindProp(config));
+
+_.each(defaultRuntimeConfig, bindProp(runtimeConfig));
 
 module.exports = new Context();

@@ -5,7 +5,9 @@ module.exports = {
 	BASE,
 	NAME: 'porky',
 	CONFIG: '.porkyrc',
+	RUNTIME_CONFIG: '.porkyrc-runtime',
 	PLUGINS_CONFIG: '.porkyrc-plugins',
+	CUSTOM_CONFIG: '.porkyrc-custom',
 	PLUGIN_TYPE: {
 		UNKNOWN: -1,
 		LOST: 0,

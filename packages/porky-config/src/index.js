@@ -1,3 +1,4 @@
+const { EventEmitter } = require('events');
 const homedir = require('os').homedir();
 const fs = require('fs-extra');
 const path = require('path');
@@ -7,15 +8,22 @@ function testName(name) {
 	return /^[\w-.]+$/.test(name);
 }
 
-module.exports = class Config {
+const Config = (module.exports = class extends EventEmitter {
 	constructor(name, configDir, defaultConfig = {}) {
+		super();
 		if (!testName(name)) throw new Error('The config name is required and legal(^[\\w-.]+$)');
 		this._name = name;
 		this._configDir = configDir || path.join(homedir, name);
 		this._isLimit = Object.keys(defaultConfig).length > 0;
 		this._defaultConfig = defaultConfig;
-		this._config = fs.readJsonSync(this.configPath, { throws: false }) || {};
+		const config = fs.readJsonSync(this.configPath, { throws: false });
+		this._isSaved = Boolean(config);
+		this._config = config || {};
 		this.mergeDefault(defaultConfig);
+	}
+
+	get isSaved() {
+		return this._isSaved;
 	}
 
 	get configDir() {
@@ -46,26 +54,37 @@ module.exports = class Config {
 		return this._isLimit && !(key in this._defaultConfig);
 	}
 
-	get(key, showLog) {
-		const val = this._config[key] || '';
-		showLog && console.log(val);
-		return val;
+	get(key) {
+		const val = this._config[key];
+		return val === undefined ? null : val;
 	}
 
 	set(key, val) {
+		let flag = true;
+		const oldVal = this.get(key);
 		if (this.limit(key)) {
-			console.error('key dose not exist:', key);
-			return;
+			flag = false;
+		} else {
+			this._config[key] = val;
+			this.save();
 		}
 
-		this._config[key] = val;
-		this.save();
+		this.emit('set', key, val, oldVal, flag);
+		return flag;
 	}
 
 	del(key) {
-		if (this.limit(key)) return;
-		delete this._config[key];
-		this.save();
+		let flag = true;
+		const oldVal = this.get(key);
+		if (this.limit(key)) {
+			flag = false;
+		} else {
+			delete this._config[key];
+			this.save();
+		}
+
+		this.emit('del', key, oldVal, flag);
+		return flag;
 	}
 
 	toString() {
@@ -85,16 +104,17 @@ module.exports = class Config {
 		this._config = {};
 		this.mergeDefault(this._defaultConfig);
 		this.save();
+		this.emit('reset');
 	}
 
 	mergeDefault(config) {
 		Object.keys(config).forEach(key => {
-			if (this._config[key] === null || this._config[key] === undefined) {
+			if (this.get(key) === null) {
 				this._config[key] = config[key];
 			}
 		});
 		return this;
 	}
-};
+});
 
-module.exports.testName = testName;
+Config.testName = testName;
