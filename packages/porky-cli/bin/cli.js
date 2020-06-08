@@ -9,6 +9,7 @@ const ctx = require('../src/context');
 const cmdYo = require('../src/cmds/yo');
 const cmdAdd = require('../src/cmds/add');
 const cmdInit = require('../src/cmds/init');
+const cmdExec = require('../src/cmds/exec');
 
 ctx.version = pkg.version;
 
@@ -34,6 +35,8 @@ if (ctx.isInit) {
 	program.addCommand(cmdInit(ctx));
 
 	program.addCommand(cmdAdd(ctx));
+
+	program.addCommand(cmdExec(ctx));
 
 	program.addCommand(cmdYo(ctx));
 
