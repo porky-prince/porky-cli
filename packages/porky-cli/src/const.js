@@ -9,8 +9,7 @@ module.exports = {
 	PLUGINS_CONFIG: '.porkyrc-plugins',
 	CUSTOM_CONFIG: '.porkyrc-custom',
 	PLUGIN_TYPE: {
-		UNKNOWN: -1,
-		LOST: 0,
+		UNKNOWN: 0,
 		REMOTE: 1,
 		LOCAL: 2,
 		FILE: 3,

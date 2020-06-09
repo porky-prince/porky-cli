@@ -24,6 +24,7 @@ function action() {
 			config.set(key, val);
 			runtimeConfig.set(key, val);
 		});
+		// Generate runtime dir
 		myLogger.success('init ok, thanks for using porky-cli!');
 		myLogger.info('input the `porky -h` to start using.');
 	});

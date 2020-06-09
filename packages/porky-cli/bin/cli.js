@@ -6,10 +6,11 @@ const { cliPath } = require('dependency-version-sync');
 const { config } = require('../src/config');
 const pkg = require('../package.json');
 const ctx = require('../src/context');
-const cmdYo = require('../src/cmds/yo');
-const cmdAdd = require('../src/cmds/add');
 const cmdInit = require('../src/cmds/init');
+const cmdAdd = require('../src/cmds/add');
+const cmdRemove = require('../src/cmds/remove');
 const cmdExec = require('../src/cmds/exec');
+const cmdYo = require('../src/cmds/yo');
 
 ctx.version = pkg.version;
 
@@ -35,6 +36,8 @@ if (ctx.isInit) {
 	program.addCommand(cmdInit(ctx));
 
 	program.addCommand(cmdAdd(ctx));
+
+	program.addCommand(cmdRemove(ctx));
 
 	program.addCommand(cmdExec(ctx));
 
