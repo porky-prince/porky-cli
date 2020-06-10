@@ -1,4 +1,5 @@
 const childProcess = require('child_process');
+const crypto = require('crypto');
 const _ = require('lodash');
 const versionSelectorType = require('version-selector-type');
 const pkgDepPropPre = ['', 'dev', 'optional'];
@@ -42,6 +43,8 @@ module.exports = {
 
 	spawn,
 
+	PKG: 'package.json',
+
 	// Package.json dependencies prop prefix
 	pkgDepPropPre,
 
@@ -80,5 +83,10 @@ module.exports = {
 
 	validDistTag(tag, strict) {
 		return Boolean(strict ? versionSelectorType.strict(tag) : versionSelectorType(tag));
+	},
+
+	md5(data) {
+		const md5 = crypto.createHash('md5');
+		return md5.update(data).digest('hex');
 	},
 };

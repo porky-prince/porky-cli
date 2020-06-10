@@ -15,12 +15,19 @@ const cmdYo = require('../src/cmds/yo');
 ctx.version = pkg.version;
 
 if (ctx.isInit) {
+	main();
+} else {
+	cmdInit(ctx);
+}
+
+async function main() {
 	const program = createCommand(NAME);
 	program
 		.version(pkg.version, '-V, --Version')
 		.description(pkg.description)
 		.usage('<command> [options]')
 		.option('--log-level <level>', 'log4js log level', 'all')
+		.option('-c, --cache', 'todo runtime cache', true)
 		.on('--help', () => {
 			console.log('');
 			console.log('Examples:');
@@ -48,6 +55,4 @@ if (ctx.isInit) {
 	program.addCommand(config.getCmd());
 
 	program.parse(process.argv);
-} else {
-	cmdInit(ctx);
 }

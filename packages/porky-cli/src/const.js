@@ -15,6 +15,10 @@ module.exports = {
 		FILE: 3,
 	},
 	CONFIG_JS: '.porkyrc.js',
+	CONFIG_MARKS: {
+		MARK: '@porkyrc',
+		NO_RUNTIME: '@noRuntime',
+	},
 	PKG: path.join(__dirname, '../package.json'),
 	CMDS: path.join(__dirname, 'cmds'),
 };
