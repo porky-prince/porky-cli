@@ -1,6 +1,8 @@
+const path = require('path');
 const childProcess = require('child_process');
 const crypto = require('crypto');
 const _ = require('lodash');
+const fs = require('fs-extra');
 const versionSelectorType = require('version-selector-type');
 const pkgDepPropPre = ['', 'dev', 'optional'];
 const pkgDepPropPreStr = JSON.stringify(pkgDepPropPre);
@@ -38,12 +40,24 @@ async function exec(cmd, opts, hideLog) {
 	});
 }
 
-module.exports = {
+const that = (module.exports = {
 	exec,
 
 	spawn,
 
-	PKG: 'package.json',
+	pkgPath(root) {
+		return path.join(root, 'package.json');
+	},
+
+	async pkgJson(root, json, opts) {
+		const pkgPath = that.pkgPath(root);
+		return json ? fs.writeJson(pkgPath, json, opts) : fs.readJson(pkgPath, opts);
+	},
+
+	pkgJsonSync(root, json, opts) {
+		const pkgPath = that.pkgPath(root);
+		return json ? fs.writeJsonSync(pkgPath, json, opts) : fs.readJsonSync(pkgPath, opts);
+	},
 
 	// Package.json dependencies prop prefix
 	pkgDepPropPre,
@@ -89,4 +103,4 @@ module.exports = {
 		const md5 = crypto.createHash('md5');
 		return md5.update(data).digest('hex');
 	},
-};
+});

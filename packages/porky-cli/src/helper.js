@@ -1,7 +1,6 @@
 const validatePackageName = require('validate-npm-package-name');
 const path = require('path');
-const _ = require('lodash');
-const { checker, helper } = require('porky-helper');
+const { _, checker, helper } = require('porky-helper');
 const { PLUGIN_TYPE } = require('./const');
 const yoCliFiles = {};
 
@@ -52,6 +51,7 @@ module.exports = {
 
 	isCommander(obj) {
 		return (
+			_.isObject(obj) &&
 			_.isFunction(obj.help) &&
 			_.isFunction(obj.helpOption) &&
 			_.isFunction(obj.helpInformation)

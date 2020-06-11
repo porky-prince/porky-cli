@@ -1,6 +1,6 @@
-const fs = require('fs-extra');
 const { createCommand } = require('commander');
 const {
+	fs,
 	logger: { logger },
 	pm,
 	helper,

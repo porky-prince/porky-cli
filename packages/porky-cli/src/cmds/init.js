@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
-const _ = require('lodash');
 const {
+	_,
 	logger: { myLogger, chalk },
 } = require('porky-helper');
 const { defaultConfig, defaultRuntimeConfig, config, runtimeConfig } = require('../config');

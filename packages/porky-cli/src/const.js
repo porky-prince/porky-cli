@@ -1,8 +1,8 @@
 const path = require('path');
-const BASE = path.join(__dirname, '..');
+const ROOT = path.join(__dirname, '..');
 
 module.exports = {
-	BASE,
+	ROOT,
 	NAME: 'porky',
 	CONFIG: '.porkyrc',
 	RUNTIME_CONFIG: '.porkyrc-runtime',
@@ -14,11 +14,9 @@ module.exports = {
 		LOCAL: 2,
 		FILE: 3,
 	},
-	CONFIG_JS: '.porkyrc.js',
+	ENTRY_JS: '.porkyrc.js',
 	CONFIG_MARKS: {
 		MARK: '@porkyrc',
 		NO_RUNTIME: '@noRuntime',
 	},
-	PKG: path.join(__dirname, '../package.json'),
-	CMDS: path.join(__dirname, 'cmds'),
 };

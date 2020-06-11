@@ -4,8 +4,9 @@ const {
 	config,
 	runtimeConfig,
 	pluginsConfig,
+	customConfig,
 } = require('./config');
-const _ = require('lodash');
+const { _ } = require('porky-helper');
 
 class Context {
 	constructor() {
@@ -18,6 +19,10 @@ class Context {
 
 	get pluginsConfig() {
 		return pluginsConfig;
+	}
+
+	get customConfig() {
+		return customConfig;
 	}
 }
 

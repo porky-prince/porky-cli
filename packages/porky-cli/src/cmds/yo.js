@@ -1,28 +1,27 @@
-const { PKG } = require('../const');
-const fs = require('fs-extra');
-const _ = require('lodash');
 const { createCommand } = require('commander');
 const program = createCommand('yo');
-const { BASE } = require('../const');
+const { ROOT } = require('../const');
 const { yoCliFile, runYo } = require('../helper');
 const { app } = require('@porky-prince/generator-generators');
-const { helper } = require('porky-helper');
+const {
+	_,
+	helper: { exec, pkgJson },
+} = require('porky-helper');
 
 function runLink(packageManager) {
-	return helper
-		.exec('yo --version')
+	return exec('yo --version')
 		.then(stdout => {
 			console.warn(`yo(${_.trim(stdout)}) is already exists globally`);
 		})
 		.catch(async () => {
-			const pkg = await fs.readJson(PKG);
+			const pkg = await pkgJson(ROOT);
 			['yo', 'yo-complete'].forEach(cliName => {
 				pkg.bin[cliName] = yoCliFile(cliName);
 			});
-			await fs.writeJson(PKG, pkg, {
+			await pkgJson(ROOT, pkg, {
 				spaces: 4,
 			});
-			await helper.exec(packageManager + ' link', { cwd: BASE });
+			await exec(packageManager + ' link', { cwd: ROOT });
 		});
 }
 

@@ -1,9 +1,9 @@
 const { CONFIG, RUNTIME_CONFIG, PLUGINS_CONFIG, CUSTOM_CONFIG } = require('./const');
 const {
+	_,
 	logger: { logLevels },
 } = require('porky-helper');
 const path = require('path');
-const _ = require('lodash');
 const homedir = require('os').homedir();
 const Config = require('porky-config');
 const configDir = path.join(homedir, CONFIG);
