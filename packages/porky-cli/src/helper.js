@@ -28,7 +28,7 @@ function checkPlugin(plugin) {
 		return PLUGIN_TYPE.REMOTE;
 	}
 
-	if (path.isAbsolute(plugin)) {
+	if (path.isAbsolute(plugin) && path.parse(plugin).name) {
 		// Local module or file
 		return checker.isJsFile(plugin) ? PLUGIN_TYPE.FILE : PLUGIN_TYPE.LOCAL;
 	}

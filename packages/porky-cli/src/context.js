@@ -6,6 +6,7 @@ const {
 	pluginsConfig,
 	customConfig,
 } = require('./config');
+const path = require('path');
 const { _ } = require('porky-helper');
 
 class Context {
@@ -23,6 +24,10 @@ class Context {
 
 	get customConfig() {
 		return customConfig;
+	}
+
+	get runtimeTempDir() {
+		return path.join(this.runtimeDir, 'temp');
 	}
 }
 
