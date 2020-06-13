@@ -6,7 +6,6 @@
 	"homepage": "https://github.com/porky-prince/porky-cli/packages/porky-cli#readme",
 	"bugs": "https://github.com/porky-prince/porky-cli/issues",
 	"license": "MIT",
-	"main": "bin/cli.js",
 	"bin": {
 		"porky": "bin/cli.js"
 	},

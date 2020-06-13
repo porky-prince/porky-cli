@@ -6,6 +6,7 @@ const { cliPath } = require('dependency-version-sync');
 const { config } = require('../src/config');
 const pkg = require('../package.json');
 const ctx = require('../src/context');
+const pluginMgr = require('../src/pluginMgr');
 const cmdInit = require('../src/cmds/init');
 const cmdAdd = require('../src/cmds/add');
 const cmdRemove = require('../src/cmds/remove');
@@ -21,6 +22,7 @@ if (ctx.isInit) {
 }
 
 async function main() {
+	await pluginMgr.init(ctx);
 	const program = createCommand(NAME);
 	program
 		.version(pkg.version, '-V, --Version')

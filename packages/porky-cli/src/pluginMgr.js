@@ -13,8 +13,10 @@ const { isCommander } = require('./helper');
 class Plugin {
 	constructor(name, type) {
 		this._name = name;
-		this._cmdName = path.parse(name).name;
-		this._tempName = md5(name);
+		this._shortName = path.parse(name).name;
+		// Short name is default cmd name
+		this._cmdName = this._shortName;
+		this._tempDirName = md5(name);
 		this._type = type;
 		this._cmd = null;
 		this._error = null;
@@ -24,16 +26,20 @@ class Plugin {
 		return this._name;
 	}
 
+	get shortName() {
+		return this._shortName;
+	}
+
 	get cmdName() {
 		return this._cmdName;
 	}
 
 	set cmdName(value) {
-		this._cmdName = value;
+		if (value) this._cmdName = value;
 	}
 
-	get tempName() {
-		return this._tempName;
+	get tempDirName() {
+		return this._tempDirName;
 	}
 
 	get type() {
@@ -48,12 +54,8 @@ class Plugin {
 		return this._cmd;
 	}
 
-	getCmdName() {
-		return this._cmd.name();
-	}
-
 	setCmd(cmd) {
-		this._cmd = cmd;
+		if (cmd) this._cmd = cmd.name(this._cmdName);
 	}
 
 	hasError() {
@@ -89,7 +91,7 @@ class PluginMgr {
 		const plugin = this.getByName(name);
 		if (plugin !== null) {
 			if (plugin.hasCmd()) {
-				delete this._cmdNames[plugin.getCmdName()];
+				delete this._cmdNames[plugin.cmdName];
 			}
 
 			delete this._plugins[name];
@@ -107,124 +109,143 @@ class PluginMgr {
 	 * @returns {string}
 	 */
 	fixCmdName(cmdName, suffix = 0) {
-		const _cmdName = suffix > 0 ? cmdName + suffix : cmdName;
-		if (this.hasCmd(_cmdName)) {
+		const name = suffix > 0 ? cmdName + suffix : cmdName;
+		if (this.hasCmd(name)) {
 			return this.fixCmdName(cmdName, ++suffix);
 		}
 
-		return _cmdName;
+		return name;
 	}
 
 	/**
 	 * Set command to plugin
-	 * @param plugin
+	 * @param {Plugin} plugin
 	 * @param cmdName
 	 * @param entryPath
 	 * @param entry
 	 * @returns {boolean}
 	 */
-	setCmd2Plugin(plugin, cmdName, entryPath, entry) {
+	setCmd2Plugin(plugin, entryPath, entry) {
 		try {
 			entry = entry || require(entryPath);
 			if (_.isFunction(entry)) {
 				// Create commander
-				entry = createCommand(cmdName)
+				entry = createCommand(plugin.cmdName)
 					.description('unknown params, up to you')
 					.allowUnknownOption()
+					// TODO
 					.action(entry);
 			} else if (isCommander(entry)) {
 				// Commander
 			} else {
 				entry = null;
 				plugin.setError(
-					"Error: return value 'entry' must be a function or commander",
+					'the return object "entry" prop should be a function or commander.',
 					entryPath
 				);
 			}
 		} catch (e) {
 			entry = null;
-			plugin.set(e.message, e.stack);
+			plugin.setError(e.message, e.stack);
 		}
 
 		if (entry) {
-			plugin.setCmd(entry.name(this.fixCmdName(entry.name())));
-			this._cmdNames[entry.name()] = plugin.name;
+			plugin.cmdName = this.fixCmdName(entry.name());
+			plugin.setCmd(entry);
+			this._cmdNames[plugin.cmdName] = plugin.name;
 			return true;
 		}
 
 		return false;
 	}
 
-	async setCmd2PluginByPkg(plugin, root) {
+	async dealPluginByEntryJs(plugin, entryPath, entryContent) {
+		if (!entryContent) entryContent = await fs.readFile(entryPath, 'utf8');
+
+		if (!entryContent) {
+			plugin.setError('entry js is empty.', entryPath);
+			return false;
+		}
+
+		if (entryContent.indexOf(CONFIG_MARKS.MARK) === -1)
+			return this.setCmd2Plugin(plugin, entryPath);
+
+		try {
+			let exports = require(entryPath);
+			if (_.isFunction(exports)) {
+				exports = exports(this._ctx);
+				if (pIsPromise(exports)) exports = await exports;
+				if (_.isObject(exports)) {
+					if (exports.entry) {
+						plugin.cmdName = exports.name;
+						return this.setCmd2Plugin(plugin, entryPath, exports.entry);
+					}
+
+					plugin.setError(`the return object 'entry' prop is require.`, entryPath);
+				} else {
+					plugin.setError(
+						`the export function should be return a object, but the return is '${exports}'.`,
+						entryPath
+					);
+				}
+			} else {
+				plugin.setError(
+					`should be export a function, but the return is '${exports}'.`,
+					entryPath
+				);
+			}
+		} catch (e) {
+			plugin.setError(e.message, e.stack);
+		}
+
+		return false;
+	}
+
+	async dealPluginByPkg(plugin, root) {
 		if (await fs.pathExists(pkgPath(root))) {
-			const pkg = await pkgJson(root, { throws: false });
+			const pkg = await pkgJson(root, null, { throws: false });
 			if (pkg && checker.isJsFile(pkg.main)) {
-				return this.setCmd2Plugin(plugin, pkg.name, path.join(root, pkg.main));
+				plugin.cmdName = pkg.name;
+				return this.setCmd2Plugin(plugin, path.join(root, pkg.main));
 			}
 		}
 
 		return false;
 	}
 
-	async setCmd2PluginByIndexJs(plugin, root) {
+	async dealPluginByIndexJs(plugin, root) {
 		const indexJsPath = path.join(root, 'index.js');
 		if (await fs.pathExists(indexJsPath)) {
-			return this.setCmd2Plugin(plugin, plugin.cmdName, indexJsPath);
+			return this.setCmd2Plugin(plugin, indexJsPath);
 		}
 
 		return false;
+	}
+
+	async dealPluginByDefault(plugin, root) {
+		if (!(await this.dealPluginByPkg(plugin, root))) {
+			if (!(await this.dealPluginByIndexJs(plugin, root))) {
+				plugin.setError(`invalid plugin '${plugin.shortName}'.`, root);
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	async addRemotePlugin(plugin) {
 		const ctx = this._ctx;
 		const { findPkgRoot } = require(ctx.runtimeDir);
-		const name = plugin.name;
-		const root = findPkgRoot(name);
+		const root = findPkgRoot(plugin.name);
 		if (root) {
-			const pkg = await pkgJson(root);
 			const entryPath = path.join(root, ENTRY_JS);
-			let cmdName = pkg.name;
 			if (await fs.pathExists(entryPath)) {
-				const content = await fs.readFile(entryPath, 'utf8');
-				if (content.indexOf(CONFIG_MARKS.MARK) > 0) {
-					let exports = require(entryPath);
-					if (_.isFunction(exports)) {
-						exports = exports(ctx);
-						if (pIsPromise(exports)) exports = await exports;
-						if (_.isObject(exports)) {
-							if (exports.entry) {
-								cmdName = exports.name || cmdName;
-								this.setCmd2Plugin(plugin, cmdName, entryPath, exports.entry);
-							} else {
-								plugin.setError(
-									`Error: return value 'entry' cannot be '${exports.entry}'`,
-									entryPath
-								);
-							}
-						} else {
-							plugin.setError(`Error: invalid return value '${exports}'`, entryPath);
-						}
-					} else {
-						plugin.setError(
-							`Error: must be exports a function '${exports}'`,
-							entryPath
-						);
-					}
-				} else {
-					this.setCmd2Plugin(plugin, cmdName, entryPath);
-				}
+				await this.dealPluginByEntryJs(plugin, entryPath);
 			} else {
-				const entryIndexPath = path.join(root, 'index.js');
-				if (checker.isJsFile(pkg.main)) {
-					this.setCmd2Plugin(plugin, cmdName, path.join(root, pkg.main));
-				} else if (await fs.pathExists(entryIndexPath)) {
-					this.setCmd2Plugin(plugin, cmdName, entryIndexPath);
-				} else {
-					plugin.setError(`Error: invalid plugin ${name}`, root);
-				}
+				await this.dealPluginByDefault(plugin, root);
 			}
 		} else {
-			plugin.setError(`Error: Cannot find module '${name}'`);
+			plugin.setError(`Cannot find module '${plugin.name}'.`, ctx.runtimeDir);
 		}
 
 		this.add(plugin);
@@ -232,61 +253,58 @@ class PluginMgr {
 
 	async addLocalPlugin(plugin, cache) {
 		const ctx = this._ctx;
-		let root = plugin.name; // A path
-		const name = path.parse(root).name; // Dir name
-		const tempDir = path.join(ctx.runtimeTempDir, plugin.tempName);
-		if (await fs.pathExists(tempDir)) {
+		const tempDirPath = path.join(ctx.runtimeTempDir, plugin.tempDirName);
+		// A path for local module here
+		const root = plugin.name;
+		if (await fs.pathExists(tempDirPath)) {
 			if (cache) {
-				// Do
+				// Do something
 			} else {
-				// Do
+				// Do something
 			}
 		} else if (await fs.pathExists(root)) {
 			let entryPath = path.join(root, ENTRY_JS);
-			let cmdName = name;
 			if (await fs.pathExists(entryPath)) {
-				const content = await fs.readFile(entryPath, 'utf8');
-				if (content.indexOf(CONFIG_MARKS.NO_RUNTIME) === -1) {
-					await fs.copy(root, tempDir);
-					root = tempDir;
-					entryPath = path.join(root, ENTRY_JS);
+				const entryContent = await fs.readFile(entryPath, 'utf8');
+				if (entryContent.indexOf(CONFIG_MARKS.NO_RUNTIME) === -1) {
+					await fs.copy(root, tempDirPath);
+					entryPath = path.join(tempDirPath, ENTRY_JS);
 				}
 
-				if (content.indexOf(CONFIG_MARKS.MARK) > 0) {
-					let exports = require(entryPath);
-					if (_.isFunction(exports)) {
-						exports = exports(ctx);
-						if (pIsPromise(exports)) exports = await exports;
-						if (_.isObject(exports)) {
-							if (exports.entry) {
-								cmdName = exports.name || cmdName;
-								this.setCmd2Plugin(plugin, cmdName, entryPath, exports.entry);
-							} else {
-								plugin.setError(
-									`Error: return value 'entry' cannot be '${exports.entry}'`,
-									entryPath
-								);
-							}
-						} else {
-							plugin.setError(`Error: invalid return value '${exports}'`, entryPath);
-						}
-					} else {
-						plugin.setError(
-							`Error: must be exports a function '${exports}'`,
-							entryPath
-						);
-					}
-				} else {
-					this.setCmd2Plugin(plugin, cmdName, entryPath);
-				}
+				await this.dealPluginByEntryJs(plugin, entryPath, entryContent);
 			} else {
-				await fs.copy(root, tempDir);
-				root = tempDir;
-
-				plugin.setError(`Error: invalid plugin ${name}`, root);
+				await fs.copy(root, tempDirPath);
+				await this.dealPluginByDefault(plugin, tempDirPath);
 			}
 		} else {
-			plugin.setError(`Error: Cannot find module ${name}`, root);
+			plugin.setError(`Cannot find plugin '${plugin.shortName}'.`, root);
+		}
+
+		this.add(plugin);
+	}
+
+	async addFilePlugin(plugin, cache) {
+		const ctx = this._ctx;
+		const tempDirPath = path.join(ctx.runtimeTempDir, plugin.tempDirName);
+		// A path for local file here
+		const root = plugin.name;
+		if (await fs.pathExists(tempDirPath)) {
+			if (cache) {
+				// Do something
+			} else {
+				// Do something
+			}
+		} else if (await fs.pathExists(root)) {
+			let entryPath = root;
+			const entryContent = await fs.readFile(entryPath, 'utf8');
+			if (entryContent.indexOf(CONFIG_MARKS.NO_RUNTIME) === -1) {
+				entryPath = path.join(tempDirPath, plugin.shortName + '.js');
+				await fs.copy(root, entryPath);
+			}
+
+			await this.dealPluginByEntryJs(plugin, entryPath, entryContent);
+		} else {
+			plugin.setError(`Cannot find plugin '${plugin.shortName}'.`, root);
 		}
 
 		this.add(plugin);
@@ -294,24 +312,24 @@ class PluginMgr {
 
 	async init(ctx) {
 		this._ctx = ctx;
-		const pluginNames = ctx.pluginsConfig.keys();
-		for (let i = 0, length = pluginNames.length; i < length; i++) {
-			const name = pluginNames[i];
-			const type = ctx.pluginsConfig.get(name);
-			const plugin = new Plugin(name, type);
-			switch (type) {
-				case PLUGIN_TYPE.REMOTE:
-					this.addRemotePlugin(plugin);
-					break;
-				case PLUGIN_TYPE.LOCAL:
-					this.addLocalPlugin(plugin);
-					break;
-				case PLUGIN_TYPE.FILE:
-					break;
-				default:
-					break;
-			}
-		}
+		await Promise.all(
+			ctx.pluginsConfig.keys().map(name => {
+				const type = ctx.pluginsConfig.get(name);
+				const plugin = new Plugin(name, type);
+				switch (type) {
+					case PLUGIN_TYPE.REMOTE:
+						return this.addRemotePlugin(plugin);
+					case PLUGIN_TYPE.LOCAL:
+						return this.addLocalPlugin(plugin);
+					case PLUGIN_TYPE.FILE:
+						return this.addFilePlugin(plugin);
+					default:
+						plugin.setError(`unknown plugin '${name}'.`);
+						this.add(plugin);
+						return Promise.resolve(plugin);
+				}
+			})
+		);
 	}
 }
 
