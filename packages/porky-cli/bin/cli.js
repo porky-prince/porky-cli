@@ -28,7 +28,7 @@ async function main() {
 		.version(pkg.version, '-V, --Version')
 		.description(pkg.description)
 		.usage('<command> [options]')
-		.option('--log-level <level>', 'log4js log level', 'all')
+		.option('-l, --log-level <level>', 'log4js log level', 'all')
 		.option('-c, --cache', 'todo runtime cache', true)
 		.on('--help', () => {
 			console.log('');

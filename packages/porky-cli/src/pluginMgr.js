@@ -102,6 +102,10 @@ class PluginMgr {
 		return this._plugins[name] || null;
 	}
 
+	each(cb) {
+		_.each(this._plugins, cb);
+	}
+
 	/**
 	 * Resolving naming conflicts
 	 * @param cmdName
@@ -136,7 +140,7 @@ class PluginMgr {
 					// TODO
 					.action(entry);
 			} else if (isCommander(entry)) {
-				// Commander
+				// Entry is commander
 			} else {
 				entry = null;
 				plugin.setError(
@@ -251,18 +255,32 @@ class PluginMgr {
 		this.add(plugin);
 	}
 
+	async _addLocalPluginByCache(plugin, tempDirPath) {
+		if (await fs.pathExists(tempDirPath)) {
+			const entryPath = path.join(tempDirPath, ENTRY_JS);
+			if (await fs.pathExists(entryPath)) {
+				await this.dealPluginByEntryJs(plugin, entryPath);
+			} else {
+				await this.dealPluginByDefault(plugin, tempDirPath);
+			}
+
+			this.add(plugin);
+			return true;
+		}
+
+		return false;
+	}
+
 	async addLocalPlugin(plugin, cache) {
 		const ctx = this._ctx;
 		const tempDirPath = path.join(ctx.runtimeTempDir, plugin.tempDirName);
 		// A path for local module here
 		const root = plugin.name;
-		if (await fs.pathExists(tempDirPath)) {
-			if (cache) {
-				// Do something
-			} else {
-				// Do something
-			}
-		} else if (await fs.pathExists(root)) {
+
+		if (cache && (await this._addLocalPluginByCache(plugin, tempDirPath))) return;
+
+		await fs.remove(tempDirPath);
+		if (await fs.pathExists(root)) {
 			let entryPath = path.join(root, ENTRY_JS);
 			if (await fs.pathExists(entryPath)) {
 				const entryContent = await fs.readFile(entryPath, 'utf8');
@@ -283,23 +301,32 @@ class PluginMgr {
 		this.add(plugin);
 	}
 
+	async _addFilePluginByCache(plugin, entryPath) {
+		if (await fs.pathExists(entryPath)) {
+			await this.dealPluginByEntryJs(plugin, entryPath);
+			this.add(plugin);
+			return true;
+		}
+
+		return false;
+	}
+
 	async addFilePlugin(plugin, cache) {
 		const ctx = this._ctx;
 		const tempDirPath = path.join(ctx.runtimeTempDir, plugin.tempDirName);
 		// A path for local file here
 		const root = plugin.name;
-		if (await fs.pathExists(tempDirPath)) {
-			if (cache) {
-				// Do something
-			} else {
-				// Do something
-			}
-		} else if (await fs.pathExists(root)) {
-			let entryPath = root;
-			const entryContent = await fs.readFile(entryPath, 'utf8');
+		let entryPath = path.join(tempDirPath, plugin.shortName + '.js');
+
+		if (cache && (await this._addFilePluginByCache(plugin, entryPath))) return;
+
+		await fs.remove(tempDirPath);
+		if (await fs.pathExists(root)) {
+			const entryContent = await fs.readFile(root, 'utf8');
 			if (entryContent.indexOf(CONFIG_MARKS.NO_RUNTIME) === -1) {
-				entryPath = path.join(tempDirPath, plugin.shortName + '.js');
 				await fs.copy(root, entryPath);
+			} else {
+				entryPath = root;
 			}
 
 			await this.dealPluginByEntryJs(plugin, entryPath, entryContent);
