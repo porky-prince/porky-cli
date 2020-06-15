@@ -24,7 +24,7 @@ async function addPlugins(ctx, plugins) {
 							remotePlugins.push(plugin);
 						})
 						.catch(() => {
-							logger.error(`Error: ${plugin} is not in the '${ctx.registry}'`);
+							logger.error(`${plugin} is not in the '${ctx.registry}'`);
 						})
 				);
 				break;
@@ -35,7 +35,7 @@ async function addPlugins(ctx, plugins) {
 						if (isExist) {
 							ctx.pluginsConfig.set(plugin, type);
 						} else {
-							logger.error(`Error: Cannot find path '${plugin}'`);
+							logger.error(`Cannot find path '${plugin}'`);
 						}
 					})
 				);

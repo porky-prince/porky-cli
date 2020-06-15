@@ -10,6 +10,8 @@ const pluginMgr = require('../src/pluginMgr');
 const cmdInit = require('../src/cmds/init');
 const cmdAdd = require('../src/cmds/add');
 const cmdRemove = require('../src/cmds/remove');
+const cmdList = require('../src/cmds/list');
+const cmdRun = require('../src/cmds/run');
 const cmdExec = require('../src/cmds/exec');
 const cmdYo = require('../src/cmds/yo');
 
@@ -47,6 +49,10 @@ async function main() {
 	program.addCommand(cmdAdd(ctx));
 
 	program.addCommand(cmdRemove(ctx));
+
+	program.addCommand(cmdList(ctx));
+
+	program.addCommand(cmdRun(ctx));
 
 	program.addCommand(cmdExec(ctx));
 

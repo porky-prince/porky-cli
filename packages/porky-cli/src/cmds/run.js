@@ -1,7 +1,7 @@
 const { createCommand } = require('commander');
 const pluginMgr = require('../pluginMgr');
 
-module.exports = async () => {
+module.exports = () => {
 	const program = createCommand('run')
 		.arguments('<cmd>')
 		.description('run the command provided by the added plugin')

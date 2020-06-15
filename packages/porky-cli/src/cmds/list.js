@@ -2,9 +2,8 @@ const { createCommand } = require('commander');
 const pluginMgr = require('../pluginMgr');
 const { chalk, myLogger } = require('porky-helper').logger;
 
-module.exports = async () => {
+module.exports = () => {
 	return createCommand('list')
-		.arguments('[options]')
 		.description('list the available plugins')
 		.option('-a, --all', 'list the all plugins')
 		.option('-d, --detail', 'show the plugin details')
@@ -14,7 +13,9 @@ module.exports = async () => {
 					let log = chalk.green(plugin.cmdName) + '  ' + plugin.name;
 					if (opts.detail) {
 						// TODO
-						log += '\n';
+						if (plugin.hasError()) {
+							log += '\n' + plugin.getError().message;
+						}
 					}
 
 					myLogger.log(log);

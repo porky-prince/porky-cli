@@ -62,6 +62,10 @@ class Plugin {
 		return this._error !== null;
 	}
 
+	getError() {
+		return this._error;
+	}
+
 	setError(msg, stack) {
 		this._error = new Error(msg);
 		this._error.stack = stack || '';
@@ -206,7 +210,7 @@ class PluginMgr {
 	}
 
 	async dealPluginByPkg(plugin, root) {
-		if (await fs.pathExists(pkgPath(root))) {
+		if (fs.existsSync(pkgPath(root))) {
 			const pkg = await pkgJson(root, null, { throws: false });
 			if (pkg && checker.isJsFile(pkg.main)) {
 				plugin.cmdName = pkg.name;
@@ -219,7 +223,7 @@ class PluginMgr {
 
 	async dealPluginByIndexJs(plugin, root) {
 		const indexJsPath = path.join(root, 'index.js');
-		if (await fs.pathExists(indexJsPath)) {
+		if (fs.existsSync(indexJsPath)) {
 			return this.setCmd2Plugin(plugin, indexJsPath);
 		}
 
@@ -243,7 +247,7 @@ class PluginMgr {
 		const root = findPkgRoot(plugin.name);
 		if (root) {
 			const entryPath = path.join(root, ENTRY_JS);
-			if (await fs.pathExists(entryPath)) {
+			if (fs.existsSync(entryPath)) {
 				await this.dealPluginByEntryJs(plugin, entryPath);
 			} else {
 				await this.dealPluginByDefault(plugin, root);
@@ -256,9 +260,9 @@ class PluginMgr {
 	}
 
 	async _addLocalPluginByCache(plugin, tempDirPath) {
-		if (await fs.pathExists(tempDirPath)) {
+		if (fs.existsSync(tempDirPath)) {
 			const entryPath = path.join(tempDirPath, ENTRY_JS);
-			if (await fs.pathExists(entryPath)) {
+			if (fs.existsSync(entryPath)) {
 				await this.dealPluginByEntryJs(plugin, entryPath);
 			} else {
 				await this.dealPluginByDefault(plugin, tempDirPath);
@@ -280,9 +284,9 @@ class PluginMgr {
 		if (cache && (await this._addLocalPluginByCache(plugin, tempDirPath))) return;
 
 		await fs.remove(tempDirPath);
-		if (await fs.pathExists(root)) {
+		if (fs.existsSync(root)) {
 			let entryPath = path.join(root, ENTRY_JS);
-			if (await fs.pathExists(entryPath)) {
+			if (fs.existsSync(entryPath)) {
 				const entryContent = await fs.readFile(entryPath, 'utf8');
 				if (entryContent.indexOf(CONFIG_MARKS.NO_RUNTIME) === -1) {
 					await fs.copy(root, tempDirPath);
@@ -302,7 +306,7 @@ class PluginMgr {
 	}
 
 	async _addFilePluginByCache(plugin, entryPath) {
-		if (await fs.pathExists(entryPath)) {
+		if (fs.existsSync(entryPath)) {
 			await this.dealPluginByEntryJs(plugin, entryPath);
 			this.add(plugin);
 			return true;
@@ -321,7 +325,7 @@ class PluginMgr {
 		if (cache && (await this._addFilePluginByCache(plugin, entryPath))) return;
 
 		await fs.remove(tempDirPath);
-		if (await fs.pathExists(root)) {
+		if (fs.existsSync(root)) {
 			const entryContent = await fs.readFile(root, 'utf8');
 			if (entryContent.indexOf(CONFIG_MARKS.NO_RUNTIME) === -1) {
 				await fs.copy(root, entryPath);
