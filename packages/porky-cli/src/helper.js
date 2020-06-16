@@ -36,6 +36,16 @@ function checkPlugin(plugin) {
 	return PLUGIN_TYPE.UNKNOWN;
 }
 
+function findCmdOpts(opts, cmdName, pickOpts) {
+	if (!opts || !cmdName) return {};
+	console.log(opts.aaa.aaa);
+	if (opts.name() === cmdName) {
+		return _.pick(opts, pickOpts);
+	}
+
+	return findCmdOpts(opts.parent, cmdName, pickOpts);
+}
+
 module.exports = {
 	yoCliFile,
 
@@ -57,4 +67,6 @@ module.exports = {
 			_.isFunction(obj.helpInformation)
 		);
 	},
+
+	findCmdOpts,
 };

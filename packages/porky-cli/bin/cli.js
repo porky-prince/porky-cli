@@ -31,7 +31,7 @@ async function main() {
 		.description(pkg.description)
 		.usage('<command> [options]')
 		.option('-l, --log-level <level>', 'log4js log level', 'all')
-		.option('-c, --cache', 'todo runtime cache', true)
+		.option('-c, --clear', 'whether to clear the cache when the end of the command', false)
 		.on('--help', () => {
 			console.log('');
 			console.log('Examples:');
@@ -63,4 +63,8 @@ async function main() {
 	program.addCommand(config.getCmd());
 
 	program.parse(process.argv);
+
+	process.on('exit', code => {
+		console.log(code);
+	});
 }
