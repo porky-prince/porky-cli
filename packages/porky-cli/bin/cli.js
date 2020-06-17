@@ -31,7 +31,11 @@ async function main() {
 		.description(pkg.description)
 		.usage('<command> [options]')
 		.option('-l, --log-level <level>', 'log4js log level', 'all')
-		.option('-c, --clear', 'whether to clear the cache when the end of the command', false)
+		.option(
+			'-c, --clear',
+			'whether to clear the temporary cache when the end of the command',
+			false
+		)
 		.on('--help', () => {
 			console.log('');
 			console.log('Examples:');

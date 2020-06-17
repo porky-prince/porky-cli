@@ -38,8 +38,16 @@ class Plugin {
 		if (value) this._cmdName = value;
 	}
 
+	get eventName() {
+		return 'command:' + this._cmdName;
+	}
+
 	get tempDirName() {
 		return this._tempDirName;
+	}
+
+	getTempDir(ctx) {
+		return path.join(ctx.runtimeTempDir, this.tempDirName);
 	}
 
 	get type() {
@@ -277,7 +285,7 @@ class PluginMgr {
 
 	async addLocalPlugin(plugin, cache) {
 		const ctx = this._ctx;
-		const tempDirPath = path.join(ctx.runtimeTempDir, plugin.tempDirName);
+		const tempDirPath = plugin.getTempDir(ctx);
 		// A path for local module here
 		const root = plugin.name;
 
@@ -317,7 +325,7 @@ class PluginMgr {
 
 	async addFilePlugin(plugin, cache) {
 		const ctx = this._ctx;
-		const tempDirPath = path.join(ctx.runtimeTempDir, plugin.tempDirName);
+		const tempDirPath = plugin.getTempDir(ctx);
 		// A path for local file here
 		const root = plugin.name;
 		let entryPath = path.join(tempDirPath, plugin.shortName + '.js');

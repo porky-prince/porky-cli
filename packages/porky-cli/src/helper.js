@@ -38,7 +38,6 @@ function checkPlugin(plugin) {
 
 function findCmdOpts(opts, cmdName, pickOpts) {
 	if (!opts || !cmdName) return {};
-	console.log(opts.aaa.aaa);
 	if (opts.name() === cmdName) {
 		return _.pick(opts, pickOpts);
 	}
