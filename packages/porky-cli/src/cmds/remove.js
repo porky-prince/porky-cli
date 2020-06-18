@@ -11,8 +11,8 @@ async function removePlugins(ctx, pluginNames) {
 		if (type !== null) {
 			const plugin = pluginMgr.getByName(pluginName);
 			ctx.pluginsConfig.del(pluginName);
-			if (fs.existsSync(plugin.getTempDir(ctx))) {
-				await fs.remove(plugin.getTempDir(ctx));
+			if (fs.existsSync(plugin.getTempDir())) {
+				await fs.remove(plugin.getTempDir());
 			}
 
 			type === PLUGIN_TYPE.REMOTE && remotePlugins.push(pluginName);

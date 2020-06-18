@@ -11,13 +11,14 @@ const { PLUGIN_TYPE, ENTRY_JS, CONFIG_MARKS } = require('./const');
 const { isCommander } = require('./helper');
 
 class Plugin {
-	constructor(name, type) {
+	constructor(name, type, ctx) {
 		this._name = name;
 		this._shortName = path.parse(name).name;
 		// Short name is default cmd name
 		this._cmdName = this._shortName;
 		this._tempDirName = md5(name);
 		this._type = type;
+		this._ctx = ctx;
 		this._cmd = null;
 		this._error = null;
 	}
@@ -46,8 +47,8 @@ class Plugin {
 		return this._tempDirName;
 	}
 
-	getTempDir(ctx) {
-		return path.join(ctx.runtimeTempDir, this.tempDirName);
+	getTempDir() {
+		return path.join(this._ctx.runtimeTempDir, this.tempDirName);
 	}
 
 	get type() {
@@ -85,6 +86,7 @@ class PluginMgr {
 		this._cmdNames = {};
 		this._plugins = {};
 		this._ctx = null;
+		this._curRunPlugin = null;
 	}
 
 	hasCmd(cmdName) {
@@ -118,6 +120,15 @@ class PluginMgr {
 		_.each(this._plugins, cb);
 	}
 
+	clearRunCache() {
+		const curRunPlugin = this._curRunPlugin;
+		if (this._ctx.clear && curRunPlugin) {
+			fs.existsSync(curRunPlugin.getTempDir()) && fs.removeSync(curRunPlugin.getTempDir());
+		}
+
+		this._curRunPlugin = null;
+	}
+
 	/**
 	 * Resolving naming conflicts
 	 * @param cmdName
@@ -134,9 +145,36 @@ class PluginMgr {
 	}
 
 	/**
+	 * Deal plugin entry
+	 * @param {Plugin} plugin
+	 * @param entryPath
+	 * @param entry
+	 * @returns {Command}
+	 */
+	dealPluginEntry(plugin, entryPath, entry) {
+		if (_.isFunction(entry)) {
+			// Create commander
+			entry = createCommand(plugin.cmdName)
+				.description('unknown params, up to you')
+				.allowUnknownOption()
+				// TODO
+				.action(entry);
+		} else if (isCommander(entry)) {
+			// Entry is commander
+		} else if (entry) {
+			entry = null;
+			plugin.setError(
+				'the return object "entry" prop should be a function or commander.',
+				entryPath
+			);
+		}
+
+		return entry;
+	}
+
+	/**
 	 * Set command to plugin
 	 * @param {Plugin} plugin
-	 * @param cmdName
 	 * @param entryPath
 	 * @param entry
 	 * @returns {boolean}
@@ -144,29 +182,23 @@ class PluginMgr {
 	setCmd2Plugin(plugin, entryPath, entry) {
 		try {
 			entry = entry || require(entryPath);
-			if (_.isFunction(entry)) {
-				// Create commander
-				entry = createCommand(plugin.cmdName)
-					.description('unknown params, up to you')
-					.allowUnknownOption()
-					// TODO
-					.action(entry);
-			} else if (isCommander(entry)) {
-				// Entry is commander
-			} else {
-				entry = null;
-				plugin.setError(
-					'the return object "entry" prop should be a function or commander.',
-					entryPath
-				);
-			}
 		} catch (e) {
 			entry = null;
 			plugin.setError(e.message, e.stack);
 		}
 
+		entry = this.dealPluginEntry(plugin, entryPath, entry);
+
 		if (entry) {
 			plugin.cmdName = this.fixCmdName(entry.name());
+			const _actionHandler = entry._actionHandler;
+			if (_actionHandler) {
+				entry._actionHandler = args => {
+					this._curRunPlugin = plugin;
+					_actionHandler.call(entry, args);
+				};
+			}
+
 			plugin.setCmd(entry);
 			this._cmdNames[plugin.cmdName] = plugin.name;
 			return true;
@@ -283,13 +315,13 @@ class PluginMgr {
 		return false;
 	}
 
-	async addLocalPlugin(plugin, cache) {
-		const ctx = this._ctx;
-		const tempDirPath = plugin.getTempDir(ctx);
+	async addLocalPlugin(plugin) {
+		const tempDirPath = plugin.getTempDir();
 		// A path for local module here
 		const root = plugin.name;
 
-		if (cache && (await this._addLocalPluginByCache(plugin, tempDirPath))) return;
+		// Using cache at first
+		if (await this._addLocalPluginByCache(plugin, tempDirPath)) return;
 
 		await fs.remove(tempDirPath);
 		if (fs.existsSync(root)) {
@@ -323,14 +355,14 @@ class PluginMgr {
 		return false;
 	}
 
-	async addFilePlugin(plugin, cache) {
-		const ctx = this._ctx;
-		const tempDirPath = plugin.getTempDir(ctx);
+	async addFilePlugin(plugin) {
+		const tempDirPath = plugin.getTempDir();
 		// A path for local file here
 		const root = plugin.name;
 		let entryPath = path.join(tempDirPath, plugin.shortName + '.js');
 
-		if (cache && (await this._addFilePluginByCache(plugin, entryPath))) return;
+		// Using cache at first
+		if (await this._addFilePluginByCache(plugin, entryPath)) return;
 
 		await fs.remove(tempDirPath);
 		if (fs.existsSync(root)) {
@@ -354,7 +386,7 @@ class PluginMgr {
 		await Promise.all(
 			ctx.pluginsConfig.keys().map(name => {
 				const type = ctx.pluginsConfig.get(name);
-				const plugin = new Plugin(name, type);
+				const plugin = new Plugin(name, type, ctx);
 				switch (type) {
 					case PLUGIN_TYPE.REMOTE:
 						return this.addRemotePlugin(plugin);

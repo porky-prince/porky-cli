@@ -7,8 +7,6 @@ const {
 	customConfig,
 } = require('./config');
 const path = require('path');
-const { NAME } = require('./const');
-const { findCmdOpts } = require('./helper');
 const {
 	_,
 	logger: { logger },
@@ -52,12 +50,6 @@ class Context {
 
 	get runtimeTempDir() {
 		return path.join(this.runtimeDir, 'temp');
-	}
-
-	mergeGlobalOpts(opts) {
-		_.each(findCmdOpts(opts, NAME, ['logLevel', 'clear']), (val, key) => {
-			this[key] = val;
-		});
 	}
 }
 
