@@ -25,12 +25,15 @@ if (ctx.isInit) {
 
 async function main() {
 	await pluginMgr.init(ctx);
-	const program = createCommand(NAME);
-	program
+	const program = createCommand(NAME)
 		.version(pkg.version, '-V, --Version')
 		.description(pkg.description)
 		.usage('<command> [options]')
-		.option('-l, --log-level <level>', 'log4js log level', 'all')
+		.option(
+			'-l, --log-level <level>',
+			'log4js log level, for more: https://github.com/log4js-node/log4js-node',
+			'all'
+		)
 		.on('option:log-level', () => {
 			ctx.logLevel = program.logLevel;
 		})

@@ -7,6 +7,7 @@ const {
 	customConfig,
 } = require('./config');
 const path = require('path');
+const toJson = require('cmd-to-json');
 const {
 	_,
 	logger: { logger },
@@ -17,6 +18,7 @@ class Context {
 		this.version = '';
 		this._logLevel = config.get('logLevel');
 		this._clear = false;
+		this._json = null;
 	}
 
 	get isInit() {
@@ -38,6 +40,14 @@ class Context {
 
 	set clear(value) {
 		this._clear = value;
+	}
+
+	get json() {
+		return this._json;
+	}
+
+	set json(value) {
+		this._json = JSON.parse(toJson(value.split(' ')));
 	}
 
 	get pluginsConfig() {

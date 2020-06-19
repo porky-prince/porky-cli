@@ -154,11 +154,15 @@ class PluginMgr {
 	dealPluginEntry(plugin, entryPath, entry) {
 		if (_.isFunction(entry)) {
 			// Create commander
+			const fn = entry;
 			entry = createCommand(plugin.cmdName)
 				.description('unknown params, up to you')
 				.allowUnknownOption()
-				// TODO
-				.action(entry);
+				.action(opts => {
+					const args = opts.args.slice(0);
+					this._ctx.json && args.push(this._ctx.json);
+					fn.apply(null, args);
+				});
 		} else if (isCommander(entry)) {
 			// Entry is commander
 		} else if (entry) {

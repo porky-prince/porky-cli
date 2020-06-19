@@ -26,6 +26,7 @@
 	},
 	"dependencies": {
 		"@porky-prince/generator-generators": "^0.2.4",
+		"cmd-to-json": "^1.0.1",
 		"commander": "^5.1.0",
 		"dependency-version-sync": "^0.2.2",
 		"generator-porky-runtime": "^0.0.0",
