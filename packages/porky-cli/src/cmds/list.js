@@ -10,14 +10,19 @@ module.exports = () => {
 		.action(opts => {
 			pluginMgr.each(plugin => {
 				if (opts.all || !plugin.hasError()) {
-					let log = chalk.green(plugin.cmdName) + '  ' + plugin.name;
+					let log = '';
 					if (opts.detail) {
-						// TODO
+						log += 'cmd name: ' + chalk.green(plugin.cmdName) + '\n';
+						log += 'plugin name: ' + chalk.green(plugin.name) + '\n';
+						log += 'md5: ' + chalk.green(plugin.tempDirName);
 						if (plugin.hasError()) {
-							log += '\n' + plugin.getError().message;
+							log += '\n' + chalk.red(plugin.getError().toString());
 						}
+					} else {
+						log = chalk.green(plugin.cmdName) + '  ' + plugin.name;
 					}
 
+					log += '\n';
 					myLogger.log(log);
 				}
 			});
