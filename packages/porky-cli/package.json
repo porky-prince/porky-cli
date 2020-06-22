@@ -30,7 +30,6 @@
 		"commander": "^5.1.0",
 		"dependency-version-sync": "^0.2.2",
 		"generator-porky-runtime": "^0.0.0",
-		"glob": "^7.1.6",
 		"inquirer": "^7.1.0",
 		"p-is-promise": "^3.0.0",
 		"porky-config": "^0.0.0",

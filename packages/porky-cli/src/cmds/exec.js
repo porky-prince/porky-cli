@@ -4,7 +4,7 @@ const { exec } = require('porky-helper').helper;
 module.exports = ctx => {
 	return createCommand('exec')
 		.arguments('<cmds...>')
-		.description('exec command in runtime directory')
+		.description('exec the command in the runtime directory')
 		.allowUnknownOption()
 		.on('--help', () => {
 			console.log('');

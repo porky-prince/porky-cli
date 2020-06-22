@@ -4,12 +4,18 @@ const { chalk, myLogger } = require('porky-helper').logger;
 
 module.exports = () => {
 	return createCommand('list')
-		.description('list the available plugins')
-		.option('-a, --all', 'list the all plugins')
-		.option('-d, --detail', 'show the plugin details')
+		.description('list available plugins')
+		.option('-a, --all', 'list all plugins', false)
+		.option('-p, --plugin <regexp>', 'list the plugins whose names match the regex', '.*')
+		.option('-c, --cmd <regexp>', 'list the plugins whose commands names match the regex', '.*')
+		.option('-d, --detail', 'show the plugin details', false)
 		.action(opts => {
 			pluginMgr.each(plugin => {
 				if (opts.all || !plugin.hasError()) {
+					const reg = new RegExp(opts.plugin);
+					if (!reg.test(plugin.name)) return;
+					reg.compile(opts.cmd);
+					if (!reg.test(plugin.cmdName)) return;
 					let log = '';
 					if (opts.detail) {
 						log += 'cmd name: ' + chalk.green(plugin.cmdName) + '\n';

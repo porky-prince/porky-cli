@@ -8,40 +8,40 @@ const {
 const { checkPlugin } = require('../helper');
 const { PLUGIN_TYPE } = require('../const');
 
-async function addPlugins(ctx, plugins) {
+async function addPlugins(ctx, pluginNames) {
 	const tasks = [];
 	const remotePlugins = [];
-	for (let i = plugins.length - 1; i >= 0; i--) {
-		const plugin = plugins[i];
-		const type = checkPlugin(plugin);
+	for (let i = pluginNames.length - 1; i >= 0; i--) {
+		const pluginName = pluginNames[i];
+		const type = checkPlugin(pluginName);
 		switch (type) {
 			case PLUGIN_TYPE.REMOTE:
 				tasks.push(
 					helper
-						.getLatestVersion(plugin)
+						.getLatestVersion(pluginName)
 						.then(() => {
-							ctx.pluginsConfig.set(plugin, type);
-							remotePlugins.push(plugin);
+							ctx.pluginsConfig.set(pluginName, type);
+							remotePlugins.push(pluginName);
 						})
 						.catch(() => {
-							logger.error(`${plugin} is not in the '${ctx.registry}'`);
+							logger.error(`${pluginName} is not in the '${ctx.registry}'`);
 						})
 				);
 				break;
 			case PLUGIN_TYPE.LOCAL:
 			case PLUGIN_TYPE.FILE:
 				tasks.push(
-					fs.pathExists(plugin).then(isExist => {
+					fs.pathExists(pluginName).then(isExist => {
 						if (isExist) {
-							ctx.pluginsConfig.set(plugin, type);
+							ctx.pluginsConfig.set(pluginName, type);
 						} else {
-							logger.error(`Cannot find path '${plugin}'`);
+							logger.error(`Cannot find path '${pluginName}'`);
 						}
 					})
 				);
 				break;
 			default:
-				logger.error('illegal plugin:', plugin);
+				logger.error('illegal plugin:', pluginName);
 				break;
 		}
 	}
@@ -61,6 +61,16 @@ module.exports = ctx => {
 	return createCommand('add')
 		.arguments('<plugins...>')
 		.description('add one or more plugins, it can be remote, local, or a js file')
+		.on('--help', () => {
+			console.log('');
+			console.log('Examples:');
+			console.log('  add npm package:');
+			console.log('    $ porky add <package>');
+			console.log('  add local dir:');
+			console.log('    $ porky add /Users/admin/project/dir');
+			console.log('  add local file:');
+			console.log('    $ porky add /Users/admin/project/file.js');
+		})
 		.action(plugins => {
 			addPlugins(ctx, plugins);
 		});

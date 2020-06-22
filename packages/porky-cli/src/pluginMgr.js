@@ -156,7 +156,7 @@ class PluginMgr {
 			// Create commander
 			const fn = entry;
 			entry = createCommand(plugin.cmdName)
-				.description('unknown params, up to you')
+				.description(plugin.name)
 				.allowUnknownOption()
 				.action(opts => {
 					const args = opts.args.slice(0);
