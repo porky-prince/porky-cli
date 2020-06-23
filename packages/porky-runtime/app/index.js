@@ -21,7 +21,10 @@ module.exports = class extends Generator {
 			name: 'porky-runtime',
 			version: '0.0.0',
 			private: true,
-			main: 'index.js',
+			devDependencies: {
+				'fs-extra': 'latest',
+				lodash: 'latest',
+			},
 		});
 	}
 };
