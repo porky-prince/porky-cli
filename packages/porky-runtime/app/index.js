@@ -11,10 +11,6 @@ module.exports = class extends Generator {
 		});
 	}
 
-	initializing() {}
-
-	prompting() {}
-
 	writing() {
 		const opts = this.options;
 		this.fs.writeJSON(this.destinationPath(opts.generateInto, 'package.json'), {
@@ -23,7 +19,10 @@ module.exports = class extends Generator {
 			private: true,
 			devDependencies: {
 				'fs-extra': 'latest',
+				gulp: 'latest',
+				'gulp-rename': 'latest',
 				lodash: 'latest',
+				'porky-helper': 'latest',
 			},
 		});
 	}

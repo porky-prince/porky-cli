@@ -37,6 +37,7 @@ module.exports = ctx => {
 	}
 
 	return createCommand('init')
+		.arguments('[generator]')
 		.description('configure or reconfigure some init info')
 		.action(() => {
 			action();

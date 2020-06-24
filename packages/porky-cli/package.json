@@ -37,6 +37,9 @@
 		"validate-npm-package-name": "^3.0.0",
 		"yo": "^3.1.1"
 	},
+	"devDependencies": {
+		"module-rooter": "^0.0.0"
+	},
 	"keywords": [
 		"porky",
 		"cli",
