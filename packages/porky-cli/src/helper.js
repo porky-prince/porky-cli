@@ -48,11 +48,11 @@ function findCmdOpts(opts, cmdName, pickOpts) {
 module.exports = {
 	yoCliFile,
 
-	runYo(...args) {
+	async runYo(...args) {
 		return helper.spawn('node ' + yoCliFile('yo'), args);
 	},
 
-	runYoComplete(...args) {
+	async runYoComplete(...args) {
 		return helper.spawn('node ' + yoCliFile('yo-complete'), args);
 	},
 
