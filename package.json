@@ -22,6 +22,7 @@
 		"test:cli": "lerna run test --scope=porky-cli",
 		"test:config": "lerna run test --scope=porky-config",
 		"test:helper": "lerna run test --scope=porky-helper",
+		"test:runtime": "lerna run test --scope=generator-porky-runtime",
 		"test:log": "lerna run test -- --verbose=true",
 		"test": "lerna run test",
 		"debug": "node --inspect-brk src/main.js",

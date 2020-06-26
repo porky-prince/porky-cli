@@ -287,14 +287,14 @@ class PluginMgr {
 
 	async addRemotePlugin(plugin) {
 		const ctx = this._ctx;
-		const { findPkgRoot } = require(ctx.runtimeDir);
-		const root = findPkgRoot(plugin.name);
-		if (root) {
-			const entryPath = path.join(root, ENTRY_JS);
-			if (fs.existsSync(entryPath)) {
-				await this.dealPluginByEntryJs(plugin, entryPath);
+		const { getPkgRooter } = ctx.runtimeBridge;
+		let rooter = getPkgRooter(plugin.name);
+		if (rooter.exist) {
+			rooter = rooter(ENTRY_JS);
+			if (rooter.exist) {
+				await this.dealPluginByEntryJs(plugin, rooter.cd);
 			} else {
-				await this.dealPluginByDefault(plugin, root);
+				await this.dealPluginByDefault(plugin, rooter.root);
 			}
 		} else {
 			plugin.setError(`Cannot find module '${plugin.name}'.`, ctx.runtimeDir);

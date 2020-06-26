@@ -57,7 +57,7 @@ async function main() {
 			console.log(`${pkg.license} © ${pkg.author}`);
 		});
 
-	program.addCommand(cmdInit(ctx));
+	program.addCommand(cmdInit(ctx, pkg));
 
 	program.addCommand(cmdAdd(ctx));
 

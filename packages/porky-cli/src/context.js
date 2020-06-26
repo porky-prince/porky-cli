@@ -61,6 +61,10 @@ class Context {
 	get runtimeTempDir() {
 		return path.join(this.runtimeDir, 'temp');
 	}
+
+	get runtimeBridge() {
+		return require(path.join(this.runtimeDir, 'bridge.js'));
+	}
 }
 
 function bindProp(config) {

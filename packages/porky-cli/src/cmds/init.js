@@ -1,14 +1,18 @@
 const inquirer = require('inquirer');
 const {
 	_,
+	fs,
+	pm,
+	helper: { pkgJsonSync },
 	logger: { myLogger, chalk },
 } = require('porky-helper');
 const runtime = require.resolve('generator-porky-runtime');
+const { TEMPS } = require('../const');
 const { runYo } = require('../helper');
 const { defaultConfig, defaultRuntimeConfig, config, runtimeConfig } = require('../config');
 const { createCommand } = require('commander');
 
-function action(ctx) {
+function action(ctx, pkg) {
 	myLogger.log(chalk.green('Welcome to using porky-cli!'));
 	myLogger.info('please configure some init info:');
 	const prompts = [];
@@ -28,20 +32,28 @@ function action(ctx) {
 		});
 		// Generate runtime dir
 		await runYo(runtime, '--generateInto', ctx.runtimeDir);
+		const runtimePkg = pkgJsonSync(ctx.runtimeDir, null, { throws: false }) || {};
+		const runtimePkgDevDep = runtimePkg.devDependencies || {};
+		runtimePkgDevDep.commander = pkg.dependencies.commander;
+		runtimePkgDevDep['module-rooter'] = pkg.devDependencies['module-rooter'];
+		runtimePkg.devDependencies = runtimePkgDevDep;
+		pkgJsonSync(ctx.runtimeDir, runtimePkg, { spaces: 4 });
+		await fs.copy(TEMPS, ctx.runtimeDir);
+		await pm(ctx.packageManager, { execOpts: { cwd: ctx.runtimeDir } }).install();
 		myLogger.success('init ok, thanks for using porky-cli!');
 		myLogger.info('input the `porky -h` to start using.');
 	});
 }
 
-module.exports = ctx => {
+module.exports = (ctx, pkg) => {
 	if (!ctx.isInit) {
-		action(ctx);
+		action(ctx, pkg);
 		return null;
 	}
 
 	return createCommand('init')
 		.description('configure or reconfigure some init info')
 		.action(() => {
-			action(ctx);
+			action(ctx, pkg);
 		});
 };

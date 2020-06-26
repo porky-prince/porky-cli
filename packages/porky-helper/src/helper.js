@@ -9,7 +9,7 @@ const pkgDepPropPreStr = JSON.stringify(pkgDepPropPre);
 const allPkgDepPropPre = pkgDepPropPre.concat(['peer', 'bundled']);
 const allPkgDepPropPreStr = JSON.stringify(allPkgDepPropPre);
 
-async function spawn(cmd, args, opts, hideLog) {
+async function spawn(cmd, args, opts) {
 	return new Promise((resolve, reject) => {
 		const p = childProcess.spawn(
 			cmd,
@@ -23,13 +23,13 @@ async function spawn(cmd, args, opts, hideLog) {
 			)
 		);
 
-		!hideLog && p.stdout.on('data', console.log);
-
-		!hideLog && p.stderr.on('data', console.log);
-
-		p.on('close', resolve);
-
-		p.on('error', reject);
+		p.on('close', code => {
+			if (code > 0) {
+				reject(code);
+			} else {
+				resolve(code);
+			}
+		});
 	});
 }
 

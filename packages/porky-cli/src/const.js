@@ -19,4 +19,5 @@ module.exports = {
 		MARK: '@porkyrc',
 		NO_RUNTIME: '@noRuntime',
 	},
+	TEMPS: path.join(__dirname, 'templates'),
 };
