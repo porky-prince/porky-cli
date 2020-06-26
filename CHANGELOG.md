@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.3.0](https://github.com/porky-prince/porky-cli/compare/v0.2.4...v0.3.0) (2020-06-26)
+
+
+### Features
+
+* add generator-porky-runtime module ([7007487](https://github.com/porky-prince/porky-cli/commit/7007487e8cac32ed84795debea0d952417c2f61a))
+* add log system ([2694f6e](https://github.com/porky-prince/porky-cli/commit/2694f6ec8096319d33193d35a9a092fdcdc9f5f1))
+* add module-rooter module ([ef73c99](https://github.com/porky-prince/porky-cli/commit/ef73c99bda22a249f6100f41169765dc2fa509b7))
+* add pm proxy for porky-helper ([d04020c](https://github.com/porky-prince/porky-cli/commit/d04020c26d2771a674869fb7c12a3f82ada9bc94))
+* add porky-config package ([dc06566](https://github.com/porky-prince/porky-cli/commit/dc06566776e2dc9bef644c696d98922224be0ec9))
+* porky-cli add 'remove' cmd ([421419f](https://github.com/porky-prince/porky-cli/commit/421419f2a80a9f503adf7199612662ef5203b9ec))
+* porky-cli add 'run' command ([48f5725](https://github.com/porky-prince/porky-cli/commit/48f57258f4afe2f1c1dc0c6fcaf46c9a527945c0))
+* porky-cli add exec cmd ([29feb56](https://github.com/porky-prince/porky-cli/commit/29feb56aa5eb8ea1650b413f25d9bfa82aa5c56a))
+* porky-cli add init cmd ([3c3c235](https://github.com/porky-prince/porky-cli/commit/3c3c235a25fda34485ea56a1ca724ab659660b43))
+
+
+
+
+
 ## [0.2.4](https://github.com/porky-prince/porky-cli/compare/v0.2.3...v0.2.4) (2020-05-23)
 
 
