@@ -19,8 +19,8 @@ module.exports = class extends Generator {
 			private: true,
 			devDependencies: {
 				'fs-extra': 'latest',
+				glob: 'latest',
 				gulp: 'latest',
-				'gulp-rename': 'latest',
 				lodash: 'latest',
 				'porky-helper': 'latest',
 			},

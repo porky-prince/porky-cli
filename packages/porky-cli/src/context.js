@@ -62,6 +62,14 @@ class Context {
 		return path.join(this.runtimeDir, 'temp');
 	}
 
+	isRuntimePlugin(name) {
+		return name.indexOf('porky_plugins') !== -1;
+	}
+
+	get runtimePluginsDir() {
+		return path.join(this.runtimeDir, 'porky_plugins');
+	}
+
 	get runtimeBridge() {
 		return require(path.join(this.runtimeDir, 'bridge.js'));
 	}

@@ -13,6 +13,11 @@ async function addPlugins(ctx, pluginNames) {
 	const remotePlugins = [];
 	for (let i = pluginNames.length - 1; i >= 0; i--) {
 		const pluginName = pluginNames[i];
+		if (ctx.isRuntimePlugin(pluginName)) {
+			logger.warn(`'${pluginName}' is native plugin in the runtime, don't need to add again`);
+			continue;
+		}
+
 		const type = checkPlugin(pluginName);
 		switch (type) {
 			case PLUGIN_TYPE.REMOTE:
@@ -24,7 +29,7 @@ async function addPlugins(ctx, pluginNames) {
 							remotePlugins.push(pluginName);
 						})
 						.catch(() => {
-							logger.error(`${pluginName} is not in the '${ctx.registry}'`);
+							logger.error(`'${pluginName}' is not in the '${ctx.registry}'`);
 						})
 				);
 				break;

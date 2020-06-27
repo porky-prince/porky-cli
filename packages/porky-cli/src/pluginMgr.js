@@ -8,7 +8,7 @@ const {
 	checker,
 } = require('porky-helper');
 const { PLUGIN_TYPE, ENTRY_JS, CONFIG_MARKS } = require('./const');
-const { isCommander } = require('./helper');
+const { isCommander, checkPlugin } = require('./helper');
 
 class Plugin {
 	constructor(name, type, ctx) {
@@ -53,6 +53,10 @@ class Plugin {
 
 	get type() {
 		return this._type;
+	}
+
+	inRuntime() {
+		return this._ctx.isRuntimePlugin(this._name);
 	}
 
 	hasCmd() {
@@ -320,9 +324,11 @@ class PluginMgr {
 	}
 
 	async addLocalPlugin(plugin) {
-		const tempDirPath = plugin.getTempDir();
 		// A path for local module here
 		const root = plugin.name;
+		let tempDirPath = root;
+
+		if (!plugin.inRuntime()) tempDirPath = plugin.getTempDir();
 
 		// Using cache at first
 		if (await this._addLocalPluginByCache(plugin, tempDirPath)) return;
@@ -363,7 +369,9 @@ class PluginMgr {
 		const tempDirPath = plugin.getTempDir();
 		// A path for local file here
 		const root = plugin.name;
-		let entryPath = path.join(tempDirPath, plugin.shortName + '.js');
+		let entryPath = root;
+
+		if (!plugin.inRuntime()) entryPath = path.join(tempDirPath, plugin.shortName + '.js');
 
 		// Using cache at first
 		if (await this._addFilePluginByCache(plugin, entryPath)) return;
@@ -387,9 +395,18 @@ class PluginMgr {
 
 	async init(ctx) {
 		this._ctx = ctx;
+		const runtimePluginsDir = ctx.runtimePluginsDir;
+		const pluginNames = ctx.pluginsConfig.keys();
+		if (fs.existsSync(runtimePluginsDir)) {
+			fs.readdirSync(runtimePluginsDir).forEach(name => {
+				pluginNames.push(path.join(runtimePluginsDir, name));
+			});
+		}
+
 		await Promise.all(
-			ctx.pluginsConfig.keys().map(name => {
-				const type = ctx.pluginsConfig.get(name);
+			pluginNames.map(name => {
+				let type = ctx.pluginsConfig.get(name);
+				if (!type) type = checkPlugin(name);
 				const plugin = new Plugin(name, type, ctx);
 				switch (type) {
 					case PLUGIN_TYPE.REMOTE:
