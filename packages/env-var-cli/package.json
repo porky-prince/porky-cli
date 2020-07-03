@@ -1,0 +1,40 @@
+{
+	"name": "env-var-cli",
+	"version": "0.0.0",
+	"description": "Declare the temporary of environment variable at the command line",
+	"author": "Porky Kay",
+	"homepage": "https://github.com/porky-prince/porky-cli/packages/env-var-cli#readme",
+	"bugs": "https://github.com/porky-prince/porky-cli/issues",
+	"license": "MIT",
+	"bin": {
+		"env-var-cli": "bin/cli.js"
+	},
+	"files": [
+		"bin"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/porky-prince/porky-cli.git",
+		"directory": "packages/env-var-cli"
+	},
+	"scripts": {
+		"test": "echo todo"
+	},
+	"dependencies": {
+		"commander": "^5.1.0",
+		"fs-extra": "^9.0.0",
+		"porky-config": "^0.3.0",
+		"which": "^2.0.2"
+	},
+	"keywords": [
+		"cli",
+		"env",
+		"var",
+		"temporary",
+		"environment",
+		"variable"
+	]
+}
