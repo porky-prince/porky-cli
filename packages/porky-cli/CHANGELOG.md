@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [0.4.0](https://github.com/porky-prince/porky-cli/compare/v0.3.0...v0.4.0) (2020-07-04)
+
+
+### Features
+
+* support native plugins in the runtime ([4aebcff](https://github.com/porky-prince/porky-cli/commit/4aebcff097ec2b5fe8f2a9447e7e8811e12360ce))
+
+
+
+
+
 # [0.3.0](https://github.com/porky-prince/porky-cli/compare/v0.2.4...v0.3.0) (2020-06-26)
 
 
