@@ -1,5 +1,5 @@
-# generator-porky-runtime
+# env-var-cli
 
-> Generate porky-cli exec command runtime directory
+> Declare the temporary of environment variable at the command line
 
 TODO

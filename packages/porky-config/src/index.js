@@ -44,10 +44,19 @@ const Config = (module.exports = class extends EventEmitter {
 
 	save() {
 		fs.outputJsonSync(this.configPath, this._config, { spaces: 4 });
+		this.emit('save');
 	}
 
 	keys() {
 		return Object.keys(this._config);
+	}
+
+	each(fn) {
+		const keys = this.keys();
+		for (let i = 0, length = keys.length; i < length; i++) {
+			const key = keys[i];
+			fn(this.get(key), key);
+		}
 	}
 
 	limit(key) {
