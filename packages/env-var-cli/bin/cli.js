@@ -53,6 +53,7 @@ const program = createCommand(pkg.name)
 		console.log('  dos:');
 		console.log('    $ env-var');
 		console.log('  shell:');
+		console.log('    $ . env-var');
 		console.log('    $ source env-var');
 		console.log('');
 		console.log('Report bugs to', pkg.bugs);

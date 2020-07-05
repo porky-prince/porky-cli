@@ -5,6 +5,7 @@
 ## Packages
 
 -   [`dependency-version-sync`](./packages/dependency-version-sync/README.md) - Synchronize and update the dependencies of the package.json to the installed version
+-   [`env-var-cli`](./packages/env-var-cli/README.md) - Declare the temporary of environment variable at the command line
 -   [`generators`](./packages/generators/README.md) - Some yeoman generators
 -   [`module-rooter`](./packages/module-rooter/README.md) - Get the resolved path to the root of a package installed in node_modules and find some files
 -   [`porky-cli`](./packages/porky-cli/README.md) - This is a scaffold
