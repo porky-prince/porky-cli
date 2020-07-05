@@ -17,6 +17,7 @@ class Plugin {
 		// Short name is default cmd name
 		this._cmdName = this._shortName;
 		this._tempDirName = md5(name);
+		this._desc = name;
 		this._type = type;
 		this._ctx = ctx;
 		this._cmd = null;
@@ -41,6 +42,14 @@ class Plugin {
 
 	get eventName() {
 		return 'command:' + this._cmdName;
+	}
+
+	get desc() {
+		return this._desc;
+	}
+
+	set desc(value) {
+		if (value) this._desc = value;
 	}
 
 	get tempDirName() {
@@ -160,7 +169,7 @@ class PluginMgr {
 			// Create commander
 			const fn = entry;
 			entry = createCommand(plugin.cmdName)
-				.description(plugin.name)
+				.description(plugin.desc)
 				.allowUnknownOption()
 				.action(opts => {
 					const args = opts.args.slice(0);
@@ -234,6 +243,7 @@ class PluginMgr {
 				if (_.isObject(exports)) {
 					if (exports.entry) {
 						plugin.cmdName = exports.name;
+						plugin.desc = exports.desc;
 						return this.setCmd2Plugin(plugin, entryPath, exports.entry);
 					}
 
