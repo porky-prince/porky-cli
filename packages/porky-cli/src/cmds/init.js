@@ -30,19 +30,37 @@ function action(ctx, pkg) {
 			config.set(key, val);
 			runtimeConfig.set(key, val);
 		});
-		// Generate runtime dir
-		await runYo(runtime, '--generateInto', ctx.runtimeDir);
-		const runtimePkg = pkgJsonSync(ctx.runtimeDir, null, { throws: false }) || {};
-		const runtimePkgDevDep = runtimePkg.devDependencies || {};
-		runtimePkgDevDep.commander = pkg.dependencies.commander;
-		runtimePkgDevDep['module-rooter'] = pkg.devDependencies['module-rooter'];
-		runtimePkg.devDependencies = runtimePkgDevDep;
-		pkgJsonSync(ctx.runtimeDir, runtimePkg, { spaces: 4 });
-		await fs.copy(TEMPS, ctx.runtimeDir);
-		await pm(ctx.packageManager, { execOpts: { cwd: ctx.runtimeDir } }).install();
+
+		let isOverwrite = true;
+		if (fs.existsSync(ctx.runtimeDir)) {
+			answers = await inquirer.prompt([
+				{
+					name: 'isOverwrite',
+					type: 'confirm',
+					message: `detect the "${ctx.runtimeDir}" already exists, whether to overwrite?`,
+					default: false,
+				},
+			]);
+			isOverwrite = answers.isOverwrite;
+		}
+
+		isOverwrite && (await generate(ctx, pkg));
 		myLogger.success('init ok, thanks for using porky-cli!');
 		myLogger.info('input the `porky -h` to start using.');
 	});
+}
+
+// Generate runtime dir
+async function generate(ctx, pkg) {
+	await runYo(runtime, '--generateInto', ctx.runtimeDir);
+	const runtimePkg = pkgJsonSync(ctx.runtimeDir, null, { throws: false }) || {};
+	const runtimePkgDevDep = runtimePkg.devDependencies || {};
+	runtimePkgDevDep.commander = pkg.dependencies.commander;
+	runtimePkgDevDep['module-rooter'] = pkg.devDependencies['module-rooter'];
+	runtimePkg.devDependencies = runtimePkgDevDep;
+	pkgJsonSync(ctx.runtimeDir, runtimePkg, { spaces: 4 });
+	await fs.copy(TEMPS, ctx.runtimeDir);
+	await pm(ctx.packageManager, { execOpts: { cwd: ctx.runtimeDir } }).install();
 }
 
 module.exports = (ctx, pkg) => {

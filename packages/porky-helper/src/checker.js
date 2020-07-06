@@ -52,7 +52,7 @@ const checker = (module.exports = {
 	},
 
 	typeOfFile(filePath, fileExt) {
-		const ext = path.parse(filePath).ext;
+		const ext = filePath ? path.parse(filePath).ext : '';
 		return Boolean(ext) && (fileExt ? fileExt === ext : true);
 	},
 });
