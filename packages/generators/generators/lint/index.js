@@ -45,7 +45,7 @@ module.exports = class extends AbstractGenerator {
 	}
 
 	_copyTempByPkg(opts, pkg, copyTemp) {
-		const exclude = opts.tslint ? 'ts' : '';
+		const exclude = opts.tslint ? '.ts' : '';
 		copyTemp('eslintConfig', [`eslintrc${exclude}.js`, 'eslintignore'], exclude);
 		copyTemp('commitlint', ['commitlintrc.js']);
 		copyTemp('husky', ['huskyrc.js']);
