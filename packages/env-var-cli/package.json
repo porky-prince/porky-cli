@@ -1,6 +1,6 @@
 {
 	"name": "env-var-cli",
-	"version": "0.4.0",
+	"version": "0.4.1",
 	"description": "Declare the temporary of environment variable at the command line",
 	"author": "Porky Kay",
 	"homepage": "https://github.com/porky-prince/porky-cli/packages/env-var-cli#readme",
