@@ -20,7 +20,7 @@ ctx.version = pkg.version;
 if (ctx.isInit) {
 	main();
 } else {
-	cmdInit(ctx);
+	cmdInit(ctx, pkg);
 }
 
 async function main() {
