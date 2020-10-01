@@ -47,11 +47,16 @@ module.exports = class extends AbstractGenerator {
 					}
 
 					if (/\w+ .+/.test(gitToken)) {
-						gitToken = execSync(gitToken).toString();
+						gitToken = _.trim(execSync(gitToken).toString());
+					}
+
+					if (!/^\w{32}$/.test(gitToken)) {
+						this.log('Invalid token:' + gitToken);
+						return;
 					}
 
 					const octokit = new Octokit({
-						auth: _.trim(gitToken),
+						auth: gitToken,
 					});
 					return octokit.search
 						.repos({
