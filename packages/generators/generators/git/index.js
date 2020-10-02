@@ -51,7 +51,7 @@ module.exports = class extends AbstractGenerator {
 					}
 
 					if (!/^\w{32}$/.test(gitToken)) {
-						this.log('Invalid token:' + gitToken);
+						this.log('Invalid token: ' + gitToken);
 						return;
 					}
 

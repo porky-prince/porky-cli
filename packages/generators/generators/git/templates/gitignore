@@ -36,3 +36,5 @@ coverage
 # yeoman
 .yo-rc.json
 .yo-repository
+
+# custom
