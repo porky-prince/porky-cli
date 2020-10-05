@@ -127,3 +127,7 @@ const Config = (module.exports = class extends EventEmitter {
 });
 
 Config.testName = testName;
+Config.homedir = function(...args) {
+	args.unshift(homedir);
+	return path.join.apply(path, args);
+};
