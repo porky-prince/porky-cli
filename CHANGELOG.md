@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.2](https://github.com/porky-prince/porky-cli/compare/v0.4.1...v0.4.2) (2020-10-11)
+
+
+### Bug Fixes
+
+* fixed porky-cli first use error ([d619233](https://github.com/porky-prince/porky-cli/commit/d61923320c8108647d5357cbe1e1519a4d206c0a))
+
+
+
+
+
 ## [0.4.1](https://github.com/porky-prince/porky-cli/compare/v0.4.0...v0.4.1) (2020-07-28)
 
 
