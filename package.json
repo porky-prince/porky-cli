@@ -26,6 +26,9 @@
 		"test:log": "lerna run test -- --verbose=true",
 		"test": "lerna run test",
 		"debug": "node --inspect-brk src/main.js",
+		"bootstrap": "lerna bootstrap",
+		"clean": "lerna clean",
+		"link": "lerna link",
 		"version": "lerna version",
 		"publish": "lerna publish from-package"
 	},

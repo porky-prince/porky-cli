@@ -43,7 +43,7 @@ const Config = (module.exports = class extends EventEmitter {
 	}
 
 	save() {
-		fs.outputJsonSync(this.configPath, this._config, { spaces: 4 });
+		this.export(this.configPath);
 		this.emit('save');
 	}
 
@@ -114,6 +114,38 @@ const Config = (module.exports = class extends EventEmitter {
 		this.mergeDefault(this._defaultConfig);
 		this.save();
 		this.emit('reset');
+	}
+
+	import(jsonPath, overwrite) {
+		const json = fs.readJsonSync(jsonPath);
+		const config = this._config;
+		let isChange = false;
+		Object.keys(json).forEach(key => {
+			if (this.limit(key)) return;
+			const val = json[key];
+			// eslint-disable-next-line eqeqeq,no-eq-null
+			if (val == null || typeof val === 'object') {
+				console.error('Invalid key: ', key);
+				return;
+			}
+
+			if (key in config) {
+				if (overwrite) {
+					config[key] = val;
+					isChange = true;
+				} else {
+					console.warn('Conflict key: ', key);
+				}
+			} else {
+				config[key] = val;
+				isChange = true;
+			}
+		});
+		isChange && this.save();
+	}
+
+	export(jsonPath) {
+		fs.outputJsonSync(jsonPath, this._config, { spaces: 4 });
 	}
 
 	mergeDefault(config) {

@@ -48,5 +48,18 @@ module.exports = (cmdName, config) => {
 		.action(showDefaultConfig => {
 			config.list(showDefaultConfig);
 		});
+	program
+		.command('import <jsonPath>')
+		.description('import config')
+		.option('-o, --overwrite', 'overwrite old key', false)
+		.action((jsonPath, opts) => {
+			config.import(jsonPath, opts.overwrite);
+		});
+	program
+		.command('export <jsonPath>')
+		.description('export config')
+		.action(jsonPath => {
+			config.export(jsonPath);
+		});
 	return program;
 };
