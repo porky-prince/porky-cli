@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.3](https://github.com/porky-prince/porky-cli/compare/v0.4.2...v0.4.3) (2021-09-05)
+
+
+### Performance Improvements
+
+* porky-config add import and export method ([de7e6b8](https://github.com/porky-prince/porky-cli/commit/de7e6b880a0e32c31b23dee9a156f4d7b410578b))
+
+
+
+
+
 ## [0.4.2](https://github.com/porky-prince/porky-cli/compare/v0.4.1...v0.4.2) (2020-10-11)
 
 

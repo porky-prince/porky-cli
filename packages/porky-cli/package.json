@@ -1,6 +1,6 @@
 {
 	"name": "porky-cli",
-	"version": "0.4.2",
+	"version": "0.4.3",
 	"description": "This is a scaffold.",
 	"author": "Porky Kay",
 	"homepage": "https://github.com/porky-prince/porky-cli/packages/porky-cli#readme",
@@ -32,7 +32,7 @@
 		"generator-porky-runtime": "^0.4.0",
 		"inquirer": "^7.1.0",
 		"p-is-promise": "^3.0.0",
-		"porky-config": "^0.4.2",
+		"porky-config": "^0.4.3",
 		"porky-helper": "^0.4.1",
 		"validate-npm-package-name": "^3.0.0",
 		"yo": "^3.1.1"
