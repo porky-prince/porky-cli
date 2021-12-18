@@ -1,6 +1,6 @@
 {
 	"name": "generator-porky-runtime",
-	"version": "0.4.0",
+	"version": "0.4.4",
 	"description": "Generate porky-cli exec or run command runtime directory",
 	"author": "Porky Ke",
 	"homepage": "https://github.com/porky-prince/porky-cli/packages/porky-runtime#readme",

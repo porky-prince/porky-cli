@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.4](https://github.com/porky-prince/porky-cli/compare/v0.4.3...v0.4.4) (2021-12-18)
+
+
+### Performance Improvements
+
+* add stable dependency version ([ba0c1af](https://github.com/porky-prince/porky-cli/commit/ba0c1af230fcfba9d9051b779ecd43af78a630bb))
+
+
+
+
+
 ## [0.4.2](https://github.com/porky-prince/porky-cli/compare/v0.4.1...v0.4.2) (2020-10-11)
 
 **Note:** Version bump only for package @porky-prince/generator-generators
