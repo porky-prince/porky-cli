@@ -6,14 +6,16 @@ const { getGenerator, getConfigName } = require('../src/helper');
 describe('test:git', () => {
 	const gitIgnore = getConfigName(GIT_IGNORE);
 	const gitAttr = getConfigName(GIT_ATTR);
-	const github = 'https://github.com/';
+	const githubSSH = 'git@github.com:';
+	const githubHTTP = 'https://github.com/';
 	const dotGit = '.git';
 	const Generator = getGenerator(GIT);
 
 	it('creates the git config files and init the repository', () => {
 		const gitAccount = 'porky-prince';
 		const repoName = 'porky-cli';
-		const repo = github + gitAccount + '/' + repoName;
+		const repoSSH = githubSSH + gitAccount + '/' + repoName;
+		const repoHTTP = githubHTTP + gitAccount + '/' + repoName;
 		return helpers
 			.run(Generator)
 			.withOptions({
@@ -27,12 +29,15 @@ describe('test:git', () => {
 
 				assert.file(PKG);
 				assert.jsonFileContent(PKG, {
-					repository: repo + dotGit,
-					homepage: repo + '#readme',
-					bugs: repo + '/issues',
+					repository: repoSSH + dotGit,
+					homepage: repoHTTP + '#readme',
+					bugs: repoHTTP + '/issues',
 				});
 
-				assert.fileContent(dotGit + '/config', '[remote "origin"]\n	url = ' + repo + dotGit);
+				assert.fileContent(
+					dotGit + '/config',
+					'[remote "origin"]\n	url = ' + repoSSH + dotGit
+				);
 			});
 	});
 
@@ -41,7 +46,8 @@ describe('test:git', () => {
 		const other_ = other + '/';
 		const gitAccount = other + 'Account';
 		const repoName = other + 'Name';
-		const repo = github + gitAccount + '/' + repoName;
+		const repoSSH = githubSSH + gitAccount + '/' + repoName;
+		const repoHTTP = githubHTTP + gitAccount + '/' + repoName;
 		return helpers
 			.run(Generator)
 			.withOptions({
@@ -56,14 +62,14 @@ describe('test:git', () => {
 
 				assert.file(other_ + PKG);
 				assert.jsonFileContent(other_ + PKG, {
-					repository: repo + dotGit,
-					homepage: repo + '#readme',
-					bugs: repo + '/issues',
+					repository: repoSSH + dotGit,
+					homepage: repoHTTP + '#readme',
+					bugs: repoHTTP + '/issues',
 				});
 
 				assert.fileContent(
 					other_ + dotGit + '/config',
-					'[remote "origin"]\n	url = ' + repo + dotGit
+					'[remote "origin"]\n	url = ' + repoSSH + dotGit
 				);
 			});
 	});

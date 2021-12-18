@@ -1,13 +1,14 @@
 const AbstractGenerator = require('../../src/abstractGenerator');
 const { getTempPath } = require('../../src/helper');
+const { DepModule, depConfig } = require('../../src/depModule');
 const { MAIN, MAIN_ENTRY, TS_CONFIG, BABEL_JS, SCRIPT_TYPES_JSON } = require('../../src/const');
-const configs = {
+const configs = depConfig({
 	scriptType: {
 		type: String,
 		default: 'js',
 		desc: 'Script type, options:' + SCRIPT_TYPES_JSON,
 	},
-};
+});
 
 module.exports = class extends AbstractGenerator {
 	constructor(args, opts) {
@@ -24,7 +25,7 @@ module.exports = class extends AbstractGenerator {
 		let cmd = '';
 		switch (scriptType) {
 			case 'ts':
-				deps.push('typescript');
+				deps.push(new DepModule('typescript', '^3.9.6'));
 				ext = '.ts';
 				exclude = /^\./;
 				cfgFile = TS_CONFIG;
@@ -32,7 +33,11 @@ module.exports = class extends AbstractGenerator {
 				cmd = 'tsc -p . --outDir dist';
 				break;
 			case 'es':
-				deps.push('@babel/cli', '@babel/core', '@babel/preset-env');
+				deps.push(
+					new DepModule('@babel/cli', '^7.8.4'),
+					new DepModule('@babel/core', '^7.9.0'),
+					new DepModule('@babel/preset-env', '^7.9.0')
+				);
 				cfgFile = BABEL_JS;
 				cfgName = 'babel';
 				cmd = 'babel src -d dist --copy-files';

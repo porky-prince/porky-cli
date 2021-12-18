@@ -92,7 +92,7 @@ module.exports = async opts => {
 	const cwd = opts.cwd || process.cwd();
 	const pkgPath = path.join(cwd, 'package.json');
 	opts.cwd = cwd;
-	if (await fs.exists(pkgPath)) {
+	if (fs.existsSync(pkgPath)) {
 		const pkg = await fs.readJson(pkgPath);
 		await dealPkg(opts, pkg);
 		await fs.writeJson(pkgPath, pkg, {

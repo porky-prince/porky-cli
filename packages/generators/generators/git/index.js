@@ -15,11 +15,16 @@ const configs = {
 		type: String,
 		desc: 'Git username or organization',
 	},
-	gitToken: {
+	gitHost: {
+		type: String,
+		default: 'github.com',
+		desc: 'Git host',
+	},
+	/* gitToken: {
 		type: String,
 		desc:
 			"Git token for create repository at the github by default if you haven't created the repository yet\n  Notice:yon can also input 'echo %TOKEN%' or 'echo $token'",
-	},
+	}, */
 };
 
 module.exports = class extends AbstractGenerator {
@@ -95,16 +100,16 @@ module.exports = class extends AbstractGenerator {
 				pkg.description
 			);
 			if (originUrl) {
+				repo = originUrl;
 				const result = /git@([\w.]+):([\w/-]+\.git)/.exec(originUrl);
 				if (result) {
 					// 'git@github.com:porky-prince/porky-cli.git' => 'https://github.com/porky-prince/porky-cli.git'
 					originUrl = `https://${result[1]}/${result[2]}`;
 				}
-
-				repo = originUrl;
 			} else if (opts.gitAccount && opts.repoName) {
 				// Default github
-				originUrl = repo = `https://github.com/${opts.gitAccount}/${opts.repoName}.git`;
+				repo = `git@${opts.gitHost}:${opts.gitAccount}/${opts.repoName}.git`;
+				originUrl = `https://${opts.gitHost}/${opts.gitAccount}/${opts.repoName}.git`;
 			}
 
 			if (repo) {
@@ -119,6 +124,7 @@ module.exports = class extends AbstractGenerator {
 
 	end() {
 		const pkg = this._readPkg();
+		const opts = this.options;
 		let repo = pkg.repository;
 
 		// It is safe to run the git init command in an existing repository
@@ -141,7 +147,7 @@ module.exports = class extends AbstractGenerator {
 				if (/https?:/.test(repo)) {
 					repo += '.git';
 				} else {
-					repo = 'git@github.com:' + pkg.repository + '.git';
+					repo = `git@${opts.gitHost}:${pkg.repository}.git`;
 				}
 			}
 

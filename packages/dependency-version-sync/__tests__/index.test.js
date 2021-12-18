@@ -17,7 +17,7 @@ const mockPkg = {
 	},
 	devDependencies: {
 		'is-date-object': 'latest',
-		'@porky-prince/test': 'git+https://github.com/porky-prince/test.git',
+		// '@porky-prince/test': 'git+https://github.com/porky-prince/test.git',
 	},
 	optionalDependencies: {
 		'is-callable': '', // Equal to *
@@ -73,7 +73,7 @@ async function assertRun(destPath, packageManager, install) {
 	assertGte(pkg, 'is-symbol');
 	assertGte(pkg, 'is-string');
 	assertGte(pkg, 'is-date-object', 'dev');
-	assertEqual(pkg, '@porky-prince/test', 'dev');
+	// assertEqual(pkg, '@porky-prince/test', 'dev');
 	assertGte(pkg, 'is-callable', 'optional');
 	// Restore package.json
 	await fs.writeJson(destPKG, mockPkg, {
@@ -92,7 +92,7 @@ async function assertRun(destPath, packageManager, install) {
 	assertEqual(pkg, 'is-symbol');
 	assertEqual(pkg, 'is-string');
 	assertEqual(pkg, 'is-date-object', 'dev');
-	assertEqual(pkg, '@porky-prince/test', 'dev');
+	// assertEqual(pkg, '@porky-prince/test', 'dev');
 	assertEqual(pkg, 'is-callable', 'optional');
 }
 

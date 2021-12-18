@@ -1,13 +1,14 @@
 const AbstractGenerator = require('../../src/abstractGenerator');
+const { DepModule, depConfig } = require('../../src/depModule');
 const { CLI, CLI_JS } = require('../../src/const');
 const path = require('path');
-const configs = {
+const configs = depConfig({
 	cliName: {
 		type: String,
 		default: path.basename(process.cwd()),
 		desc: 'Name of the cli',
 	},
-};
+});
 
 module.exports = class extends AbstractGenerator {
 	constructor(args, opts) {
@@ -15,7 +16,7 @@ module.exports = class extends AbstractGenerator {
 	}
 
 	_fillPkg(opts, pkg, devDep, script, dep) {
-		dep('commander');
+		dep(new DepModule('commander', '^5.1.0'));
 	}
 
 	_copyTempByPkg(opts, pkg, copyTemp) {

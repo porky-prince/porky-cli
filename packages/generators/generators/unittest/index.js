@@ -1,8 +1,9 @@
 const AbstractGenerator = require('../../src/abstractGenerator');
+const { depConfig } = require('../../src/depModule');
 const Modules = require('./modules');
 const { UNIT_TEST, UNIT_TEST_MODULES_JSON, SCRIPT_TYPES_JSON } = require('../../src/const');
 const { getTempPath, getTestFilename } = require('../../src/helper');
-const configs = {
+const configs = depConfig({
 	unitTestModule: {
 		type: String,
 		default: 'jest',
@@ -13,7 +14,7 @@ const configs = {
 		default: 'js',
 		desc: 'Script type, options:' + SCRIPT_TYPES_JSON,
 	},
-};
+});
 
 module.exports = class extends AbstractGenerator {
 	constructor(args, opts) {

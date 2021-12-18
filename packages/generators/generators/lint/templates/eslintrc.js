@@ -9,6 +9,7 @@ module.exports = {
 	parserOptions: {},
 	rules: {
 		'prettier/prettier': 'error',
+		'capitalized-comments': 'off',
 	},
 	overrides: [],
 };

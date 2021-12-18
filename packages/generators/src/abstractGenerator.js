@@ -3,7 +3,7 @@ const _ = require('lodash');
 const { PKG } = require('./const');
 const { getTempPath, getConfigName } = require('./helper');
 
-module.exports = class extends Generator {
+class AbstractGenerator extends Generator {
 	constructor(args, opts, name) {
 		super(args, opts);
 		this._name = name;
@@ -73,7 +73,7 @@ module.exports = class extends Generator {
 	}
 
 	_writePkg(pkg) {
-		return this.fs.writeJSON(this._destPath(PKG), pkg);
+		return this.fs.writeJSON(this._destPath(PKG), pkg, null, 4);
 	}
 
 	async _writingByPkg() {
@@ -91,10 +91,10 @@ module.exports = class extends Generator {
 
 	_copyTempByPkg() {}
 
-	__fillDepVersion(dep) {
-		return (...moduleNames) => {
-			moduleNames.forEach(moduleName => {
-				dep[moduleName] = dep[moduleName] || 'latest';
+	__fillDepVersion(opts, dep) {
+		return (...depModules) => {
+			depModules.forEach(depModule => {
+				dep[depModule.getName()] = dep[depModule.getName()] || depModule.getVersion(opts);
 			});
 		};
 	}
@@ -103,8 +103,8 @@ module.exports = class extends Generator {
 		const scripts = pkg.scripts || {};
 		const dependencies = pkg.dependencies || {};
 		const devDependencies = pkg.devDependencies || {};
-		const dep = this.__fillDepVersion(dependencies);
-		const devDep = this.__fillDepVersion(devDependencies);
+		const dep = this.__fillDepVersion(opts, dependencies);
+		const devDep = this.__fillDepVersion(opts, devDependencies);
 		const script = (name, cmd) => {
 			scripts[name] = scripts[name] || cmd;
 		};
@@ -117,4 +117,6 @@ module.exports = class extends Generator {
 	}
 
 	_fillPkg() {}
-};
+}
+
+module.exports = AbstractGenerator;

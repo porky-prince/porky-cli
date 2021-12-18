@@ -10,6 +10,7 @@ module.exports = {
 	parserOptions: {
 		project: './tsconfig.json',
 	},
+	ignorePatterns: ['**/*.js'],
 	rules: {
 		'prettier/prettier': 'error',
 		'comma-dangle': [
@@ -19,6 +20,7 @@ module.exports = {
 			},
 		],
 		'@typescript-eslint/no-floating-promises': 'off',
+		'capitalized-comments': 'off',
 	},
 	overrides: [],
 };

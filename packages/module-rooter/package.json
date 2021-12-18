@@ -2,7 +2,7 @@
 	"name": "module-rooter",
 	"version": "0.4.0",
 	"description": "Get the resolved path to the root of a package installed in node_modules and find some files",
-	"author": "Porky Kay",
+	"author": "Porky Ke",
 	"homepage": "https://github.com/porky-prince/porky-cli/packages/module-rooter#readme",
 	"bugs": "https://github.com/porky-prince/porky-cli/issues",
 	"license": "MIT",
@@ -15,7 +15,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/porky-prince/porky-cli.git",
+		"url": "git@github.com:porky-prince/porky-cli.git",
 		"directory": "packages/module-rooter"
 	},
 	"scripts": {

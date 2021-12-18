@@ -2,7 +2,7 @@
 	"name": "dependency-version-sync",
 	"version": "0.4.1",
 	"description": "Synchronize and update the dependencies of the package.json to the installed version",
-	"author": "Porky Kay",
+	"author": "Porky Ke",
 	"homepage": "https://github.com/porky-prince/porky-cli/packages/dependency-version-sync#readme",
 	"bugs": "https://github.com/porky-prince/porky-cli/issues",
 	"license": "MIT",
@@ -19,7 +19,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/porky-prince/porky-cli.git",
+		"url": "git@github.com:porky-prince/porky-cli.git",
 		"directory": "packages/dependency-version-sync"
 	},
 	"scripts": {

@@ -130,7 +130,7 @@ describe('test:app', () => {
 						bin: {
 							demoCli: 'bin/cli.js',
 						},
-						repository: 'https://github.com/porky-prince/demo.git',
+						repository: 'git@github.com:porky-prince/demo.git',
 						homepage: 'https://github.com/porky-prince/demo#readme',
 						bugs: 'https://github.com/porky-prince/demo/issues',
 					});
@@ -154,7 +154,7 @@ describe('test:app', () => {
 					bin: {
 						demoCli: 'bin/cli.js',
 					},
-					repository: 'https://github.com/porky-prince/demo.git',
+					repository: 'git@github.com:porky-prince/demo.git',
 					homepage: 'https://github.com/porky-prince/demo#readme',
 					bugs: 'https://github.com/porky-prince/demo/issues',
 				};

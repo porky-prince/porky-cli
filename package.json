@@ -1,11 +1,11 @@
 {
 	"name": "porky-cli",
 	"description": "This is a scaffold",
-	"author": "Porky Kay",
+	"author": "Porky Ke",
 	"license": "MIT",
 	"private": true,
 	"homepage": "https://github.com/porky-prince/porky-cli#readme",
-	"repository": "https://github.com/porky-prince/porky-cli",
+	"repository": "git@github.com:porky-prince/porky-cli",
 	"bugs": "https://github.com/porky-prince/porky-cli/issues",
 	"workspaces": [
 		"./packages/*"
@@ -35,6 +35,7 @@
 	"devDependencies": {
 		"@commitlint/cli": "^8.3.5",
 		"@commitlint/config-conventional": "^8.3.4",
+		"@types/fs-extra": "^9.0.13",
 		"del": "^5.1.0",
 		"del-cli": "^3.0.0",
 		"eslint": "^6.8.0",

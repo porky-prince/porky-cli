@@ -2,7 +2,7 @@
 	"name": "porky-helper",
 	"version": "0.4.1",
 	"description": "Helper for porky-cli",
-	"author": "Porky Kay",
+	"author": "Porky Ke",
 	"homepage": "https://github.com/porky-prince/porky-cli/packages/porky-helper#readme",
 	"bugs": "https://github.com/porky-prince/porky-cli/issues",
 	"license": "MIT",
@@ -15,7 +15,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/porky-prince/porky-cli.git",
+		"url": "git@github.com:porky-prince/porky-cli.git",
 		"directory": "packages/porky-helper"
 	},
 	"scripts": {
