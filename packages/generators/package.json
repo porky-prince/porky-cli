@@ -1,6 +1,6 @@
 {
 	"name": "@porky-prince/generator-generators",
-	"version": "0.4.4",
+	"version": "0.4.5",
 	"description": "Some yeoman generators",
 	"author": "Porky Ke",
 	"homepage": "https://github.com/porky-prince/porky-cli/packages/generators#readme",

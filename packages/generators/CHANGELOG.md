@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.4.5](https://github.com/porky-prince/porky-cli/compare/v0.4.4...v0.4.5) (2022-07-30)
+
+
+### Performance Improvements
+
+* remove octokit dependency ([4099d0b](https://github.com/porky-prince/porky-cli/commit/4099d0b15a960c6b45238b678535309750fd8a1d))
+
+
+
+
+
 ## [0.4.4](https://github.com/porky-prince/porky-cli/compare/v0.4.3...v0.4.4) (2021-12-18)
 
 

@@ -1,6 +1,6 @@
 {
 	"name": "porky-cli",
-	"version": "0.4.4",
+	"version": "0.4.5",
 	"description": "This is a scaffold.",
 	"author": "Porky Ke",
 	"homepage": "https://github.com/porky-prince/porky-cli/packages/porky-cli#readme",
@@ -25,7 +25,7 @@
 		"test": "echo test"
 	},
 	"dependencies": {
-		"@porky-prince/generator-generators": "^0.4.4",
+		"@porky-prince/generator-generators": "^0.4.5",
 		"cmd-to-json": "^1.0.1",
 		"commander": "^5.1.0",
 		"dependency-version-sync": "^0.4.4",
