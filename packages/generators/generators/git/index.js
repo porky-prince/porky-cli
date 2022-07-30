@@ -3,7 +3,6 @@ const AbstractGenerator = require('../../src/abstractGenerator');
 const originUrl = require('git-remote-origin-url');
 const { execSync } = require('child_process');
 const path = require('path');
-const { Octokit } = require('@octokit/rest');
 const _ = require('lodash');
 const configs = {
 	repoName: {
@@ -39,7 +38,7 @@ module.exports = class extends AbstractGenerator {
 		this._copyConfigTemp2Dest(GIT_IGNORE);
 	}
 
-	async _getOriginUrl(repoName, gitAccount, gitToken, description) {
+	async _getOriginUrl(repoName, gitAccount, gitToken) {
 		return originUrl(this._destPath()).then(
 			url => {
 				this._hasOriginUrl = true;
@@ -60,29 +59,8 @@ module.exports = class extends AbstractGenerator {
 						return;
 					}
 
-					const octokit = new Octokit({
-						auth: gitToken,
-					});
-					return octokit.search
-						.repos({
-							q: `in:name ${repoName} ${gitAccount}`,
-						})
-						.then(rsp => {
-							if (rsp.data.total_count === 0) {
-								return octokit.repos
-									.createForAuthenticatedUser({
-										name: repoName,
-										description,
-									})
-									.then(rsp => {
-										return rsp.data.clone_url;
-									})
-									.catch(_.noop);
-							}
-
-							return rsp.data.items[0].clone_url;
-						})
-						.catch(_.noop);
+					// TODO create repository at the github
+					return Promise.resolve();
 				}
 			}
 		);

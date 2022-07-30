@@ -17,4 +17,4 @@ TODO
 
 ## License
 
-[MIT © Porky Kay](./LICENSE)
+[MIT © Porky Ke](./LICENSE)

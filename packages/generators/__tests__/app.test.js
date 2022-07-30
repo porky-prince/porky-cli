@@ -67,7 +67,7 @@ describe('test:app', () => {
 					version: '1.1.1',
 					description: 'This is a demo',
 					keywords: 'yo yeoman',
-					author: 'Porky Kay',
+					author: 'Porky Ke',
 					license: 'MIT',
 					// ----
 					cli: true,
@@ -125,7 +125,7 @@ describe('test:app', () => {
 						version: '1.1.1',
 						description: 'This is a demo',
 						keywords: ['yo', 'yeoman'],
-						author: 'Porky Kay',
+						author: 'Porky Ke',
 						license: 'MIT',
 						bin: {
 							demoCli: 'bin/cli.js',
@@ -149,7 +149,7 @@ describe('test:app', () => {
 					version: '1.1.1',
 					description: 'This is a demo',
 					keywords: ['yo', 'yeoman'],
-					author: 'Porky Kay',
+					author: 'Porky Ke',
 					license: 'MIT',
 					bin: {
 						demoCli: 'bin/cli.js',

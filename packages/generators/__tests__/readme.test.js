@@ -7,7 +7,7 @@ const Generator = getGenerator(README);
 const name = 'test-project';
 const safeName = 'testProject';
 const description = 'This is a test.';
-const author = 'Porky Kay';
+const author = 'Porky Ke';
 const license = 'MIT';
 
 async function runByOpt(opt) {
